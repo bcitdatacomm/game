@@ -11,39 +11,7 @@ Place holder
 Place holder
 
 ## Coding Style
-Refer to: [Microsoft C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)
-
-## Comments
-Put one space after the slashes in a comment, and capitalize the first word.
-
-```cs
-// Good comment
-
-//bad comment
-```
-
-Don't use this kind of comment:
-
-```cs
-/* Don't comment like this */
-
-/*
-Or like This
-*/
-```
-
-Use this for a block instead:
-
-```cs
-// First line
-// Second line
-```
-Don't comment inline.
-
-```cs
-// Good
-var test = 1; // Bad
-```
+Check out [CODINGSTYLE.md](https://github.com/bcitdatacomm/game/blob/master/.github/CODINGSTYLE.md)
 
 ## Commit Messages
 Good commit messages strike a balance between short and descriptive. Try to explain exactly what was changed in the commit message, and if applicable, why it was changed. Each commit should be small and generally should only contain a single change or set of closely related or duplicate changes. 
