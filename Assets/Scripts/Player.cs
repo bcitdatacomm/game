@@ -10,24 +10,68 @@ public class Player : MonoBehaviour {
     public float y_coordinate;
     public int health = 100;
     public float moveSpeed = 5.0f;
+    GameObject player;
+    GameObject otherPlayerObject;
+    bool playerInRange;
+    float timer;
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
     public Player lastHitBy; // to know who killed you
-
+    float timeBetweenAttacks = 0.5f;
     Rigidbody playerRigidbody;
     Vector3 movement;
 
     // Use this for initialization
     void Start () {
-        x_coordinate = playerPos.transform.position.x;
-        y_coordinate = playerPos.transform.position.y;
+
         playerRigidbody = GetComponent<Rigidbody>();
+        x_coordinate = playerRigidbody.transform.position.x;
+        y_coordinate = playerRigidbody.transform.position.y;
+
+        //x_coordinate = playerPos.transform.position.x;
+        //y_coordinate = playerPos.transform.position.y;
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 	
 	// Update is called once per frame
 	void Update () {
-        x_coordinate = playerPos.transform.position.x;
-        y_coordinate = playerPos.transform.position.y;
-        playerRigidbody = GetComponent<Rigidbody>();
+        x_coordinate = playerRigidbody.transform.position.x;
+        y_coordinate = playerRigidbody.transform.position.y;
+        //x_coordinate = playerPos.transform.position.x;
+        //y_coordinate = playerPos.transform.position.y;
+        timer += Time.deltaTime;
+        if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") && playerInRange)
+        {
+            Attack();
+        }
+
+    }
+
+    void Attack()
+    {
+        OtherPlayerHealth otherPlayerHealth = otherPlayerObject.GetComponent<OtherPlayerHealth>();
+        //Player otherPlayer = otherPlayerObject.GetComponent<Player>();
+        otherPlayerHealth.health -= 10;
+        Debug.Log(otherPlayerHealth.health);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject == player)
+        {
+
+            playerInRange = true;
+            otherPlayerObject = other.gameObject;
+        }
+    }
+
+
+    void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject == player)
+        {
+            playerInRange = false;
+            otherPlayerObject = null;
+        }
     }
 
     void FixedUpdate()
@@ -36,6 +80,9 @@ public class Player : MonoBehaviour {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
+        Vector3 movement = new Vector3(h, 0f, v);
+        movement = movement.normalized * 6 * Time.deltaTime;    
+        playerRigidbody.MovePosition(transform.position + movement);
         // deal with playerMovement, not implemented currently
         //Move(h, v);
     }
