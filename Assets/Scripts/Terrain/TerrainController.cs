@@ -1,4 +1,7 @@
-﻿public class TerrainController {
+﻿using UnityEngine;
+using System.Collections;
+
+public class TerrainController{
 
     enum TileTypes {
         GROUND,
@@ -25,12 +28,56 @@
 
     TerrainController()
     {
-
     }
 
     public bool GenerateEncoding()
     {
-        return false;
+        int[,] map = new int[Width, Height];
+
+        for (long i = 0; i < Width; i++)
+        {
+            for (long j = 0; j < Height; j++)
+            {
+                // Check for border
+                if (i == 0 || i == Width || j == 0 || j == Height)
+                {
+                    map[i, j] = (int)TileTypes.GROUND;
+                }
+                else
+                {
+                    if (CactusCoeff < BushCoeff)
+                    {
+                        if (Random.value * 101 < CactusCoeff)
+                        {
+                            map[i, j] = (int)TileTypes.CACTUS;
+                        }
+                        else if (Random.value * 101 < BushCoeff)
+                        {
+                            map[i, j] = (int)TileTypes.BUSH;
+                        }
+                        else
+                        {
+                            map[i, j] = (int)TileTypes.GROUND;
+                        }
+                    } else
+                    {
+                        if (Random.value * 101 < BushCoeff)
+                        {
+                            map[i, j] = (int)TileTypes.BUSH;
+                        }
+                        else if (Random.value * 101 < CactusCoeff)
+                        {
+                            map[i, j] = (int)TileTypes.CACTUS;
+                        }
+                        else
+                        {
+                            map[i, j] = (int)TileTypes.GROUND;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public bool Instantiate()
