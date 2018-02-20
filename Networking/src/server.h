@@ -6,14 +6,25 @@
 #include <map>
 #include "Connection.h"
 
+struct EndPoint {
+	uint32_t addr;
+	uint16_t port;
+};
+
+
+
 
 class Server {
 
 public:
 	Server();
+	int initializeSocket(short port);
 	void sendBytes(int clientId, char * data, unsigned len);
 	std::map<int, Connection> * clientMap;
-
+private:
+	int udpRecvSocket;
+	sockaddr_in serverAddr;
+	struct pollfd* poll_events;	
 
 };
 
