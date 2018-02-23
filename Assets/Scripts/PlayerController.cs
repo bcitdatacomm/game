@@ -16,22 +16,19 @@ public class PlayerController : MonoBehaviour {
     Rigidbody playerRigidbody;
     Vector3 movement;
 
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
+
     // Use this for initialization
     void Start () {
         playerPos = GetComponent<Transform>();
-        x_coordinate = playerPos.transform.position.x;
-        y_coordinate = playerPos.transform.position.y;
+        //x_coordinate = playerPos.position.x;
+        //y_coordinate = playerPos.position.y;
         playerRigidbody = GetComponent<Rigidbody>();
     }
 	
 	// Update is called once per frame
-	void Update () {
-        x_coordinate = playerPos.transform.position.x;
-        y_coordinate = playerPos.transform.position.y;
-        //playerRigidbody = GetComponent<Rigidbody>();
-    }
-
-    void FixedUpdate()
+    void Update()
     {
         // Store the input axes.
         float h = Input.GetAxis("Horizontal");
@@ -50,6 +47,11 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("x: " + x_coordinate + ", y: " + y_coordinate
             + ", y rot: " + y_rot);
         //send playerPos to server for x_coord, y_coord, and y rotation
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            BulletAttack();
+        }
     }
 
     void Move(float h, float v)
@@ -65,7 +67,6 @@ public class PlayerController : MonoBehaviour {
 
     void Turn()
     {
-        
         // Create a ray from the mouse cursor on screen in the direction of the camera.
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -87,16 +88,20 @@ public class PlayerController : MonoBehaviour {
             // Set the player's rotation to this new rotation.
             playerRigidbody.MoveRotation(newRotation);
         }
-        /*
-        Vector3 lookTarget = new Vector3();
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            lookTarget = hit.point;
-            Quaternion newRotation = Quaternion.LookRotation(lookTarget);
-            // Set the player's rotation to this new rotation.
-            playerRigidbody.MoveRotation(newRotation);
-        }*/
+    }
+
+    void BulletAttack()
+    {
+        // Create the Bullet from the Bullet Prefab
+        var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
+
+        // Add velocity to the bullet
+        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * 6;
+
+        // Spawn the bullet on the Clients
+        //NetworkServer.Spawn(bullet);
+
+        // Destroy the bullet after 1 seconds; this acts as range for now
+        Destroy(bullet, 1.0f);
     }
 }
