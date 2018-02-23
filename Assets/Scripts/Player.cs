@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     public int health = 100;
     public float moveSpeed = 5.0f;
     // GameObject player;// never init or called this
-    GameObject otherPlayerObject;
+    GameObject otherPlayerGameObject;
     string playerTag;
     string pickupTag;
     GameObject[] pickUps;// not practical, must incre thru list for every new pickup
@@ -39,18 +39,28 @@ public class Player : MonoBehaviour {
         x_coordinate = playerRigidbody.transform.position.x;
         y_coordinate = playerRigidbody.transform.position.y;
         timer += Time.deltaTime;
-        if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") && playerInRange)
+        if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") )
         {
-            Attack();
+        	if (playerInRange)
+        	{
+            	Attack("fist");
+        	}
+        	else
+        	{
+            	Attack("gun");
+        	}
         }
+
     }
 
-    void Attack()
+    void Attack(string weapon)
     {
-        OtherPlayerHealth otherPlayerHealth = otherPlayerObject.GetComponent<OtherPlayerHealth>();
-        //Player otherPlayer = otherPlayerObject.GetComponent<Player>();
-        otherPlayerHealth.health -= 10;
-        Debug.Log("target hp:" + otherPlayerHealth.health);
+    	if (weapon == "fist")
+    	{
+	        Player otherPlayer = otherPlayerGameObject.GetComponent<DummyPlayer>();
+	        otherPlayer.health -= 10;
+	        Debug.Log("target hp:" + otherPlayer.health);    		
+    	}
     }
 
     void OnTriggerEnter(Collider other)
@@ -58,7 +68,7 @@ public class Player : MonoBehaviour {
         if(other.gameObject.CompareTag(playerTag))
         {
             playerInRange = true;
-            otherPlayerObject = other.gameObject;
+            otherPlayerGameObject = other.gameObject;
         }
         if (other.gameObject.CompareTag(pickupTag))
         {
@@ -72,7 +82,7 @@ public class Player : MonoBehaviour {
         if(other.gameObject.CompareTag(playerTag))
         {
             playerInRange = false;
-            // otherPlayerObject = null; // no need, apparently this actually hinders C#'s GC
+            // otherPlayerGameObject = null; // no need, apparently this actually hinders C#'s GC
         }
     }
 
