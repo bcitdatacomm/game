@@ -62,14 +62,18 @@ void initializeConnectionPool()
 	
 }
 
-int UdpRecvFrom(char * buffer, int32_t size, EndPoint addr)
+int32_t UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr)
 {
 	sockaddr_in clientAddr;
 	size_t addrSize = sizeof(clientAddr);
 	
 	int32_t result = recvfrom(udpRecvSocket, buffer, size, 0, (sockaddr *)clientAddr, &addrSize);
 
+	
+	addr->port = ntohs(clientAddr.sin_port);
+	addr->address = ntohl(clientAddr.sin_addr.s_addr);
 
+	return result;
 }
 
 int32_t  UdpPollSocket()
@@ -97,7 +101,13 @@ extern "C" Server * Server_CreateServer()
 	return new Server();
 }
 
-extern "C" void Server_sendBytes(void * serverPtr, int clientId, char * data, unsigned len) 
+extern "C" void Server_sendBytes(void * serverPtr, int clientId, char * data, uint32_t len) 
 {
 	((Server *)serverPtr)->sendBytes(clientId, data, len);
+}
+
+extern "C" int32_t Server_recvBytes(void * serverPtr, EndPoint addr, char * buffer, uint32_t * bufSize)
+{
+	int32_t result = (Server *)serverPtr)->UdpRecvFrom(buffer, bufSize, addr);
+	return result;
 }

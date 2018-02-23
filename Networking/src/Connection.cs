@@ -3,35 +3,73 @@ using System.Net.Sockets;
 
 namespace Connection
 {
-    public unsafe struct sockaddr_in
-    {
-        private short sin_family;
-        private ushort sin_port;
-        private in_addr sin_addr;
-        private fixed char sin_zero[8];
-    }
+	
+	[StructLayout(LayoutKind.Explicit, Pack = 1)]
+	public struct CAddr{
 
-    public struct in_addr
-    {
-        ulong s_addr;
-    }
+		public static readonly CAddr Loopback = new CAddr("127.0.0.1");
+
+		[FieldOffset(0)]
+		public readonly uint Packet;
+		[FieldOffset(0)]
+		public readonly byte Byte0;
+		[FieldOffset(1)]
+		public readonly byte Byte1;
+		[FieldOffset(2)]
+		public readonly byte Byte2;
+		[FieldOffset(3)]
+		public readonly byte Byte3;
+
+
+		public CAddr (string ip) {
+			string[] parts = ip.Split('.');
+			Packet = 0;
+			Byte0 = byte.Parse(parts[3]);
+			Byte1 = byte.Parse(parts[2]);
+			Byte2 = byte.Parse(parts[1]);
+			Byte3 = byte.Parse(parts[0]);
+		}
+
+		public CAddr (byte a, byte b, byte c, byte d) {
+			Packet = 0;
+			Byte0 = d;
+			Byte1 = c;
+			Byte2 = b;
+			Byte3 = a;
+		}
+
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public struct UdpAddr {
+		public readonly CAddr addr;
+		public readonly ushort port;
+
+
+	}
+
+ 
 
 /*    public unsafe struct buffer_t{
         public char[] buffer = new char[2048];
         public int bufPos;
-    }*/
+    }
+*/
 
     public unsafe class Connection
     {
 
         public static int MAX_BUF_SIZE = 2048;
-        static int PORT_NO = 99999;
+        static ushort PORT_NO = 99999;
 
-        uint m_ackNo;
+        UInt32 m_rcvAck;
+		UInt32 m_sendAck;
+		UInt32 m_sendSeq;
+		UInt32 m_rcvSeq;
+
         uint m_connectionId;
         uint m_connectionStatus;
-        sockaddr_in m_in;
-        sockaddr_in m_out;
+		UdpAddr m_client;
         uint m_socketId;
         //buffer_t m_buffer;
         char[] buffer;
@@ -40,7 +78,7 @@ namespace Connection
         //fixed char m_buffer[MAX_BUF_SIZE];
         //uint bufPos;
 
-        public Connection(sockaddr_in client, sockaddr_in server, uint socketId, uint connectionId)
+        public Connection(UdpAddr client, uint socketId, uint connectionId)
         {
             m_in = server;
             m_out = client;
@@ -51,7 +89,7 @@ namespace Connection
             buffer = new char[2048];
         }
 
-        public sockaddr_in getClient()
+        public UdpAddr getClient()
         {
             return m_out;
         }
