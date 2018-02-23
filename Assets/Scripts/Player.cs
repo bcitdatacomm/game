@@ -9,7 +9,7 @@ public class Player : MonoBehaviour {
     public float x_coordinate;
     public float y_coordinate;
     public int health = 100;
-    public float moveSpeed = 5.0f;
+    public float moveSpeed = 6.0f;
     // GameObject player;// never init or called this
     GameObject otherPlayerGameObject;
     string playerTag;
@@ -22,91 +22,108 @@ public class Player : MonoBehaviour {
     float timeBetweenAttacks = 0.5f;
     Rigidbody playerRigidbody;
     Vector3 movement;
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
 
+    private float gunBulletLifeTime = 1f;
+    private int gunBulletSpeed = 6;
+    
+    private float meleeBulletLifeTime = 0.75f;
+    private int meleeBulletSpeed = 3;
+
+    private bool meleeMode = false;
     // Use this for initialization
     void Start () {
-
         playerRigidbody = GetComponent<Rigidbody>();
-        x_coordinate = playerRigidbody.transform.position.x;
-        y_coordinate = playerRigidbody.transform.position.y;
+        playerPos = GetComponent<Transform>();
+
         playerTag = this.tag;
-        pickupTag = "PickUp";
-        //pickUps = GameObject.FindGameObjectsWithTag("PickUp"); 
+        pickupTag = "Item";
+    }
+	
+	void FixedUpdate()
+    {
+    	Move();
+    	Turn();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        x_coordinate = playerRigidbody.transform.position.x;
-        y_coordinate = playerRigidbody.transform.position.y;
         timer += Time.deltaTime;
         if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") )
         {
-        	if (playerInRange)
-        	{
-            	Attack("fist");
-        	}
-        	else
-        	{
-            	Attack("gun");
-        	}
-        }
-
-    }
-
-    void Attack(string weapon)
-    {
-    	if (weapon == "fist")
-    	{
-	        Player otherPlayer = otherPlayerGameObject.GetComponent<DummyPlayer>();
-	        otherPlayer.health -= 10;
-	        Debug.Log("target hp:" + otherPlayer.health);    		
-    	}
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.CompareTag(playerTag))
-        {
-            playerInRange = true;
-            otherPlayerGameObject = other.gameObject;
-        }
-        if (other.gameObject.CompareTag(pickupTag))
-        {
-            Debug.Log("picked up object!");
+        	Attack();
         }
     }
 
-
-    void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject.CompareTag(playerTag))
-        {
-            playerInRange = false;
-            // otherPlayerGameObject = null; // no need, apparently this actually hinders C#'s GC
-        }
-    }
-
-    void FixedUpdate()
+    void Move()
     {
         // Store the input axes.
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-
         Vector3 movement = new Vector3(h, 0f, v);
-        movement = movement.normalized * 6 * Time.deltaTime;    
+        movement = movement.normalized * moveSpeed * Time.deltaTime;    
         playerRigidbody.MovePosition(transform.position + movement);
-        // deal with playerMovement, not implemented currently
-        //Move(h, v);
     }
 
-    /* probably need a PlayerMovement class which deal with player movement
-    void Move(float h, float v)
+    void Turn()
     {
-        // Set the movement vector based on the axis input.
-        movement.Set(h, 0f, v);
-        // Normalise the movement vector and make it proportional to the speed per second.
-        movement = movement.normalized * moveSpeed * Time.deltaTime;
-        // Move the player to it's current position plus the movement.
-        playerRigidbody.MovePosition(transform.position + movement);
-    }*/
+        // Create a ray from the mouse cursor on screen in the direction of the camera.
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // Create a RaycastHit variable to store information about what was hit by the ray.
+        RaycastHit floorHit;
+
+        // Perform the raycast and if it hits something on the floor layer...
+        if (Physics.Raycast(camRay, out floorHit))
+        {
+            // Create a vector from the player to the point on the floor the raycast from the mouse hit.
+            Vector3 playerToMouse = floorHit.point - transform.position;
+
+            // Ensure the vector is entirely along the floor plane.
+            playerToMouse.y = 0f;
+
+            // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
+            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+
+            // Set the player's rotation to this new rotation.
+            playerRigidbody.MoveRotation(newRotation);
+        }
+    }
+
+
+    void Attack()
+    {
+    	float bulletLifeTime = gunBulletLifeTime;
+    	float bulletSpeed = gunBulletSpeed;
+    	if(meleeMode)
+    	{
+    		bulletLifeTime = meleeBulletLifeTime;
+    		bulletSpeed = meleeBulletSpeed;
+    	}
+
+        // Create the Bullet from the Bullet Prefab
+        var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
+        // Sets origin of bullets
+        bullet.GetComponent<Bullet>().bulletLifeTime = bulletLifeTime;
+        bullet.GetComponent<Bullet>().src = this.gameObject;
+        // Add velocity to the bullet
+        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
+        // Spawn the bullet on the Clients
+        //NetworkServer.Spawn(bullet);
+	// }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag(pickupTag))
+        {
+            meleeMode = !meleeMode;
+            if (meleeMode)
+            	Debug.Log("picked up a melee weapon!");
+            else
+            	Debug.Log("picked up a gun!");	
+        }
+    }
+    
 }
