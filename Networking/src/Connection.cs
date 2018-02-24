@@ -3,51 +3,6 @@ using System.Net.Sockets;
 
 namespace COMP4981_NetworkingTest
 {
-
-    	[StructLayout(LayoutKind.Explicit, Pack = 1)]
-	    public struct CAddr{
-
-		public static readonly CAddr Loopback = new CAddr("127.0.0.1");
-
-		[FieldOffset(0)]
-		public readonly uint Packet;
-		[FieldOffset(0)]
-		public readonly byte Byte0;
-		[FieldOffset(1)]
-		public readonly byte Byte1;
-		[FieldOffset(2)]
-		public readonly byte Byte2;
-		[FieldOffset(3)]
-		public readonly byte Byte3;
-
-
-		public CAddr (string ip) {
-			string[] parts = ip.Split('.');
-			Packet = 0;
-			Byte0 = byte.Parse(parts[3]);
-			Byte1 = byte.Parse(parts[2]);
-			Byte2 = byte.Parse(parts[1]);
-			Byte3 = byte.Parse(parts[0]);
-		}
-
-		public CAddr (byte a, byte b, byte c, byte d) {
-			Packet = 0;
-			Byte0 = d;
-			Byte1 = c;
-			Byte2 = b;
-			Byte3 = a;
-		}
-
-	}
-
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public struct UdpAddr {
-		public readonly CAddr addr;
-		public readonly ushort port;
-
-
-	}
-
     enum connectionStatus : byte
     {
         disconnected = 0,
@@ -86,8 +41,10 @@ namespace COMP4981_NetworkingTest
         sockaddr_in m_in;
         sockaddr_in m_out;
         uint m_socketId;
-        //buffer_t m_buffer;
         char[] m_buffer;
+        //We need two buffers: input and output
+        //char[] m_inputBuffer;
+        //char[] m_outputBuffer;
         int m_bufPos;
 
         //fixed char m_buffer[MAX_BUF_SIZE];
@@ -122,21 +79,27 @@ namespace COMP4981_NetworkingTest
             return m_buffer;
         }
 
-
+        /*
+         * TODO: Refactor to ReadFromInputBuffer, reads inputbuffer from client / server
+         */
         public unsafe void ReadFromBuffer(char[] data) //This is now read from buffer. It makes sense, kidn of. It used to be write()
         {
             if (data.Length + m_bufPos < MAX_BUF_SIZE)
             {
-                Buffer.BlockCopy(data, 0, m_buffer, m_bufPos, 2 * data.Length * sizeof(Byte));  //Figure out why the member buffer requires 2B/element
+                Buffer.BlockCopy(data, 0, m_buffer, m_bufPos, 2 * data.Length * sizeof(Byte));
                 m_bufPos += data.Length;
             }
         }
 
-        public void WriteToBuffer(char[] otherBuffer)   //This is now write to buffer. 
+        /*
+         * TODO: Refactor to WriteToOutputBuffer, writes output to buffer for server / client
+         */
+        public void WriteToBuffer(char[] otherBuffer)
         {
-            Array.Clear(m_buffer, 0, m_buffer.Length);  //This part doesn't make sense. 
-            Buffer.BlockCopy(otherBuffer, 0, m_buffer, 0, 2 * otherBuffer.Length); //why does this do this
+            //Array.Clear(m_buffer, 0, m_buffer.Length);  //This part doesn't make sense. Currently clears buffer to be available to be written to. 
+            Buffer.BlockCopy(m_buffer, 0, otherBuffer, 0, 2 * otherBuffer.Length); //dest: otherBuffer, src: m_buffer;
         }
+
 
         public void checkSocket()
         {
