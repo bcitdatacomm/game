@@ -5,10 +5,10 @@ using UnityEngine;
 public class Bullet : MonoBehaviour {
     public GameObject src;
     public short bulletLifeTime; 
-    public uint playerId; 
-
+    public uint playerId;
 	void Start()
 	{
+
 		Destroy(gameObject, (float)bulletLifeTime * 0.01f);
 	}
 

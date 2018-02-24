@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
     public string displayName;
     public Transform playerPos;
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour {
     string playerTag;
     string pickupTag;
     GameObject[] pickUps;// not practical, must incre thru list for every new pickup
-    bool playerInRange;
+     bool playerInRange;
     float timer;
     public uint playerId;
 
@@ -29,36 +30,52 @@ public class Player : MonoBehaviour {
 
     private short gunBulletLifeTime = (short)100;
     private int gunBulletSpeed = 6;
-    
+
     private short meleeBulletLifeTime = (short)75;
     private int meleeBulletSpeed = 3;
 
     private bool meleeMode = false;
+    GameObject otherPlayer;
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         playerRigidbody = GetComponent<Rigidbody>();
         playerPos = GetComponent<Transform>();
-
+        otherPlayer = GameObject.FindGameObjectWithTag("otherPlayer");
         playerTag = this.tag;
         pickupTag = "Item";
         // Random r = new Random();
-		// playerId = r.Next(0, 32);
-		playerId = 0;
+        // playerId = r.Next(0, 32);
+        playerId = 0;
     }
-	
-	void FixedUpdate()
+
+    void FixedUpdate()
     {
-    	Move();
-    	Turn();
+        Move();
+        Turn();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         timer += Time.deltaTime;
-        if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") )
+        if (!meleeMode)
         {
-        	Attack();
+            if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1"))
+            {
+                Attack();
+            }
         }
+        else
+        {
+            Debug.Log(playerInRange);
+            if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") && playerInRange) 
+            {
+                Debug.Log("Attempting to hit");
+                Attack();
+            }
+        }
+
     }
 
     void Move()
@@ -67,7 +84,7 @@ public class Player : MonoBehaviour {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(h, 0f, v);
-        movement = movement.normalized * moveSpeed * Time.deltaTime;    
+        movement = movement.normalized * moveSpeed * Time.deltaTime;
         playerRigidbody.MovePosition(transform.position + movement);
     }
 
@@ -99,16 +116,16 @@ public class Player : MonoBehaviour {
 
     void Attack()
     {
-    	short bulletLifeTime = gunBulletLifeTime;
-    	int bulletSpeed = gunBulletSpeed;
-        
+        short bulletLifeTime = gunBulletLifeTime;
+        int bulletSpeed = gunBulletSpeed;
+
         var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
-    	if(meleeMode)
-    	{
-    		bulletLifeTime = meleeBulletLifeTime;
-    		bulletSpeed = meleeBulletSpeed;
-        	//bullet.GetComponent<MeshRenderer>().enabled = false; // (un)comment this line to display melee bullets
-    	}
+        if (meleeMode)
+        {
+            bulletLifeTime = meleeBulletLifeTime;
+            bulletSpeed = meleeBulletSpeed;
+            //bullet.GetComponent<MeshRenderer>().enabled = false; // (un)comment this line to display melee bullets
+        }
 
         // Create the Bullet from the Bullet Prefab
         // Sets origin of bullets
@@ -118,7 +135,7 @@ public class Player : MonoBehaviour {
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
         // Spawn the bullet on the Clients
         //NetworkServer.Spawn(bullet);
-	// }
+        // }
     }
 
     void OnTriggerEnter(Collider other)
@@ -127,10 +144,27 @@ public class Player : MonoBehaviour {
         {
             meleeMode = !meleeMode;
             if (meleeMode)
-            	Debug.Log("picked up a melee weapon!");
+                Debug.Log("picked up a melee weapon!");
             else
-            	Debug.Log("picked up a gun!");	
+                Debug.Log("picked up a gun!");
+        }
+        else if (other.gameObject == otherPlayer)
+        {
+            Debug.Log("Entering");
+            playerInRange = true;
+            Debug.Log(playerInRange);
         }
     }
-    
+
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject == otherPlayer)
+        {
+            Debug.Log("Leaving");
+            playerInRange = false;
+        }
+    }
+
+
 }
