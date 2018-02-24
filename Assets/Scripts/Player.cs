@@ -17,6 +17,8 @@ public class Player : MonoBehaviour {
     GameObject[] pickUps;// not practical, must incre thru list for every new pickup
     bool playerInRange;
     float timer;
+    public uint playerId;
+
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
     public Player lastHitBy; // to know who killed you
     float timeBetweenAttacks = 0.5f;
@@ -25,10 +27,10 @@ public class Player : MonoBehaviour {
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
 
-    private float gunBulletLifeTime = 1f;
+    private short gunBulletLifeTime = (short)100;
     private int gunBulletSpeed = 6;
     
-    private float meleeBulletLifeTime = 0.75f;
+    private short meleeBulletLifeTime = (short)75;
     private int meleeBulletSpeed = 3;
 
     private bool meleeMode = false;
@@ -39,6 +41,9 @@ public class Player : MonoBehaviour {
 
         playerTag = this.tag;
         pickupTag = "Item";
+        // Random r = new Random();
+		// playerId = r.Next(0, 32);
+		playerId = 0;
     }
 	
 	void FixedUpdate()
@@ -94,16 +99,18 @@ public class Player : MonoBehaviour {
 
     void Attack()
     {
-    	float bulletLifeTime = gunBulletLifeTime;
-    	float bulletSpeed = gunBulletSpeed;
+    	short bulletLifeTime = gunBulletLifeTime;
+    	int bulletSpeed = gunBulletSpeed;
+        
+        var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
     	if(meleeMode)
     	{
     		bulletLifeTime = meleeBulletLifeTime;
     		bulletSpeed = meleeBulletSpeed;
+        	//bullet.GetComponent<MeshRenderer>().enabled = false; // (un)comment this line to display melee bullets
     	}
 
         // Create the Bullet from the Bullet Prefab
-        var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
         // Sets origin of bullets
         bullet.GetComponent<Bullet>().bulletLifeTime = bulletLifeTime;
         bullet.GetComponent<Bullet>().src = this.gameObject;

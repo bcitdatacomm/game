@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
     public GameObject src;
-    public float bulletLifeTime = 1.0f; 
+    public short bulletLifeTime; 
+    public uint playerId; 
 
 	void Start()
 	{
-		Destroy(gameObject, bulletLifeTime);
+		Destroy(gameObject, (float)bulletLifeTime * 0.01f);
 	}
 
     void OnCollisionEnter(Collision collision)
