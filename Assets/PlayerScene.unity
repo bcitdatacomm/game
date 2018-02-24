@@ -552,6 +552,7 @@ MonoBehaviour:
   y_coordinate: 0
   health: 100
   moveSpeed: 5
+  playerId: 0
   lastHitBy: {fileID: 0}
   bulletPrefab: {fileID: 1777791287502176, guid: ff68b9d3a4574e74ca922819c6be663b,
     type: 2}
@@ -973,6 +974,7 @@ MonoBehaviour:
   y_coordinate: 0
   health: 100
   moveSpeed: 5
+  playerId: 0
   lastHitBy: {fileID: 0}
   bulletPrefab: {fileID: 0}
   bulletSpawn: {fileID: 0}
