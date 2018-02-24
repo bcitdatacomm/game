@@ -1,6 +1,9 @@
 # Ignore .DS_Store macOS system files
 .DS_Store
 
+# Ignore *.meta
+*.meta
+
 # Unity files
 [Ll]ibrary/
 [Tt]emp/
