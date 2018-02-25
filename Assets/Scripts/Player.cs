@@ -18,7 +18,6 @@ public class Player : MonoBehaviour {
     bool playerInRange;
     float timer;
     public uint playerId;
-    public List<GameObject> otherPlayerList;
     
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
     public Player lastHitBy; // to know who killed you
