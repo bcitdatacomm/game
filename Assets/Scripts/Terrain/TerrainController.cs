@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-<<<<<<< e8a6b83d509dd7fcea441ef9b356752586e9b11a
 using System.Collections.Generic;
-=======
->>>>>>> Fixed struct visibility
 
 /*---------------------------------------------------------------------------------------
 --	SOURCE FILE:	TerrainController.cs
@@ -186,6 +183,25 @@ public class TerrainController
         this.compressData();
 
         return true;
+    }
+
+    private void compressData()
+    {
+        List<byte> compressed = new List<byte>();
+
+        for (int i = 0; i < this.Data.tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < this.Data.tiles.GetLength(1); j++)
+            {
+                byte[] tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
+                foreach (byte t in tmp)
+                {
+                    compressed.Add(t);
+                }
+            }
+        }
+
+        this.CompressedData = compressed.ToArray();
     }
 
     /*-------------------------------------------------------------------------------------------------
