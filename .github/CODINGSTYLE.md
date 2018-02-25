@@ -80,7 +80,7 @@
     ```
 
 ## Naming Conventions
-* Use **PascalCasing** for class anmes and method names.
+* Use **PascalCasing** for class names, public method names, and public variables.
     ```C#
     public class ClientActivity
     {
@@ -91,7 +91,7 @@
     }
     ```
 
-* Use **camelCasing** for arguments and local variables.
+* Use **camelCasing** for private functions, arguments, and local variables.
     ```C#
     public class UserLog
     {
@@ -140,3 +140,30 @@
     HtmlHelper HTMLHelper;
     FTPTransfer FtpTransfer;
     ```
+
+## Member variables
+* **Always** use C# getters and setter with public members
+	``` C#
+	// Good
+	public int Health { get; set; }
+
+	// Bad
+	public int Health;
+	```
+
+* **Always** use the 'this' keyword when accessing member variables to improve readability
+	``` C#
+	public Car
+	{
+		private int model;
+
+		public Car()
+		{
+			// Good
+			this.model = 0;
+			
+			// Bad
+			model = 0;
+		}
+	}
+	```
