@@ -8,27 +8,48 @@ using UnityEngine;
 public class gameServer : MonoBehaviour
 {
 	private TerrainController terrainController;
-	//private Server server;
-	//server.Broadcast(ByteArray)
-	//server.SendTo(Server.Connections[0], ByteArray);
+	private Server server;
+    byte[] clientData = new byte[1200];
+    server.Broadcast(ByteArray)
+	server.SendTo(Server.Connections[0], ByteArray);
 	
 	// Use this for initialization
 	void Start () {
-        int playerID = 0;
-        //this.terrainController = new TerrainController();
-        //while (!this.terrainController.GenerateEncoding());
-        //TerrainController.Encoding encoded = terrainController.Data;
+        byte playerID = 0;
+        this.terrainController = new TerrainController();
+        while (!this.terrainController.GenerateEncoding());
+        TerrainController.Encoding encoded = terrainController.Data;
+        int offset = 13;
 
         // Make a terrain packet with encoded
         // Make the network call to send the terrain packet
 
         long tileWidth = this.terrainController.Width;
         long tileLength = this.terrainController.Length;
-        for (int i  = 0; i < getNumConnections(); i++)
+
+        for (int i  = 0; i < server.getNumConnections(); i++)
         {
-            // Generate player spawns
-            // Set player IDs (1B available)
+            // Sets the coordinates for each player connected
+            double playerX = 0 + playerID;
+            double playerY = 0 + playerID;
+
+            System.Buffer.BlockCopy(System.BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
+            System.Buffer.BlockCopy(System.BitConverter.GetBytes(playerY), 0, clientData, offset + 4, 4);
+
+            offset += 8;
+            playerID++;
+        }
+
+        playerID = 0;
+
+        for (int i = 0; i < server.getNumConnections(); i++)
+        {
+            // Sets the player ID before being sent
+            clientData[372 + playerID] = playerID;
+
+            playerID++;
             // Send each player their spawn location and ID
+            // Need to send clientData here
         }
 
         // Wait for all IDs to be echoed back as ACK, retransit ID on timeout
