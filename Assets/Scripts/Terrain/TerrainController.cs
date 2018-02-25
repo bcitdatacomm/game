@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+<<<<<<< e8a6b83d509dd7fcea441ef9b356752586e9b11a
 using System.Collections.Generic;
+=======
+>>>>>>> Fixed struct visibility
 
 /*---------------------------------------------------------------------------------------
 --	SOURCE FILE:	TerrainController.cs
