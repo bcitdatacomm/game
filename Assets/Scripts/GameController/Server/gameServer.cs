@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,29 +9,41 @@ using UnityEngine;
 public class gameServer : MonoBehaviour
 {
 	private TerrainController terrainController;
-	//private Server server;
-	//server.Broadcast(ByteArray)
-	//server.SendTo(Server.Connections[0], ByteArray);
+	// Some example server calls
+	// private Server server;
+	// server.Broadcast(ByteArray)
+	// server.SendTo(Server.Connections[0], ByteArray);
 	
 	// Use this for initialization
 	void Start () {
-		//this.terrainController = new TerrainController();
-		//while (!this.terrainController.GenerateEncoding());
-		//TerrainController.Encoding encoded = terrainController.Data;
+		this.terrainController = new TerrainController();
+		while (!this.terrainController.GenerateEncoding());
+		TerrainController.Encoding encoded = terrainController.Data;
+		
 		
 		// Make a terrain packet (byte array) with encoded
 		byte[] terrainPacket = new byte[1200];
 		
-		// Set header
+		// Set header and amount of packet taken up
 		terrainPacket[0] = 15;
-		//Add data
-		foreach (int i in encoded.tiles)
+		int packetSize = 1;
+		
+		// Add data (compressedData should get merged in soon)
+		foreach (byte dataByte in encoded.compressedData)
 		{
+			// Add all the bytes to the packet
+			terrainPacket[packetSize] = dataByte;
+
+			packetSize += 1;
 			
+			// If we hit the packet size, send the packet and start over
+			if (packetSize == 1200)
+			{
+				// Send the packet THIS NEEDS TO BE RELIABLE (future)
+				//server.Broadcast(terrainPacket);
+				packetSize = 1;
+			}
 		}
-		
-		
-		// Make the network call to send the terrain packet
 
 		// Generate player spawns
 		// Set player IDs (1B available)
