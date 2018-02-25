@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -63,6 +64,8 @@ public class gameServer : MonoBehaviour
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
+    byte[] toBroadcast = new byte[1200];
+
     void Update()
     {
         if (Time.time > nextTickTime)
@@ -71,27 +74,33 @@ public class gameServer : MonoBehaviour
             nextTickTime += tickTime;
             Debug.Log("Tick Number: " + ticks);
 
-//            Receive data from each client
-//      Update local data       
-//      Check for bullet - player collisions
-//      for(bullet in bullets) {
-//          for(player in players) {
-//              //copied http://cgp.wikidot.com/circle-to-circle-collision-detection
-//              //compare the distance to combined radii
-//              int dx = x2 - x1;
-//              int dy = y2 - y1;
-//              int radii = radius1 + radius2;
-//              if ( ( dx * dx )  + ( dy * dy ) < radii * radii ) 
-//              {
-//                  Console.WriteLine("The 2 circles are colliding!");
-//              }
-//          }
-//      }
-//
-//      Apply control input to player coordinates
-//  
-//  
-//      Send updated data (either one tick packet, or a tick packet and a bullet packet) to each player
+            // Receive data from each client
+
+            // Clear toBroadcast
+            Array.Clear(toBroadcast, 0, toBroadcast.Length);
+
+            // Add all clients coordinates to toBroadcast
+
+            // Broadcast update to all connections
+            server.Broadcast(toBroadcast);
+
+
+            // TODO: Bullets
+            //      for(bullet in bullets) {
+            //          for(player in players) {
+            //              //copied http://cgp.wikidot.com/circle-to-circle-collision-detection
+            //              //compare the distance to combined radii
+            //              int dx = x2 - x1;
+            //              int dy = y2 - y1;
+            //              int radii = radius1 + radius2;
+            //              if ( ( dx * dx )  + ( dy * dy ) < radii * radii ) 
+            //              {
+            //                  Console.WriteLine("The 2 circles are colliding!");
+            //              }
+            //          }
+            //      }
+
+            // TODO: Unit collision
         }
     }
 }
