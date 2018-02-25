@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor.Events;
 
 public enum Weapon
 {
@@ -238,4 +237,18 @@ public class RPGCharacterControllerFREE : MonoBehaviour
     }
 
     #endregion
+    void Hit()
+    {
+
+    }
+
+    void FootR()
+    {
+
+    }
+
+    void FootL()
+    {
+
+    }
 }
