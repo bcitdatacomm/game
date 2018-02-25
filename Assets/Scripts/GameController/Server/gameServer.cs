@@ -14,9 +14,9 @@ public class gameServer : MonoBehaviour
 	
 	// Use this for initialization
 	void Start () {
-		this.terrainController = new TerrainController();
-		while (!this.terrainController.GenerateEncoding());
-		TerrainController.Encoding encoded = terrainController.Data;
+		//this.terrainController = new TerrainController();
+		//while (!this.terrainController.GenerateEncoding());
+		//TerrainController.Encoding encoded = terrainController.Data;
 		
 		// Make a terrain packet (byte array) with encoded
 		byte[] terrainPacket = new byte[1200];
@@ -43,7 +43,7 @@ public class gameServer : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	//void Update () {
 //		Receive data from each client
 //		Update local data		
 //		Check for bullet - player collisions
@@ -66,5 +66,20 @@ public class gameServer : MonoBehaviour
 //	
 //		Send updated data (either one tick packet, or a tick packet and a bullet packet) to each player
 //
-	}
+	//}
+
+    private float nextTickTime = 0.0f;
+    private static int ticksPerSecond = 32;
+    private float tickTime = (1 / ticksPerSecond);
+    private int ticks = 0;
+
+    void Update()
+    {
+        if (Time.time > nextTickTime)
+        {
+            ticks++;
+            nextTickTime += tickTime;
+            Debug.Log("Tick Number: " + ticks);
+        }
+    }
 }
