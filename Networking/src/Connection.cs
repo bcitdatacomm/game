@@ -1,13 +1,14 @@
 using System;
 using System.Net.Sockets;
+using System.Collections.Queue;
 
 namespace COMP4981_NetworkingTest
 {
     enum connectionStatus : byte
     {
-        disconnected = 0,
-        connection_bad = 1,
-        connection_good = 2,
+        disconnected        = 0,
+        connection_unstable = 1,
+        connection_stable   = 2,
     }
 
     public unsafe struct sockaddr_in
@@ -23,7 +24,7 @@ namespace COMP4981_NetworkingTest
         public ulong s_addr;
     }
 
-    /*    public unsafe struct buffer_t{
+    /*  public unsafe struct buffer_t{
             public char[] buffer = new char[2048];
             public int bufPos;
         }*/
@@ -35,73 +36,61 @@ namespace COMP4981_NetworkingTest
         public static ushort PORT_NO = 9999;
         public static short AF_INET = 2;
 
-        uint m_ackNo;
-        uint m_connectionId;
-        uint m_connectionStatus = 0;
-        sockaddr_in m_in;
-        sockaddr_in m_out;
-        uint m_socketId;
-        char[] m_buffer;
+        private uint ackNo;
+        private uint connectionId;
+        private uint connectionStatus = 0;
+        private sockaddr_in in;
+        private sockaddr_in out;
+        private uint socketId;
+        private byte[] buffer;
+        private Queue<Array> inputQueue;
+        private Queue<Array> outputQueue;
         //We need two buffers: input and output
-        //char[] m_inputBuffer;
-        //char[] m_outputBuffer;
-        int m_bufPos;
+        //byte[] inputBuffer;
+        //byte[] outputBuffer;
+        private int bufPos;
 
-        //fixed char m_buffer[MAX_BUF_SIZE];
+        //fixed char this.buffer[MAX_BUF_SIZE];
         //uint bufPos;
 
         public Connection(sockaddr_in client, sockaddr_in server, uint socketId, uint connectionId)
         {
-            m_in = server;
-            m_out = client;
-            m_socketId = socketId;
-            m_connectionId = connectionId;
-            m_ackNo = 0;
-            m_connectionStatus = 0;
-            m_buffer = new char[MAX_BUF_SIZE];
-            m_bufPos = 0;
-            m_ackNo = 0;
-
-        }
-
-        public sockaddr_in getClient()
-        {
-            return m_out;
-        }
-
-        public uint getSocketId()
-        {
-            return m_socketId;
-        }
-
-        public unsafe char[] getBufferAddress()
-        {
-            return m_buffer;
+            this.in = server;
+            this.out = client;
+            this.socketId = socketId;
+            this.connectionId = connectionId;
+            this.ackNo = 0;
+            this.connectionStatus = 0;
+            this.buffer = new byte[MAX_BUF_SIZE];
+            this.bufPos = 0;
+            this.ackNo = 0;=
         }
 
         /*
          * TODO: Refactor to ReadFromInputBuffer, reads inputbuffer from client / server
          */
-        public unsafe void ReadFromBuffer(char[] data) //This is now read from buffer. It makes sense, kidn of. It used to be write()
+        public unsafe bool ReadFromBuffer(byte[] data) //This is now read from buffer. It makes sense, kidn of. It used to be write()
         {
-            if (data.Length + m_bufPos < MAX_BUF_SIZE)
+            if (data.Length + this.bufPos < MAX_BUF_SIZE)
             {
-                Buffer.BlockCopy(data, 0, m_buffer, m_bufPos, 2 * data.Length * sizeof(Byte));
-                m_bufPos += data.Length;
+                Buffer.BlockCopy(data, 0, this.buffer, this.bufPos, data.Length * sizeof(Byte));
+                this.bufPos += data.Length;
+                return true;
             }
+            return false;
         }
 
         /*
          * TODO: Refactor to WriteToOutputBuffer, writes output to buffer for server / client
          */
-        public void WriteToBuffer(char[] otherBuffer)
+        public void WriteToBuffer(byte[] otherBuffer)
         {
-            //Array.Clear(m_buffer, 0, m_buffer.Length);  //This part doesn't make sense. Currently clears buffer to be available to be written to. 
-            Buffer.BlockCopy(m_buffer, 0, otherBuffer, 0, 2 * otherBuffer.Length); //dest: otherBuffer, src: m_buffer;
+            //Array.Clear(this.buffer, 0, this.buffer.Length);  //This part doesn't make sense. Currently clears buffer to be available to be written to. 
+            Buffer.BlockCopy(this.buffer, 0, otherBuffer, 0, otherBuffer.Length); //dest: otherBuffer, src: this.buffer;
         }
 
 
-        public void checkSocket()
+        public void CheckSocket()
         {
             //if (pollsocket()) 
             //{
@@ -130,16 +119,34 @@ namespace COMP4981_NetworkingTest
         //    }
         //}
 
-
-
-        public uint GetConnectionStatus()
+        public void AddToInputQueue()
         {
-            return m_connectionStatus;
+
         }
 
-        public void setConnectionStatus(uint status)
+        public void RemoveFromInputQueue()
         {
-            m_connectionStatus = status;
+
         }
+
+        public void AddToOutputQueue()
+        {
+
+        }
+
+        public void RemoveFromOutputQueue()
+        {
+
+        }
+
+        public sockaddr_in GetClient() { return this.out; }
+
+        public uint GetSocketId() { return this.socketId; }
+
+        public unsafe byte[] GetBuffer() { return this.buffer; }
+
+        public uint GetConnectionStatus() { return this.connectionStatus; }
+
+        public void SetConnectionStatus(uint status) { this.connectionStatus = status; }
     }
 }

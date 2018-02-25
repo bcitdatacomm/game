@@ -5,17 +5,17 @@ using System.IO; // MemoryStream
 using System.Runtime.Serialization.Formatters.Binary; // BinaryFormatter
 using System.Threading;
 
-namespace Networking
+namespace COMP4981_NetworkingTest
 {
     /// <summary>
     /// Driver to send and receive game updates.
     /// 
     /// author: Jeremy L
     /// </summary>
-    public class Tranceiver
+    public class Transceiver
     {
-        private const int BUFF_SIZE = 128; // buffer size
-        private const int MAX_CLIENT = 64; // max number of client conns
+        private const int BUFF_SIZE = 1200; // buffer size
+        private const int MAX_CLIENTS = 30; // max number of client conns
 
         // Sender and Receiver
         private Thread thrSender;
@@ -28,24 +28,42 @@ namespace Networking
         private List<Connection> connPool; // connection pool
 
         /// <summary>
-        /// Constructor for a Tranceiver object
+        /// Constructor for a Transceiver object
         /// 
         /// author: Jeremy L
         /// </summary>
-        public Tranceiver(ref List<Connection> connPool, ref ConcurrentQueue<byte[]> datagramQueue)
+        public Transceiver()
         {
+            this.connPool = new List<Connection>();
+            this.datagramQueue = new ConcurrentQueue<byte[]>();
             this.runSender = false;
             this.runReceiver = false;
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
-            this.datagramQueue = datagramQueue;
-            this.connPool = connPool;
         }
 
-        ~Tranceiver()
+        ~Transceiver()
         {
             StopSender();
             StopReceiver();
         }
+
+        #region // Transceiver 
+        public void AddConnection()
+        {
+            connPool.Add(new Connection());
+        }
+
+        public bool RemoveConnection()
+        {
+            return false;
+        }
+
+        public int GetNumConnections()
+        {
+            return connPool.Count;
+        }
+
+
 
         #region // Sender
         /// <summary>
@@ -122,7 +140,7 @@ namespace Networking
                     {
                         if (true) // TODO: specify condition of connection
                         {
-                            conn.write(dequeued);
+                            conn.ReadFromBuffer(dequeued);
                         }
                     }
                 }
@@ -262,7 +280,7 @@ namespace Networking
                             break;
                         case 1: // TODO: replace the value for Connection
                             // check number of clients
-                            if (this.connPool.Count < MAX_CLIENT) // not full
+                            if (this.connPool.Count < MAX_CLIENTS) // not full
                             {
                                 // TODO: add client to list
 
@@ -314,8 +332,11 @@ namespace Networking
         /// <returns>decapsulated datagram</returns>
         private byte[] decapsulateDatagram(byte[] buff)
         {
-            if (buff == null) // null check
+            if (buff == null)
+            {
                 return null;
+            } // null check
+                
 
             byte[] buffDecap = null;
 
@@ -339,8 +360,10 @@ namespace Networking
         private Object deserializeDatagram(byte[] buff)
         {
             if (buff == null)
+            {
                 return null;
-
+            }
+                
             Object gUpdate = null;
 
             MemoryStream ms = new MemoryStream();
