@@ -1,4 +1,4 @@
-# ame (name tbd)
+# Game (name tbd)
 This repository contains the source code for the Winter 2018 COMP498X Data Comm term project.
 
 [![Build Status](https://travis-ci.org/bcitdatacomm/game.svg?branch=master)](https://travis-ci.org/bcitdatacomm/game)
