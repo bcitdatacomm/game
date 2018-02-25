@@ -185,6 +185,25 @@ public class TerrainController
         return true;
     }
 
+    private void compressData()
+    {
+        List<byte> compressed = new List<byte>();
+
+        for (int i = 0; i < this.Data.tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < this.Data.tiles.GetLength(1); j++)
+            {
+                byte[] tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
+                foreach (byte t in tmp)
+                {
+                    compressed.Add(t);
+                }
+            }
+        }
+
+        this.CompressedData = compressed.ToArray();
+    }
+
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: compressData()
     --
