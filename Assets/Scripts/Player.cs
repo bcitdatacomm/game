@@ -61,7 +61,8 @@ public class Player : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         timer += Time.deltaTime;
         if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") )
         {
@@ -124,9 +125,6 @@ public class Player : MonoBehaviour {
         bullet.GetComponent<Bullet>().src = this.gameObject;
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
-        // Spawn the bullet on the Clients
-        //NetworkServer.Spawn(bullet);
-	// }
     }
 
     void OnTriggerEnter(Collider other)
