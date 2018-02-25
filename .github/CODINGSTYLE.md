@@ -153,7 +153,7 @@
 
 * **Always** use the 'this' keyword when accessing member variables to improve readability
     ```C#
-    public Car
+    public class Car
     {
         private int model;
 
