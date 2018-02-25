@@ -185,15 +185,46 @@ public class TerrainController
         return true;
     }
 
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: compressData()
+    --
+    -- DATE: Jan 23, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Benny Wang 
+    --
+    -- PROGRAMMER: Benny Wang 
+    --
+    -- INTERFACE: compressData()
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Compresses whatever is inside the Data member variable of this class and places it into the
+    -- CompressedData member of this class.
+    -------------------------------------------------------------------------------------------------*/
     private void compressData()
     {
+        byte[] tmp = { };
         List<byte> compressed = new List<byte>();
+
+        tmp = System.BitConverter.GetBytes(this.Width);
+        foreach (byte t in tmp)
+        {
+            compressed.Add(t);
+        }
+        tmp = System.BitConverter.GetBytes(this.Length);
+        foreach (byte t in tmp)
+        {
+            compressed.Add(t);
+        }
 
         for (int i = 0; i < this.Data.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < this.Data.tiles.GetLength(1); j++)
             {
-                byte[] tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
+                tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
                 foreach (byte t in tmp)
                 {
                     compressed.Add(t);
@@ -202,6 +233,22 @@ public class TerrainController
         }
 
         this.CompressedData = compressed.ToArray();
+    }
+
+    public void DecompressByteArray(byte[] compressed)
+    {
+        this.Width = System.BitConverter.ToInt32(compressed, 0);
+        this.Length = System.BitConverter.ToInt32(compressed, 4);
+
+        int[,] map = new int[this.Width, this.Length];
+        for (int i = 8, x = 0, y = 0; i < compressed.Length; i += 4)
+        {
+            map[x, y] = System.BitConverter.ToInt32(compressed, i);
+            x++;
+            y++;
+        }
+
+        this.Data = new Encoding() { tiles = map, buildings = { } };
     }
 
     /*-------------------------------------------------------------------------------------------------
