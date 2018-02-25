@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputTest : MonoBehaviour {
+public class InputTest : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
-		
-	}
 
-	// Update is called once per frame
+    }
+
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetButton("Debug"))
@@ -30,7 +31,7 @@ public class InputTest : MonoBehaviour {
         {
             // weird how its called input string
             // but its really a getchar member
-            Debug.Log("A key was pressed:" + Input.inputString); 
+            Debug.Log("A key was pressed:" + Input.inputString);
         }
     }
 
