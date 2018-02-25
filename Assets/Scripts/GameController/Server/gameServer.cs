@@ -30,32 +30,6 @@ public class gameServer : MonoBehaviour
 		// Start the game timer
 
 	}
-	
-	// Update is called once per frame
-	//void Update () {
-//		Receive data from each client
-//		Update local data		
-//		Check for bullet - player collisions
-//		for(bullet in bullets) {
-//			for(player in players) {
-//				//copied http://cgp.wikidot.com/circle-to-circle-collision-detection
-//				//compare the distance to combined radii
-//				int dx = x2 - x1;
-//				int dy = y2 - y1;
-//				int radii = radius1 + radius2;
-//				if ( ( dx * dx )  + ( dy * dy ) < radii * radii ) 
-//				{
-//					Console.WriteLine("The 2 circles are colliding!");
-//				}
-//			}
-//		}
-//
-//		Apply control input to player coordinates
-//	
-//	
-//		Send updated data (either one tick packet, or a tick packet and a bullet packet) to each player
-//
-	//}
 
     private float nextTickTime = 0.0f;
     private static int ticksPerSecond = 32;
@@ -69,6 +43,28 @@ public class gameServer : MonoBehaviour
             ticks++;
             nextTickTime += tickTime;
             Debug.Log("Tick Number: " + ticks);
+
+//            Receive data from each client
+//      Update local data       
+//      Check for bullet - player collisions
+//      for(bullet in bullets) {
+//          for(player in players) {
+//              //copied http://cgp.wikidot.com/circle-to-circle-collision-detection
+//              //compare the distance to combined radii
+//              int dx = x2 - x1;
+//              int dy = y2 - y1;
+//              int radii = radius1 + radius2;
+//              if ( ( dx * dx )  + ( dy * dy ) < radii * radii ) 
+//              {
+//                  Console.WriteLine("The 2 circles are colliding!");
+//              }
+//          }
+//      }
+//
+//      Apply control input to player coordinates
+//  
+//  
+//      Send updated data (either one tick packet, or a tick packet and a bullet packet) to each player
         }
     }
 }
