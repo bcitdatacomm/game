@@ -18,7 +18,8 @@ public class Player : MonoBehaviour {
     bool playerInRange;
     float timer;
     public uint playerId;
-
+    public List<GameObject> otherPlayerList;
+    
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
     public Player lastHitBy; // to know who killed you
     float timeBetweenAttacks = 0.5f;
@@ -34,6 +35,9 @@ public class Player : MonoBehaviour {
     private int meleeBulletSpeed = 3;
 
     private bool meleeMode = false;
+
+    public Connection connection;
+
     // Use this for initialization
     void Start () {
         playerRigidbody = GetComponent<Rigidbody>();
@@ -44,6 +48,11 @@ public class Player : MonoBehaviour {
         // Random r = new Random();
 		// playerId = r.Next(0, 32);
 		playerId = 0;
+
+        connection = new Connection();
+        char[] sdfa = { 'a', 's', 'd', 'f' };
+        
+        connection.ReadFromBuffer(sdfa);
     }
 	
 	void FixedUpdate()
