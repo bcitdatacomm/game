@@ -5,37 +5,43 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    public string displayName;
-    public Transform playerPos;
-    public float x_coordinate;
-    public float y_coordinate;
+    public string displayName { get; set; }
+    public Transform playerPos { get; set; }
+    public float xCoordinate { get; set; }
+    public float yCoordinate { get; set; }
     public int health = 100;
-    public float moveSpeed = 6.0f;
+    public float MOVE_SPEED = 6.0f;
+
     // GameObject player;// never init or called this
-    GameObject otherPlayerGameObject;
-    string playerTag;
-    string pickupTag;
-    GameObject[] pickUps;// not practical, must incre thru list for every new pickup
-     bool playerInRange;
-    float timer;
-    public uint playerId;
+    GameObject otherPlayerGameObject { get; set; }
+    string playerTag { get; set; }
+    string pickupTag { get; set; }
+
+    // not practical, must incre thru list for every new pickup
+    GameObject[] pickUps { get; set; }
+    bool playerInRange { get; set; }
+    float timer { get; set; }
+    public uint playerId { get; set; }
 
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
-    public Player lastHitBy; // to know who killed you
-    float timeBetweenAttacks = 0.5f;
-    Rigidbody playerRigidbody;
-    Vector3 movement;
-    public GameObject bulletPrefab;
-    public Transform bulletSpawn;
 
-    private short gunBulletLifeTime = (short)100;
-    private int gunBulletSpeed = 6;
+    // to know who killed you
+    public Player lastHitBy { get; set; }
+    float TIME_BETWEEN_ATTACKS = 0.5f;
+    Rigidbody playerRigidbody { get; set; }
+    Vector3 movement { get; set; }
+    public GameObject bulletPrefab { get; set; }
+    public Transform bulletSpawn { get; set; }
 
-    private short meleeBulletLifeTime = (short)75;
-    private int meleeBulletSpeed = 3;
+    private short GUN_BULLET_LIFETIME = (short)100;
+    private int GUN_BULLET_SPEED = 6;
 
-    private bool meleeMode = false;
-    GameObject otherPlayer;
+    private short MELEE_BULLET_LIFETIME = (short)75;
+    private int MELEE_BULLET_SPEED = 3;
+
+    private bool meleeMode { get; set; }
+    GameObject otherPlayer { get; set; }
+
     // Use this for initialization
     void Start()
     {
@@ -61,7 +67,7 @@ public class Player : MonoBehaviour
         timer += Time.deltaTime;
         if (!meleeMode)
         {
-            if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1"))
+            if (timer >= TIME_BETWEEN_ATTACKS && Input.GetButtonDown("Fire1"))
             {
                 Attack();
             }
@@ -69,7 +75,7 @@ public class Player : MonoBehaviour
         else
         {
             Debug.Log(playerInRange);
-            if (timer >= timeBetweenAttacks && Input.GetButtonDown("Fire1") && playerInRange) 
+            if (timer >= TIME_BETWEEN_ATTACKS && Input.GetButtonDown("Fire1") && playerInRange)
             {
                 Debug.Log("Attempting to hit");
                 Attack();
@@ -84,7 +90,7 @@ public class Player : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(h, 0f, v);
-        movement = movement.normalized * moveSpeed * Time.deltaTime;
+        movement = movement.normalized * MOVE_SPEED * Time.deltaTime;
         playerRigidbody.MovePosition(transform.position + movement);
     }
 
@@ -116,14 +122,14 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        short bulletLifeTime = gunBulletLifeTime;
-        int bulletSpeed = gunBulletSpeed;
+        short bulletLifeTime = GUN_BULLET_LIFE_TIME;
+        int bulletSpeed = GUN_BULLET_SPEED;
 
         var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
         if (meleeMode)
         {
-            bulletLifeTime = meleeBulletLifeTime;
-            bulletSpeed = meleeBulletSpeed;
+            bulletLifeTime = MELEE_BULLET_LIFETIME;
+            bulletSpeed = MELEE_BULLET_SPEED;
             //bullet.GetComponent<MeshRenderer>().enabled = false; // (un)comment this line to display melee bullets
         }
 
@@ -135,7 +141,6 @@ public class Player : MonoBehaviour
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
         // Spawn the bullet on the Clients
         //NetworkServer.Spawn(bullet);
-        // }
     }
 
     void OnTriggerEnter(Collider other)
