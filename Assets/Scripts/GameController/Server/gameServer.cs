@@ -8,6 +8,9 @@ using UnityEngine;
 public class gameServer : MonoBehaviour
 {
 	private TerrainController terrainController;
+	//private Server server;
+	//server.Broadcast(ByteArray)
+	//server.SendTo(Server.Connections[0], ByteArray);
 	
 	// Use this for initialization
 	void Start () {
@@ -30,6 +33,27 @@ public class gameServer : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-		
+//		Receive data from each client
+//		Update local data		
+//		Check for bullet - player collisions
+//		for(bullet in bullets) {
+//			for(player in players) {
+//				//copied http://cgp.wikidot.com/circle-to-circle-collision-detection
+//				//compare the distance to combined radii
+//				int dx = x2 - x1;
+//				int dy = y2 - y1;
+//				int radii = radius1 + radius2;
+//				if ( ( dx * dx )  + ( dy * dy ) < radii * radii ) 
+//				{
+//					Console.WriteLine("The 2 circles are colliding!");
+//				}
+//			}
+//		}
+//
+//		Apply control input to player coordinates
+//	
+//	
+//		Send updated data (either one tick packet, or a tick packet and a bullet packet) to each player
+//
 	}
 }
