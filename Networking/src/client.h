@@ -15,10 +15,11 @@ class Client {
 
 public:
 	Client();
-	int initializeSocket(short port);
+	int initializeSocket(short port, const char * server);
 	void sendBytes(char * data, unsigned len);
 	int32_t receiveBytes(char * buffer, uint32_t size);
 	int32_t UdpPollSocket();
+	void closeConnection();
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
