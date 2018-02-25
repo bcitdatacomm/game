@@ -18,7 +18,18 @@ public class gameServer : MonoBehaviour
 		while (!this.terrainController.GenerateEncoding());
 		TerrainController.Encoding encoded = terrainController.Data;
 		
-		// Make a terrain packet with encoded
+		// Make a terrain packet (byte array) with encoded
+		byte[] terrainPacket = new byte[1200];
+		
+		// Set header
+		terrainPacket[0] = 15;
+		//Add data
+		foreach (int i in encoded.tiles)
+		{
+			
+		}
+		
+		
 		// Make the network call to send the terrain packet
 
 		// Generate player spawns
