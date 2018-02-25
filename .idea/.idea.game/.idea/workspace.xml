@@ -16,26 +16,24 @@
       <file leaf-file-name="gameServer.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1285">
-              <caret line="28" column="46" lean-forward="true" selection-start-line="28" selection-start-column="46" selection-end-line="28" selection-end-column="46" />
+            <state relative-caret-position="300">
+              <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
               <folding>
-                <marker date="1519599301787" expanded="true" signature="6:92" ph="..." />
-                <marker date="1519599301787" expanded="true" signature="178:4378" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="182:322" ph="/* Some example server calls ... */" />
-                <marker date="1519599301787" expanded="true" signature="457:2200" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="965:1295" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="1164:1291" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="1174:1266" ph="/* Send the packet THIS NEEDS TO BE RELIABLE (future) ... */" />
-                <marker date="1519599301787" expanded="true" signature="1453:1805" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="1878:2073" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="1987:2069" ph="/* Send each player their spawn location and ID ... */" />
-                <marker date="1519599301787" expanded="true" signature="2077:2196" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
-                <marker date="1519599301787" expanded="true" signature="2204:2932" ph="/* Update is called once per frame ... */" />
-                <marker date="1519599301787" expanded="true" signature="3155:4376" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="3199:4370" ph="{...}" />
-                <marker date="1519599301787" expanded="true" signature="3330:3396" ph="/* Receive data from each client ... */" />
-                <marker date="1519599301787" expanded="true" signature="3471:3568" ph="/* Add all clients coordinates to toBroadcast ... */" />
-                <marker date="1519599301787" expanded="true" signature="3626:4360" ph="/* TODO: Bullets ... */" />
+                <marker date="1519599670421" expanded="true" signature="6:92" ph="..." />
+                <marker date="1519599670421" expanded="true" signature="178:4372" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="451:2194" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="961:1289" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="1160:1285" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="1447:1799" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="1872:2067" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="1981:2063" ph="/* Send each player their spawn location and ID ... */" />
+                <marker date="1519599670421" expanded="true" signature="2071:2190" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
+                <marker date="1519599670421" expanded="true" signature="2198:2926" ph="/* Update is called once per frame ... */" />
+                <marker date="1519599670421" expanded="true" signature="3149:4370" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="3193:4364" ph="{...}" />
+                <marker date="1519599670421" expanded="true" signature="3324:3390" ph="/* Receive data from each client ... */" />
+                <marker date="1519599670421" expanded="true" signature="3465:3562" ph="/* Add all clients coordinates to toBroadcast ... */" />
+                <marker date="1519599670421" expanded="true" signature="3620:4354" ph="/* TODO: Bullets ... */" />
               </folding>
             </state>
           </provider>
@@ -131,12 +129,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1519588052750</updated>
-      <workItem from="1519588057407" duration="8000000" />
+      <workItem from="1519588057407" duration="8268000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8000000" />
+    <option name="totallyTimeSpent" value="8268000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -225,26 +223,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1285">
-          <caret line="28" column="46" lean-forward="true" selection-start-line="28" selection-start-column="46" selection-end-line="28" selection-end-column="46" />
+        <state relative-caret-position="300">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
           <folding>
-            <marker date="1519599301787" expanded="true" signature="6:92" ph="..." />
-            <marker date="1519599301787" expanded="true" signature="178:4378" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="182:322" ph="/* Some example server calls ... */" />
-            <marker date="1519599301787" expanded="true" signature="457:2200" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="965:1295" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="1164:1291" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="1174:1266" ph="/* Send the packet THIS NEEDS TO BE RELIABLE (future) ... */" />
-            <marker date="1519599301787" expanded="true" signature="1453:1805" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="1878:2073" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="1987:2069" ph="/* Send each player their spawn location and ID ... */" />
-            <marker date="1519599301787" expanded="true" signature="2077:2196" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
-            <marker date="1519599301787" expanded="true" signature="2204:2932" ph="/* Update is called once per frame ... */" />
-            <marker date="1519599301787" expanded="true" signature="3155:4376" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="3199:4370" ph="{...}" />
-            <marker date="1519599301787" expanded="true" signature="3330:3396" ph="/* Receive data from each client ... */" />
-            <marker date="1519599301787" expanded="true" signature="3471:3568" ph="/* Add all clients coordinates to toBroadcast ... */" />
-            <marker date="1519599301787" expanded="true" signature="3626:4360" ph="/* TODO: Bullets ... */" />
+            <marker date="1519599670421" expanded="true" signature="6:92" ph="..." />
+            <marker date="1519599670421" expanded="true" signature="178:4372" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="451:2194" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="961:1289" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="1160:1285" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="1447:1799" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="1872:2067" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="1981:2063" ph="/* Send each player their spawn location and ID ... */" />
+            <marker date="1519599670421" expanded="true" signature="2071:2190" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
+            <marker date="1519599670421" expanded="true" signature="2198:2926" ph="/* Update is called once per frame ... */" />
+            <marker date="1519599670421" expanded="true" signature="3149:4370" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="3193:4364" ph="{...}" />
+            <marker date="1519599670421" expanded="true" signature="3324:3390" ph="/* Receive data from each client ... */" />
+            <marker date="1519599670421" expanded="true" signature="3465:3562" ph="/* Add all clients coordinates to toBroadcast ... */" />
+            <marker date="1519599670421" expanded="true" signature="3620:4354" ph="/* TODO: Bullets ... */" />
           </folding>
         </state>
       </provider>

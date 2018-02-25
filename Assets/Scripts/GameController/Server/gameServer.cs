@@ -9,15 +9,16 @@ using UnityEngine;
 public class gameServer : MonoBehaviour
 {
 	// Some example server calls
-	// private Server server;
-	// server.Broadcast(ByteArray)
-	// server.SendTo(Server.Connections[0], ByteArray);
+	 private Server server;
+	 server.Broadcast(ByteArray)
+	 server.SendTo(Server.Connections[0], ByteArray);
 	
 	private TerrainController terrainController;
 	byte[] clientData = new byte[1200];
 	
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		byte playerID = 0;
 		terrainController = new TerrainController();
 		while (!terrainController.GenerateEncoding());
@@ -44,7 +45,7 @@ public class gameServer : MonoBehaviour
 			if (packetSize == 1200)
 			{
 				// Send the packet THIS NEEDS TO BE RELIABLE (future)
-				//server.Broadcast(terrainPacket);
+				server.Broadcast(terrainPacket);
 				packetSize = 1;
 			}
 		}
