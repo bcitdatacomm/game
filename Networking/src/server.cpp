@@ -102,12 +102,12 @@ int Server::initializeSocket(short port)
 void Server::sendBytes(int clientId, char * data, unsigned len)
 {
 	std::map<int, Connection>::iterator it = clientMap->find(clientId);
-	const char* buff = "HELLO";
+	//const char* buff = "HELLO";
 	if (it != clientMap->end())
 	{
-			socklen_t len = sizeof(it->second.getSocketID());
+			socklen_t sockLen = sizeof(it->second.getSocketID());
 			struct sockaddr_in temp = it->second.getClient();
-			sendto(it->second.getSocketID(), buff, 16, 0, (struct sockaddr*)&temp, len);
+			sendto(it->second.getSocketID(), data, len, 0, (struct sockaddr*)&temp, sockLen);
 	}
 }
 
@@ -179,7 +179,6 @@ int32_t Server::UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr)
 	socklen_t addrSize = sizeof(clientAddr);
 
 	int32_t result = recvfrom(udpRecvSocket, buffer, size, 0, (struct sockaddr *)&clientAddr, &addrSize);
-
 
 	addr->port = ntohs(clientAddr.sin_port);
 	addr->addr = ntohl(clientAddr.sin_addr.s_addr);
