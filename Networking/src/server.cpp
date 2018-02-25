@@ -1,5 +1,23 @@
 #include "server.h"
 
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: Server
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : Server::Server()
+--
+--RETURNS : Server - new Server object
+--
+--NOTES :
+--This function is called to construct a new Server object
+----------------------------------------------------------------------------------------------------------------------*/
 Server::Server()
 	{
 		clientMap = new std::map<int, Connection>();
@@ -7,6 +25,26 @@ Server::Server()
 	}
 
 
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: initializeSocket
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : int Server::initializeSocket(short port)
+--				short port: The port to set the socket to
+--
+--RETURNS : int
+--				-1 on failure, 0 on success
+--
+--NOTES :
+--This function is called to initialize a new socket for the server to listen to
+----------------------------------------------------------------------------------------------------------------------*/
 int Server::initializeSocket(short port)
 {
 	int optFlag = 1;
@@ -34,14 +72,33 @@ int Server::initializeSocket(short port)
 		return error;
 	}
 
-
-
 	return 0;
-
-
 
 }
 
+
+
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: sendBytes
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : void Server::sendBytes(int clientId, char * data, unsigned len)
+--				int clientId: The id for the client to send data to
+--				char * data: The buffer of data to send to client
+--				unsigned len: The size of the buffer to send
+--
+--RETURNS : void
+--
+--NOTES :
+--This function is called to send data from the server to a specified client
+----------------------------------------------------------------------------------------------------------------------*/
 void Server::sendBytes(int clientId, char * data, unsigned len)
 {
 	std::map<int, Connection>::iterator it = clientMap->find(clientId);
@@ -54,6 +111,8 @@ void Server::sendBytes(int clientId, char * data, unsigned len)
 	}
 }
 
+/////////////////////////////////////////// do we need these? 
+
 sockaddr_in Server::getServerAddr() {
 	return serverAddr;
 }
@@ -63,6 +122,26 @@ void Server::initializeConnectionPool()
 
 }
 
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: removeConnection
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : bool Server::removeConnection(int socketID)
+--				int socketID: The id of the client socket to close
+--
+--RETURNS : bool
+--				true if successful, false if unsuccessful
+--
+--NOTES :
+--This function is called to send data from the server to a specified client
+----------------------------------------------------------------------------------------------------------------------*/
 bool Server::removeConnection(int socketID)
 {
 	if (clientMap->erase(socketID) == 1) {
@@ -71,6 +150,29 @@ bool Server::removeConnection(int socketID)
 	return false;
 }
 
+
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: UdpRecvFrom
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : int32_t Server::UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr)
+--				char * buffer: The buffer to fill with read in data
+--				uint32_t size: The size of the buffer that can be filled with data
+--				EndPoint * addr: Struct to hold connection info
+--
+--RETURNS : int32_t
+--				The number of bytes read from the socket
+--
+--NOTES :
+--This function is called to read data from the server socket
+----------------------------------------------------------------------------------------------------------------------*/
 int32_t Server::UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr)
 {
 	sockaddr_in clientAddr;
@@ -86,7 +188,29 @@ int32_t Server::UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr)
 	return result;
 }
 
-int32_t  Server::UdpPollSocket()
+
+
+/*------------------------------------------------------------------------------------------------------------------
+--FUNCTION: UdpPollSocket
+--
+--DATE : February 25, 2018
+--
+--REVISIONS : (Date and Description)
+--
+--DESIGNER :
+--
+--PROGRAMMER : 
+--
+--INTERFACE : int32_t Server::UdpPollSocket()
+--
+--RETURNS : int32_t
+--				SOCKET_DATA_WAITING if there is data ready to be read
+--				SOCKET_NODATA if there is no data ready to be read
+--
+--NOTES :
+--This function is called to check if there is data in the socket buffer ready to read
+----------------------------------------------------------------------------------------------------------------------*/
+int32_t Server::UdpPollSocket()
 {
 	int numfds = 1;
 	struct pollfd pollfds;
@@ -104,10 +228,11 @@ int32_t  Server::UdpPollSocket()
 	}
 
 	return SOCKET_NODATA;
-
-
 }
 
+
+
+////////////////////////////////////////////
 
 extern "C" Server * Server_CreateServer()
 {
