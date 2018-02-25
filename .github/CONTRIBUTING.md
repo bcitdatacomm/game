@@ -10,6 +10,27 @@ Place holder
 ## Testing
 Place holder
 
+## File Structure
+<pre>
+Assets
+├── Models
+├── Prefabs
+│   └── Controllers
+│       ├── Game
+│       ├── Network
+│       └── Terrain
+├── Scripts
+│   ├── GameController
+│   ├── Network
+│   ├── Player
+│   └── Terrain
+│   |   └── Obstacles
+│   └── Weapons
+│       └── Bullets
+├── Sounds
+└── Textures
+</pre>
+
 ## Coding Style
 Check out [CODINGSTYLE.md](https://github.com/bcitdatacomm/game/blob/master/.github/CODINGSTYLE.md)
 
