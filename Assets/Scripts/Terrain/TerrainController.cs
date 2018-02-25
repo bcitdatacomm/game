@@ -235,7 +235,27 @@ public class TerrainController
         this.CompressedData = compressed.ToArray();
     }
 
-    public void DecompressByteArray(byte[] compressed)
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: LoadByteArray()
+    --
+    -- DATE: Jan 23, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Benny Wang 
+    --
+    -- PROGRAMMER: Benny Wang 
+    --
+    -- INTERFACE: LoadByteArray(byte[] compressed)
+    --                  byte[] compressed: A byte array containt the terrain data.
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Takes in a byte array representation of the terrain data that was send over by the server and
+    -- loads it.
+    -------------------------------------------------------------------------------------------------*/
+    public void LoadByteArray(byte[] compressed)
     {
         this.Width = System.BitConverter.ToInt32(compressed, 0);
         this.Length = System.BitConverter.ToInt32(compressed, 4);
