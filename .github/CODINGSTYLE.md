@@ -143,27 +143,27 @@
 
 ## Member variables
 * **Always** use C# getters and setter with public members
-	``` C#
-	// Good
-	public int Health { get; set; }
+    ```C#
+    // Good
+    public int Health { get; set; }
 
-	// Bad
-	public int Health;
-	```
+    // Bad
+    public int Health;
+    ```
 
 * **Always** use the 'this' keyword when accessing member variables to improve readability
-	``` C#
-	public Car
-	{
-		private int model;
+    ```C#
+    public Car
+    {
+        private int model;
 
-		public Car()
-		{
-			// Good
-			this.model = 0;
-			
-			// Bad
-			model = 0;
-		}
-	}
-	```
+        public Car()
+        {
+            // Good
+            this.model = 0;
+
+            // Bad
+            model = 0;
+        }
+    }
+    ```
