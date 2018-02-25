@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+
 /*---------------------------------------------------------------------------------------
 --	SOURCE FILE:	TerrainController.cs
 --
@@ -43,10 +44,9 @@ public class TerrainController
      */
     public struct Encoding
     {
-        int[,] tiles;
-        Building[] buildings;
+        public int[,] tiles;
+        public Building[] buildings;
     };
-
     public Encoding Data { get; set; }
 
     // Width of the terrain
@@ -127,7 +127,6 @@ public class TerrainController
     -- Generates an encoded 2D array with given width and height.
     -- Populates the map array with tile types based on given coefficients.
     -------------------------------------------------------------------------------------------------*/
-
     public bool GenerateEncoding()
     {
         int[,] map = new int[this.Width, this.Length];
@@ -199,7 +198,6 @@ public class TerrainController
     -- Creates TerrainData and set its relevant values.
     -- Instantiate the Terrain GameObject and set its name and position.
     -------------------------------------------------------------------------------------------------*/
-
     public bool Instantiate()
     {
         TerrainData tData = new TerrainData
@@ -236,7 +234,6 @@ public class TerrainController
 -- This is the building initializer to create the buildings and returns an array
 -- of building objects.
 ----------------------------------------------------------------------------------------------------------------------*/
-
 public class Building
 {
     Building()
