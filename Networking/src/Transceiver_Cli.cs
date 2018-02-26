@@ -8,11 +8,11 @@ using System.Threading;
 namespace COMP4981_NetworkingTest
 {
     /// <summary>
-    /// Driver to send and receive game updates.
+    /// Client driver to send and receive game updates.
     /// 
-    /// author: Jeremy L
+    /// Author: Jeremy L
     /// </summary>
-    public class Transceiver
+    public class Transceiver_Cli
     {
         private const int BUFF_SIZE = 1200; // buffer size
         private const int MAX_CLIENTS = 30; // max number of client conns
@@ -25,64 +25,68 @@ namespace COMP4981_NetworkingTest
         // data structures
         private ConcurrentQueue<byte[]> updateQueueToSend;
         private ConcurrentQueue<byte[]> datagramQueue; // rx datagram queue
-        private List<Connection> connPool; // connection pool
+        private Connection connToSrv; // connection to server
 
         /// <summary>
-        /// Constructor for a Transceiver object
+        /// Constructor for a Transceiver object.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
-        public Transceiver()
+        public Transceiver_Cli()
         {
-            this.connPool = new List<Connection>();
+            this.connToSrv = new Connection();
             this.datagramQueue = new ConcurrentQueue<byte[]>();
             this.runSender = false;
             this.runReceiver = false;
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
         }
 
-        ~Transceiver()
+        ~Transceiver_Cli()
         {
             StopSender();
             StopReceiver();
         }
 
-        #region // Transceiver 
-        public void AddConnection()
+        #region // Transceiver -----------------------------------------
+        /// <summary>
+        /// Note that this function basically abandon the current Connection
+        /// and creates a new one.
+        /// 
+        /// Author: Willson Hu, Jeremy L
+        /// </summary>
+        public void CreateConnection()
         {
-            connPool.Add(new Connection());
+            this.connToSrv = new Connection();
         }
 
+        /// <summary>
+        /// 
+        /// Author: Willson Hu
+        /// </summary>
         public bool RemoveConnection()
         {
             return false;
         }
+        #endregion // Transceiver --------------------------------------
 
-        public int GetNumConnections()
-        {
-            return connPool.Count;
-        }
-
-
-
-        #region // Sender
+        #region // Sender ----------------------------------------------
         /// <summary>
         /// Starts Sender on a separate thread. Use this function to
-        /// start sending queued game updates to all clients.
+        /// start sending queued game updates to server.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StartSender()
         {
             this.runSender = true;
-            this.thrSender = new Thread(sendUpdateToClients);
+            this.thrSender = new Thread(sendUpdateToServer);
             this.thrSender.Start();
         }
 
         /// <summary>
         /// Stops sender.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StopSender()
         {
@@ -94,11 +98,11 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Queues a game update object after serializing and encapsulating.
         /// Use this function to queue a game update object to send to
-        /// clients.
+        /// server.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="gUpdate">game update object</param>
         /// <returns>true if queuing is successful</returns>
@@ -122,28 +126,40 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
-        /// Driver to send a game update object to all clients. Specify
-        /// the condition of connections to send the game update to.
+        /// A different version of QueueUpdate -- takes byte array instead.
+        /// This function is for MVP and to be removed afterwards.
+        /// 
+        /// TODO: delete when we are using game update objects instead
+        ///       of byte array.
+        /// 
+        /// Author: Jeremy L
+        /// </summary>
+        /// <param name="gUpdate">game update byte array</param>
+        /// <returns>true if queuing is successful</returns>
+        public bool QueueUpdate(byte[] gUpdate)
+        {
+            this.updateQueueToSend.Enqueue(gUpdate); // queue converted game update
+
+            return true; // Queuing sueccessful
+        }
+
+        /// <summary>
+        /// Driver to send a game update object to server. Specify
         /// 
         /// TODO: switch the parameter type of write to byte[] in
         ///       Connection class
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
-        private void sendUpdateToClients()
+        private void sendUpdateToServer()
         {
             byte[] dequeued;
+
             while (this.runSender)
             {
                 if (this.updateQueueToSend.TryDequeue(out dequeued))
                 {
-                    foreach (Connection conn in this.connPool)
-                    {
-                        if (true) // TODO: specify condition of connection
-                        {
-                            conn.ReadFromBuffer(dequeued);
-                        }
-                    }
+                    connToSrv.ReadFromBuffer(dequeued);
                 }
             }
         }
@@ -151,9 +167,9 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Serialize a game update object into a binary array.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="gUpdate">game update object</param>
         /// <returns>serialized game update</returns>
@@ -180,7 +196,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: encapsulation is not to be implemented for MVP.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">serialized game update</param>
         /// <returns>encapsulated game update</returns>
@@ -200,14 +216,14 @@ namespace COMP4981_NetworkingTest
 
             return buffEncap;
         }
-        #endregion
+        #endregion // Sender -------------------------------------------
 
-        #region // Receiver
+        #region // Receiver --------------------------------------------
         /// <summary>
         /// Starts the receiver on a separate thread. Use this function
         /// to start processing received datagrams in datagram queue.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StartReceiver()
         {
@@ -219,7 +235,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Stops the receiver thread.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StopReceiver()
         {
@@ -233,7 +249,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: implement details.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         private void receiveDatagramFromClients()
         {
@@ -249,8 +265,8 @@ namespace COMP4981_NetworkingTest
                     //       the datagram
                     //dataType = datagram. ...
 
-                   // TEMP: parsing data type
-                   dataType = 0;
+                    // TEMP: parsing data type
+                    dataType = 0;
 
                     switch (dataType)
                     {
@@ -281,29 +297,15 @@ namespace COMP4981_NetworkingTest
 
                             break;
                         case 1: // TODO: replace the value for Connection
-                            // check number of clients
-                            if (this.connPool.Count < MAX_CLIENTS) // not full
-                            {
-                                // TODO: add client to list
-
-                                // TODO: send Challenge packet
-
-                                // TODO: change status of the new client to
-                                //       pending challenge
-                            }
-                            else // capacity full
-                            {
-                                // ignore connection request
-                            }
 
                             break;
                         case 2: // TODO: replace the value for Challenging Response
-                            // TODO: check validity of challenge
-                            //       If valid, change connection status
-                            //       to connecting
+                                // TODO: check validity of challenge
+                                //       If valid, change connection status
+                                //       to connecting
 
                             // TODO: send response packet
-                            
+
                             // TODO: update seq number
 
                             break;
@@ -328,7 +330,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Decapsulates received datagram
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">raw datagram</param>
         /// <returns>decapsulated datagram</returns>
@@ -338,7 +340,7 @@ namespace COMP4981_NetworkingTest
             {
                 return null;
             } // null check
-                
+
 
             byte[] buffDecap = null;
 
@@ -355,7 +357,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Deserializes the decapsulated datagram
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">decapsulated datagram</param>
         /// <returns>decapsulated game update object</returns>
@@ -365,7 +367,7 @@ namespace COMP4981_NetworkingTest
             {
                 return null;
             }
-                
+
             Object gUpdate = null;
 
             MemoryStream ms = new MemoryStream();
@@ -376,6 +378,6 @@ namespace COMP4981_NetworkingTest
 
             return gUpdate;
         }
-        #endregion
+        #endregion // --------------------------------------------------
     }
 }
