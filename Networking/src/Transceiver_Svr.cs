@@ -19,12 +19,13 @@ namespace COMP4981_NetworkingTest
 
         // Sender and Receiver
         private Thread thrSender;
-        private Thread thrReceiver;
+        private Thread thrDatagramRcvr;
+        private Thread thrRxQueueReader;
         private bool runSender;
         private bool runReceiver;
         // data structures
         private ConcurrentQueue<byte[]> updateQueueToSend;
-        private ConcurrentQueue<byte[]> datagramQueue; // rx datagram queue
+        private ConcurrentQueue<byte[]> rcvdDatagramQueue; // rx datagram queue
         private List<Connection> connPool; // connection pool
 
         /// <summary>
@@ -35,10 +36,10 @@ namespace COMP4981_NetworkingTest
         public Transceiver_Svr()
         {
             this.connPool = new List<Connection>();
-            this.datagramQueue = new ConcurrentQueue<byte[]>();
             this.runSender = false;
             this.runReceiver = false;
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
+            this.rcvdDatagramQueue = new ConcurrentQueue<byte[]>();
         }
 
         ~Transceiver_Svr()
@@ -183,7 +184,7 @@ namespace COMP4981_NetworkingTest
                     {
                         if (true) // TODO: specify condition of connection
                         {
-                            conn.ReadFromBuffer(dequeued);
+                            conn.WriteToBuffer(dequeued);
                         }
                     }
                 }
@@ -254,8 +255,9 @@ namespace COMP4981_NetworkingTest
         public void StartReceiver()
         {
             this.runReceiver = false;
-            this.thrReceiver = new Thread(receiveDatagramFromClients);
-            this.thrReceiver.Start();
+            this.thrDatagramRcvr = new Thread(receiveFromClient);
+            this.thrRxQueueReader = new Thread(readFromRcvdQueue);
+            this.thrRxQueueReader.Start();
         }
 
         /// <summary>
@@ -267,7 +269,37 @@ namespace COMP4981_NetworkingTest
         {
             this.runReceiver = false;
             Thread.Sleep(1000); // sleep for cleaning up
-            this.thrReceiver = null;
+            this.thrDatagramRcvr = null;
+            this.thrRxQueueReader = null;
+        }
+
+        /// <summary>
+        /// Continuously receives datagram from all clients and queue
+        /// them.
+        /// 
+        /// Author: Jeremy L
+        /// </summary>
+        private void receiveFromClient()
+        {
+            byte[] buffRcvd;
+
+            while (runReceiver)
+            {
+                // TODO: use low level function to read from all connections
+                foreach (Connection conn in connPool)
+                {
+                    buffRcvd = new byte[BUFF_SIZE];
+                    if (conn.ReadFromBuffer(buffRcvd))
+                    {
+                        buffRcvd.CopyTo(buffRcvd, 0);
+                        this.rcvdDatagramQueue.Enqueue(buffRcvd);
+                    }
+                    else
+                    {
+                        // TODO: log failure
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -277,7 +309,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// Author: Jeremy L
         /// </summary>
-        private void receiveDatagramFromClients()
+        private void readFromRcvdQueue()
         {
             int dataType;
             byte[] datagram;
@@ -285,7 +317,7 @@ namespace COMP4981_NetworkingTest
             while (this.runReceiver)
             {
                 // Receive from all clients
-                if (datagramQueue.TryDequeue(out datagram))
+                if (rcvdDatagramQueue.TryDequeue(out datagram))
                 {
                     // TODO: parse the part that indicates data type from
                     //       the datagram
