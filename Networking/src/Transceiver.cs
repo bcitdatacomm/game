@@ -10,7 +10,7 @@ namespace COMP4981_NetworkingTest
     /// <summary>
     /// Driver to send and receive game updates.
     /// 
-    /// author: Jeremy L
+    /// Author: Jeremy L
     /// </summary>
     public class Transceiver
     {
@@ -28,9 +28,9 @@ namespace COMP4981_NetworkingTest
         private List<Connection> connPool; // connection pool
 
         /// <summary>
-        /// Constructor for a Transceiver object
+        /// Constructor for a Transceiver object.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public Transceiver()
         {
@@ -47,30 +47,53 @@ namespace COMP4981_NetworkingTest
             StopReceiver();
         }
 
-        #region // Transceiver 
+        #region // Transceiver -----------------------------------------
+        /// <summary>
+        /// 
+        /// Author: Willson Hu
+        /// </summary>
         public void AddConnection()
         {
             connPool.Add(new Connection());
         }
 
+        /// <summary>
+        /// Test version.
+        /// 
+        /// TODO: delete after testing data flow.
+        /// 
+        /// Author: Willson Hu, Jeremy Lee
+        /// </summary>
+        public void AddConnection(int i)
+        {
+            connPool.Add(new Connection(i));
+        }
+
+        /// <summary>
+        /// 
+        /// Author: Willson Hu
+        /// </summary>
         public bool RemoveConnection()
         {
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// Author: Willson Hu
+        /// </summary>
         public int GetNumConnections()
         {
             return connPool.Count;
         }
+        #endregion // Transceiver --------------------------------------
 
-
-
-        #region // Sender
+        #region // Sender ----------------------------------------------
         /// <summary>
         /// Starts Sender on a separate thread. Use this function to
         /// start sending queued game updates to all clients.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StartSender()
         {
@@ -82,7 +105,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Stops sender.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StopSender()
         {
@@ -98,7 +121,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: replace gUpdate type with the actual game update type
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="gUpdate">game update object</param>
         /// <returns>true if queuing is successful</returns>
@@ -122,13 +145,31 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
+        /// A different version of QueueUpdate -- takes byte array instead.
+        /// This function is for MVP and to be removed afterwards.
+        /// 
+        /// TODO: delete when we are using game update objects instead
+        ///       of byte array.
+        /// 
+        /// Author: Jeremy L
+        /// </summary>
+        /// <param name="gUpdate">game update object</param>
+        /// <returns>true if queuing is successful</returns>
+        public bool QueueUpdate(byte[] gUpdate)
+        {
+            this.updateQueueToSend.Enqueue(gUpdate); // queue converted game update
+
+            return true; // Queuing sueccessful
+        }
+
+        /// <summary>
         /// Driver to send a game update object to all clients. Specify
         /// the condition of connections to send the game update to.
         /// 
         /// TODO: switch the parameter type of write to byte[] in
         ///       Connection class
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         private void sendUpdateToClients()
         {
@@ -152,7 +193,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: replace gUpdate type with the actual game update type
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="gUpdate">game update object</param>
         /// <returns>serialized game update</returns>
@@ -179,7 +220,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: encapsulation is not to be implemented for MVP.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">serialized game update</param>
         /// <returns>encapsulated game update</returns>
@@ -199,14 +240,14 @@ namespace COMP4981_NetworkingTest
 
             return buffEncap;
         }
-        #endregion
+        #endregion // Sender -------------------------------------------
 
-        #region // Receiver
+        #region // Receiver --------------------------------------------
         /// <summary>
         /// Starts the receiver on a separate thread. Use this function
         /// to start processing received datagrams in datagram queue.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StartReceiver()
         {
@@ -218,7 +259,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Stops the receiver thread.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         public void StopReceiver()
         {
@@ -232,7 +273,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// TODO: implement details.
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         private void receiveDatagramFromClients()
         {
@@ -247,8 +288,8 @@ namespace COMP4981_NetworkingTest
                     //       the datagram
                     //dataType = datagram. ...
 
-                   // TEMP: parsing data type
-                   dataType = 0;
+                    // TEMP: parsing data type
+                    dataType = 0;
 
                     switch (dataType)
                     {
@@ -296,12 +337,12 @@ namespace COMP4981_NetworkingTest
 
                             break;
                         case 2: // TODO: replace the value for Challenging Response
-                            // TODO: check validity of challenge
-                            //       If valid, change connection status
-                            //       to connecting
+                                // TODO: check validity of challenge
+                                //       If valid, change connection status
+                                //       to connecting
 
                             // TODO: send response packet
-                            
+
                             // TODO: update seq number
 
                             break;
@@ -326,7 +367,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Decapsulates received datagram
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">raw datagram</param>
         /// <returns>decapsulated datagram</returns>
@@ -336,7 +377,7 @@ namespace COMP4981_NetworkingTest
             {
                 return null;
             } // null check
-                
+
 
             byte[] buffDecap = null;
 
@@ -353,7 +394,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Deserializes the decapsulated datagram
         /// 
-        /// author: Jeremy L
+        /// Author: Jeremy L
         /// </summary>
         /// <param name="buff">decapsulated datagram</param>
         /// <returns>decapsulated game update object</returns>
@@ -363,7 +404,7 @@ namespace COMP4981_NetworkingTest
             {
                 return null;
             }
-                
+
             Object gUpdate = null;
 
             MemoryStream ms = new MemoryStream();
@@ -374,6 +415,6 @@ namespace COMP4981_NetworkingTest
 
             return gUpdate;
         }
-        #endregion
+        #endregion // --------------------------------------------------
     }
 }
