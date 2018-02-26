@@ -24,7 +24,7 @@ namespace COMP4981_NetworkingTest
         private bool runReceiver;
         // data structures
         private ConcurrentQueue<byte[]> updateQueueToSend;
-        private ConcurrentQueue<byte[]> datagramQueue; // rx datagram queue
+        private ConcurrentQueue<byte[]> rcvdDatagramQueue; // rx datagram queue
         private Connection connToSrv; // connection to server
 
         /// <summary>
@@ -35,10 +35,10 @@ namespace COMP4981_NetworkingTest
         public Transceiver_Cli()
         {
             this.connToSrv = new Connection();
-            this.datagramQueue = new ConcurrentQueue<byte[]>();
             this.runSender = false;
             this.runReceiver = false;
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
+            this.rcvdDatagramQueue = new ConcurrentQueue<byte[]>();
         }
 
         ~Transceiver_Cli()
@@ -159,7 +159,7 @@ namespace COMP4981_NetworkingTest
             {
                 if (this.updateQueueToSend.TryDequeue(out dequeued))
                 {
-                    connToSrv.ReadFromBuffer(dequeued);
+                    connToSrv.WriteToBuffer(dequeued);
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace COMP4981_NetworkingTest
             while (this.runReceiver)
             {
                 // Receive from all clients
-                if (datagramQueue.TryDequeue(out datagram))
+                if (rcvdDatagramQueue.TryDequeue(out datagram))
                 {
                     // TODO: parse the part that indicates data type from
                     //       the datagram
