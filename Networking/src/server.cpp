@@ -1,4 +1,7 @@
+#ifndef SERVER_DEF
 #include "server.h"
+#define SERVER_DEF
+#endif
 
 Server::Server()
 	{
@@ -6,7 +9,7 @@ Server::Server()
 	}
 
 
-int Server::initializeSocket(short port)
+int32_t Server::initializeSocket(short port)
 {
 	int optFlag = 1;
 	if ((udpSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
@@ -24,6 +27,7 @@ int Server::initializeSocket(short port)
 	memset(&serverAddr, 0, sizeof(struct sockaddr_in));
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(port);
+	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	int error = -1;
 
@@ -81,7 +85,7 @@ void  Server::setEndPointIp(EndPoint * ep, char zero, char one, char two, char t
 	tmp[3] = three;
 }
 
-int32_t  Server::UdpPollSocket()
+int32_t Server::UdpPollSocket()
 {
 	int numfds = 1;
 	struct pollfd pollfds;
@@ -102,23 +106,8 @@ int32_t  Server::UdpPollSocket()
 }
 
 
-extern "C" Server * Server_CreateServer()
-{
-	return new Server();
-}
 
-extern "C" void Server_sendBytes(void * serverPtr, EndPoint ep, char * data, uint32_t len)
-{
-	((Server *)serverPtr)->sendBytes(ep, data, len);
-}
-
-extern "C" int32_t Server_recvBytes(void * serverPtr, EndPoint * addr, char * buffer, uint32_t * bufSize)
-{
-
-	int32_t result = static_cast<Server*>(serverPtr)->UdpRecvFrom(buffer, *bufSize, addr);
-	return result;
-}
-
+/*
 int main() {
 	Server* serv = new Server();
 	serv->initializeSocket(5150);
@@ -153,3 +142,4 @@ int main() {
 	}
 	return 1;
 }
+*/
