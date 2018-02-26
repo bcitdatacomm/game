@@ -8,7 +8,7 @@ using System.Threading;
 namespace COMP4981_NetworkingTest
 {
     /// <summary>
-    /// Driver to send and receive game updates.
+    /// Client driver to send and receive game updates.
     /// 
     /// Author: Jeremy L
     /// </summary>
@@ -25,7 +25,7 @@ namespace COMP4981_NetworkingTest
         // data structures
         private ConcurrentQueue<byte[]> updateQueueToSend;
         private ConcurrentQueue<byte[]> datagramQueue; // rx datagram queue
-        private List<Connection> connPool; // connection pool
+        private Connection connToSrv; // connection to server
 
         /// <summary>
         /// Constructor for a Transceiver object.
@@ -34,7 +34,7 @@ namespace COMP4981_NetworkingTest
         /// </summary>
         public Transceiver_Cli()
         {
-            this.connPool = new List<Connection>();
+            this.connToSrv = new Connection();
             this.datagramQueue = new ConcurrentQueue<byte[]>();
             this.runSender = false;
             this.runReceiver = false;
@@ -49,24 +49,14 @@ namespace COMP4981_NetworkingTest
 
         #region // Transceiver -----------------------------------------
         /// <summary>
+        /// Note that this function basically abandon the current Connection
+        /// and creates a new one.
         /// 
-        /// Author: Willson Hu
+        /// Author: Willson Hu, Jeremy L
         /// </summary>
-        public void AddConnection()
+        public void CreateConnection()
         {
-            connPool.Add(new Connection());
-        }
-
-        /// <summary>
-        /// Test version.
-        /// 
-        /// TODO: delete after testing data flow.
-        /// 
-        /// Author: Willson Hu, Jeremy Lee
-        /// </summary>
-        public void AddConnection(int i)
-        {
-            connPool.Add(new Connection(i));
+            this.connToSrv = new Connection();
         }
 
         /// <summary>
@@ -77,28 +67,19 @@ namespace COMP4981_NetworkingTest
         {
             return false;
         }
-
-        /// <summary>
-        /// 
-        /// Author: Willson Hu
-        /// </summary>
-        public int GetNumConnections()
-        {
-            return connPool.Count;
-        }
         #endregion // Transceiver --------------------------------------
 
         #region // Sender ----------------------------------------------
         /// <summary>
         /// Starts Sender on a separate thread. Use this function to
-        /// start sending queued game updates to all clients.
+        /// start sending queued game updates to server.
         /// 
         /// Author: Jeremy L
         /// </summary>
         public void StartSender()
         {
             this.runSender = true;
-            this.thrSender = new Thread(sendUpdateToClients);
+            this.thrSender = new Thread(sendUpdateToServer);
             this.thrSender.Start();
         }
 
@@ -117,9 +98,9 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Queues a game update object after serializing and encapsulating.
         /// Use this function to queue a game update object to send to
-        /// clients.
+        /// server.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
         /// Author: Jeremy L
         /// </summary>
@@ -153,7 +134,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// Author: Jeremy L
         /// </summary>
-        /// <param name="gUpdate">game update object</param>
+        /// <param name="gUpdate">game update byte array</param>
         /// <returns>true if queuing is successful</returns>
         public bool QueueUpdate(byte[] gUpdate)
         {
@@ -163,15 +144,14 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
-        /// Driver to send a game update object to all clients. Specify
-        /// the condition of connections to send the game update to.
+        /// Driver to send a game update object to server. Specify
         /// 
         /// TODO: switch the parameter type of write to byte[] in
         ///       Connection class
         /// 
         /// Author: Jeremy L
         /// </summary>
-        private void sendUpdateToClients()
+        private void sendUpdateToServer()
         {
             byte[] dequeued;
 
@@ -179,13 +159,7 @@ namespace COMP4981_NetworkingTest
             {
                 if (this.updateQueueToSend.TryDequeue(out dequeued))
                 {
-                    foreach (Connection conn in this.connPool)
-                    {
-                        if (true) // TODO: specify condition of connection
-                        {
-                            conn.ReadFromBuffer(dequeued);
-                        }
-                    }
+                    connToSrv.ReadFromBuffer(dequeued);
                 }
             }
         }
@@ -193,7 +167,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Serialize a game update object into a binary array.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
         /// Author: Jeremy L
         /// </summary>
@@ -323,20 +297,6 @@ namespace COMP4981_NetworkingTest
 
                             break;
                         case 1: // TODO: replace the value for Connection
-                            // check number of clients
-                            if (this.connPool.Count < MAX_CLIENTS) // not full
-                            {
-                                // TODO: add client to list
-
-                                // TODO: send Challenge packet
-
-                                // TODO: change status of the new client to
-                                //       pending challenge
-                            }
-                            else // capacity full
-                            {
-                                // ignore connection request
-                            }
 
                             break;
                         case 2: // TODO: replace the value for Challenging Response

@@ -8,7 +8,7 @@ using System.Threading;
 namespace COMP4981_NetworkingTest
 {
     /// <summary>
-    /// Driver to send and receive game updates.
+    /// Server driver to send and receive game updates.
     /// 
     /// Author: Jeremy L
     /// </summary>
@@ -119,7 +119,7 @@ namespace COMP4981_NetworkingTest
         /// Use this function to queue a game update object to send to
         /// clients.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
         /// Author: Jeremy L
         /// </summary>
@@ -153,7 +153,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// Author: Jeremy L
         /// </summary>
-        /// <param name="gUpdate">game update object</param>
+        /// <param name="gUpdate">game update byte array</param>
         /// <returns>true if queuing is successful</returns>
         public bool QueueUpdate(byte[] gUpdate)
         {
@@ -193,7 +193,7 @@ namespace COMP4981_NetworkingTest
         /// <summary>
         /// Serialize a game update object into a binary array.
         /// 
-        /// TODO: replace gUpdate type with the actual game update type
+        /// TODO: replace gUpdate type with the actual game update type.
         /// 
         /// Author: Jeremy L
         /// </summary>
