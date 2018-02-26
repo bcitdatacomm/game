@@ -92,7 +92,7 @@ void Client::closeConnection() {
 
 int main() {
 	Client client;
-	client.initializeSocket(5150, (char *)"127.0.0.1");
+	client.initializeSocket(7676, (char *)"127.0.0.1");
 
 	char temp[] = "Hello";
 	char buffer[100];

@@ -6,8 +6,7 @@
 #include <map>
 #include <poll.h>
 #include <iostream>
-#include "Connection.h"
-#include "Connection.cpp"
+#include <string.h>
 #ifndef SOCK_NONBLOCK
 #include <fcntl.h>
 #define SOCK_NONBLOCK O_NONBLOCK
@@ -42,6 +41,3 @@ private:
 
 };
 
-extern "C" void Server_sendBytes(void * serverPtr, EndPoint ep, char * data, unsigned len);
-
-extern "C" Server * Server_CreateServer();
