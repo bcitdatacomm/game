@@ -12,7 +12,7 @@ namespace COMP4981_NetworkingTest
     /// 
     /// Author: Jeremy L
     /// </summary>
-    public class Transceiver
+    public class Transceiver_Cli
     {
         private const int BUFF_SIZE = 1200; // buffer size
         private const int MAX_CLIENTS = 30; // max number of client conns
@@ -32,7 +32,7 @@ namespace COMP4981_NetworkingTest
         /// 
         /// Author: Jeremy L
         /// </summary>
-        public Transceiver()
+        public Transceiver_Cli()
         {
             this.connPool = new List<Connection>();
             this.datagramQueue = new ConcurrentQueue<byte[]>();
@@ -41,7 +41,7 @@ namespace COMP4981_NetworkingTest
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
         }
 
-        ~Transceiver()
+        ~Transceiver_Cli()
         {
             StopSender();
             StopReceiver();
