@@ -36,7 +36,6 @@ int Client::initializeSocket(short port, char * server)
         perror("inet_aton() failed\n");
         exit(1);
     }
-
 	return 0;
 }
 
@@ -45,7 +44,7 @@ int Client::initializeSocket(short port, char * server)
 /**
 	Sends char array to all connected clients
 **/
-void Client::sendBytes(char * data, unsigned len)
+void Client::sendBytes(char * data, uint32_t len)
 {
 	if (sendto(clientSocket, data, len , 0 , (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1) {
 		perror("client send error");
@@ -55,7 +54,7 @@ void Client::sendBytes(char * data, unsigned len)
 
 
 /**
-	Sends char array to all connected clients
+	Receives upto "size" bytes char array
 **/
 int32_t Client::receiveBytes(char * buffer, uint32_t size)
 {
@@ -93,7 +92,7 @@ void Client::closeConnection() {
 
 int main() {
 	Client client;
-	client.initializeSocket(5150, (char *)"192.168.0.2");
+	client.initializeSocket(5150, (char *)"127.0.0.1");
 
 	char temp[] = "Hello";
 	char buffer[100];
