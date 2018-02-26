@@ -132,9 +132,10 @@ namespace COMP4981_NetworkingTest
         /// </summary>
         private void sendUpdateToClients()
         {
+            byte[] dequeued;
             while (this.runSender)
             {
-                if (this.updateQueueToSend.TryDequeue(out byte[] dequeued))
+                if (this.updateQueueToSend.TryDequeue(out dequeued))
                 {
                     foreach (Connection conn in this.connPool)
                     {
@@ -237,11 +238,12 @@ namespace COMP4981_NetworkingTest
         private void receiveDatagramFromClients()
         {
             int dataType;
+            byte[] datagram;
 
             while (this.runReceiver)
             {
                 // Receive from all clients
-                if (datagramQueue.TryDequeue(out byte[] datagram))
+                if (datagramQueue.TryDequeue(out datagram))
                 {
                     // TODO: parse the part that indicates data type from
                     //       the datagram
