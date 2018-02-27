@@ -1,152 +1,233 @@
 using System;
 using System.Net.Sockets;
-using System.Collections.Queue;
+using System.Collections.Generic;
+using System.Threading;
+using System.Runtime.InteropServices;
+using RunLibrary;
+
 
 namespace COMP4981_NetworkingTest
 {
+    // TODO: Convert connectionStatus uint to enum
     enum connectionStatus : byte
     {
-        disconnected        = 0,
+        disconnected = 0,
         connection_unstable = 1,
-        connection_stable   = 2,
+        connection_stable = 2,
     }
 
-    public unsafe struct sockaddr_in
-    {
-        public short sin_family;
-        public ushort sin_port;
-        public in_addr sin_addr;
-        public fixed char sin_zero[8];
-    }
-
-    public struct in_addr
-    {
-        public ulong s_addr;
-    }
-
-    /*  public unsafe struct buffer_t{
-            public char[] buffer = new char[2048];
-            public int bufPos;
-        }*/
-
+    /* SOURCE FILE: Connection
+     * 
+     * DATE:
+     * 
+     * FUNCTIONS:
+     * 
+     * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+     * 
+     * PROGRAMMER: Wilson Hu
+     * 
+     * NOTES: Connection class which will be initialized by the Transceiver class
+     *          of each instance of the game. A client instance (player) will have
+     *          one Connection, while the server will store up to 30. 
+     */
     public unsafe class Connection
     {
 
-        public static int MAX_BUF_SIZE = 2048;
-        public static ushort PORT_NO = 9999;
-        public static short AF_INET = 2;
+        
+        public const ushort PORT_NO = 9999;
+        public const Int32 SOCKET_DATA_WAITING = 1;
+        public const Int32 SOCKET_NODATA = 0;
 
-        private uint ackNo;
-        private uint connectionId;
+
+        private uint udpEndPointId;
         private uint connectionStatus = 0;
-        private sockaddr_in in;
-        private sockaddr_in out;
-        private uint socketId;
-        private byte[] buffer;
-        private Queue<Array> inputQueue;
-        private Queue<Array> outputQueue;
-        //We need two buffers: input and output
-        //byte[] inputBuffer;
-        //byte[] outputBuffer;
-        private int bufPos;
 
-        //fixed char this.buffer[MAX_BUF_SIZE];
-        //uint bufPos;
 
-        public Connection(sockaddr_in client, sockaddr_in server, uint socketId, uint connectionId)
+        private EndPoint endPoint;
+        IntPtr serverInstance = Server.Server_CreateServer();
+
+        private bool runRecvThread = false;
+        private Thread recvThread;
+
+        /* FUNCTION: Connection()
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: uint udpEndPointId
+         *          - Takes a udpEndPointId which is used to identify the client
+         *            or server connection EndPoint.
+         * 
+         * RETURNS: Connection object(?)
+         * 
+         * NOTES: Connection class constructor.
+         *          - This constructor initializes the input and output buffers
+         *          - connectionStatus is initialized to 0 (disconnected)
+         */
+        public Connection(uint udpEndPointId)
         {
-            this.in = server;
-            this.out = client;
-            this.socketId = socketId;
-            this.connectionId = connectionId;
+            this.udpEndPointId = udpEndPointId;
             this.ackNo = 0;
             this.connectionStatus = 0;
-            this.buffer = new byte[MAX_BUF_SIZE];
-            this.bufPos = 0;
-            this.ackNo = 0;=
+
+            this.inputBufPos = 0;
+            this.ackNo = 0;
+            this.endPoint = new EndPoint();
         }
 
-        /*
-         * TODO: Refactor to ReadFromInputBuffer, reads inputbuffer from client / server
+        /* FUNCTION: AppendToOutputBuffer()
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: byte[] input, short numBytes
+         *          - input: byte array that holds game data to be appended to the output buffer
+         *          - numBytes: number of bytes to be written to the outputBuffer
+         * 
+         * RETURNS: bool indicating whether append operation is successful.
+         * 
+         * NOTES:
+         *
+         *
+         * TODO: Implement AppendToOutputBuffer, to add bytes to the end of the buffer
          */
-        public unsafe bool ReadFromBuffer(byte[] data) //This is now read from buffer. It makes sense, kidn of. It used to be write()
+        public unsafe bool AppendToOutputBuffer(byte[] input, short numBytes)
         {
-            if (data.Length + this.bufPos < MAX_BUF_SIZE)
+            if (input.Length + this.outputBufPos < MAX_BUF_SIZE)
             {
-                Buffer.BlockCopy(data, 0, this.buffer, this.bufPos, data.Length * sizeof(Byte));
-                this.bufPos += data.Length;
+                Buffer.BlockCopy(input, 0, this.outputBuffer, this.outputBufPos, numBytes);    // May refactor to ArrayCopy
+                this.outputBufPos += numBytes;
                 return true;
             }
             return false;
         }
 
-        /*
-         * TODO: Refactor to WriteToOutputBuffer, writes output to buffer for server / client
+
+        /* FUNCTION: WriteToInputBuffer
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: byte[] input: input buffer to be read from the socket. 
+         * 
+         * RETURNS: bool indicating if write operation is successful.
+         * 
+         * NOTES:
+         *
          */
-        public void WriteToBuffer(byte[] otherBuffer)
+        public unsafe bool WriteToInputBuffer(byte[] input) //This is now read from buffer. It makes sense, kind of. It used to be write()
         {
-            //Array.Clear(this.buffer, 0, this.buffer.Length);  //This part doesn't make sense. Currently clears buffer to be available to be written to. 
-            Buffer.BlockCopy(this.buffer, 0, otherBuffer, 0, otherBuffer.Length); //dest: otherBuffer, src: this.buffer;
+            if (input.Length + this.inputBufPos < MAX_BUF_SIZE)     // This logic may not be necessary, as WriteToInputBuffer reads from input that comes from server
+            {
+                Buffer.BlockCopy(input, 0, this.inputBuffer, this.inputBufPos, input.Length);    // May refactor to ArrayCopy
+                this.inputBufPos += input.Length;
+                return true;
+            }
+            return false;
         }
 
 
-        public void CheckSocket()
-        {
-            //if (pollsocket()) 
-            //{
-                
-            //}
-        }
+        
 
-        //public void connectionLoop()
-        //{
-        //    bool connected = true;
-        //    while (connected)
-        //    {
-        //        //Placeholder function call
-        //        if (pollsocket()) //pollsocket returns true if there is data
-        //        {
-        //            /*
-        //            Placeholder function call
-        //            Recvfrom should:
-        //              receive from socket
-        //              write to buffer
-        //              (n chars)
-        //              store source data in sockaddr
-        //            */
-        //            recvfrom();
-        //        }
-        //    }
-        //}
 
-        public void AddToInputQueue()
-        {
+        
 
-        }
 
-        public void RemoveFromInputQueue()
-        {
+        
 
-        }
+        /* FUNCTION:
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE:
+         * 
+         * RETURNS:
+         * 
+         * NOTES:
+         */
+        public unsafe byte[] GetInputBuffer() { return this.inputBuffer; }
 
-        public void AddToOutputQueue()
-        {
+        /* FUNCTION:
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE:
+         * 
+         * RETURNS:
+         * 
+         * NOTES:
+         */
+        public unsafe byte[] GetOutputBuffer() { return this.outputBuffer; }
 
-        }
-
-        public void RemoveFromOutputQueue()
-        {
-
-        }
-
-        public sockaddr_in GetClient() { return this.out; }
-
-        public uint GetSocketId() { return this.socketId; }
-
-        public unsafe byte[] GetBuffer() { return this.buffer; }
-
+        /* FUNCTION:
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE:
+         * 
+         * RETURNS:
+         * 
+         * NOTES:
+         */
         public uint GetConnectionStatus() { return this.connectionStatus; }
 
+        /* FUNCTION:
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE:
+         * 
+         * RETURNS:
+         * 
+         * NOTES:
+         */
         public void SetConnectionStatus(uint status) { this.connectionStatus = status; }
+
+
+
+
+        /*  
+         * 
+         */
+        //public void StartReceiving()
+        //{
+        //    this.recvThread = new Thread(recvThreadFunc);
+        //}
+
+        ///*
+        // * 
+        // */
+        //private void recvThreadFunc()
+        //{
+        //    while (this.runRecvThread)
+        //    {
+                
+        //    }
+        //}
     }
 }

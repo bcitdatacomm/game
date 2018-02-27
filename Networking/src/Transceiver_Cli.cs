@@ -12,10 +12,14 @@ namespace COMP4981_NetworkingTest
     /// 
     /// Author: Jeremy L
     /// </summary>
-    public class Transceiver_Cli
+    public unsafe class Transceiver_Cli
     {
+
+        //public const int MAX_BUF_SIZE = 2048;
         private const int BUFF_SIZE = 1200; // buffer size
         private const int MAX_CLIENTS = 30; // max number of client conns
+        public const Int32 SOCKET_DATA_WAITING = 1;
+        public const Int32 SOCKET_NODATA = 0;
 
         // Sender and Receiver
         private Thread thrSender;
@@ -26,6 +30,17 @@ namespace COMP4981_NetworkingTest
         // data structures
         private ConcurrentQueue<byte[]> updateQueueToSend;
         private ConcurrentQueue<byte[]> rcvdDatagramQueue; // rx datagram queue
+
+        private byte[] inputBuffer;
+        private byte[] outputBuffer;
+        private int inputBufPos;    // Not necessary? 
+        private int outputBufPos;
+
+        private IntPtr serverInstance;
+
+        private uint ackNo;
+
+
         private Connection connToSrv; // connection to server
 
         /// <summary>
@@ -35,11 +50,18 @@ namespace COMP4981_NetworkingTest
         /// </summary>
         public Transceiver_Cli()
         {
-            this.connToSrv = new Connection();
+            this.connToSrv = new Connection(1);
             this.runSender = false;
             this.runReceiver = false;
             this.updateQueueToSend = new ConcurrentQueue<byte[]>();
             this.rcvdDatagramQueue = new ConcurrentQueue<byte[]>();
+
+            this.inputBuffer = new byte[BUFF_SIZE];
+            this.outputBuffer = new byte[BUFF_SIZE];
+
+            serverInstance = Server.Server_CreateServer();
+
+
         }
 
         ~Transceiver_Cli()
@@ -57,7 +79,7 @@ namespace COMP4981_NetworkingTest
         /// </summary>
         public void CreateConnection()
         {
-            this.connToSrv = new Connection();
+            this.connToSrv = new Connection(1);
         }
 
         /// <summary>
@@ -217,6 +239,57 @@ namespace COMP4981_NetworkingTest
 
             return buffEncap;
         }
+
+        /* FUNCTION: Transmit()
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: 
+         * 
+         * RETURNS:
+         * 
+         * NOTES:
+         *
+         * Transmit method, writes the contents of outputBuffer to the server by calling the Server_sendBytes library function.
+         * TODO: Test functionality of writing ~1200 bytes each call, as well as int->uint cast.
+         */
+        public void Transmit()
+        {
+            fixed (byte* tempBuf = outputBuffer)
+            {
+                // TODO: Add reference to Connection's endpoint struct
+                Server.Server_sendBytes(serverInstance, endPoint, new IntPtr(tempBuf), (uint)outputBuffer.Length);
+            }
+        }
+
+        /* FUNCTION: WriteToOutputBuffer
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: byte[] output: output buffer to be sent by the Connection object
+         * 
+         * RETURNS:
+         * 
+         * NOTES: This function takes a complete output buffer (complete game state update rather than append)
+         *          and writes the contents to the Connection's output buffer, to be sent to socket.
+         *
+         * TODO: Refactor to WriteToOutputBuffer, writes output to buffer for server / client
+         */
+        public void WriteToOutputBuffer(byte[] output)
+        {
+            //Array.Clear(this.buffer, 0, this.buffer.Length);  //This part doesn't make sense. Currently clears buffer to be available to be written to. 
+            Buffer.BlockCopy(this.outputBuffer, 0, output, 0, output.Length); //dest: otherBuffer, src: this.buffer;    --May Refactor to ArrayCopy
+        }
+
+
         #endregion // Sender -------------------------------------------
 
         #region // Receiver --------------------------------------------
@@ -260,6 +333,7 @@ namespace COMP4981_NetworkingTest
             while (this.runReceiver)
             {
                 buffRcvd = new byte[BUFF_SIZE];
+                // TODO: Woz - Fix this or something.
                 if (connToSrv.ReadFromBuffer(ref buffRcvd))
                 {
                     this.rcvdDatagramQueue.Enqueue(buffRcvd);
@@ -416,6 +490,98 @@ namespace COMP4981_NetworkingTest
             gUpdate = (Object)bf.Deserialize(ms);
 
             return gUpdate;
+        }
+
+        /* FUNCTION: ReadSocket()
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE:
+         * 
+         * RETURNS: bool indicating if data was read from the socket and stored in the input buffer
+         * 
+         * NOTES: 
+         *
+         * Reads socket for available data.
+         * May require call to Marshal() to copy data from unmanaged to managed memory.
+         */
+        public bool ReadSocket()
+        {
+            Int32 result = Server.Server_PollSocket(serverInstance);
+
+            if (result == SOCKET_DATA_WAITING)
+            {
+                fixed (byte* tempBuf = inputBuffer)
+                {
+                    // TODO: woz - fix endpoint and buf references
+                    Int32 numBytesRecv = Server.Server_recvBytes(serverInstance, &endPoint, new IntPtr(tempBuf), 1400);
+                    Array.Copy(tempBuf, inputBuffer, 1400);
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+        /* FUNCTION: AppendToOutputBuffer()
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: byte[] input, short numBytes
+         *          - input: byte array that holds game data to be appended to the output buffer
+         *          - numBytes: number of bytes to be written to the outputBuffer
+         * 
+         * RETURNS: bool indicating whether append operation is successful.
+         * 
+         * NOTES:
+         *
+         *
+         * TODO: Implement AppendToOutputBuffer, to add bytes to the end of the buffer
+         */
+        public unsafe bool AppendToOutputBuffer(byte[] input, short numBytes)
+        {
+            if (input.Length + this.outputBufPos < BUFF_SIZE)
+            {
+                Buffer.BlockCopy(input, 0, this.outputBuffer, this.outputBufPos, numBytes);    // May refactor to ArrayCopy
+                this.outputBufPos += numBytes;
+                return true;
+            }
+            return false;
+        }
+
+
+        /* FUNCTION: WriteToInputBuffer
+         * 
+         * DATE:
+         * 
+         * DESIGNER: Delan Elliot, Jeffrey Chou, Jeremy Lee, Wilson Hu
+         * 
+         * PROGRAMMER: Wilson Hu
+         * 
+         * INTERFACE: byte[] input: input buffer to be read from the socket. 
+         * 
+         * RETURNS: bool indicating if write operation is successful.
+         * 
+         * NOTES:
+         *
+         */
+        public unsafe bool WriteToInputBuffer(byte[] input) //This is now read from buffer. It makes sense, kind of. It used to be write()
+        {
+            if (input.Length + this.inputBufPos < BUFF_SIZE)     // This logic may not be necessary, as WriteToInputBuffer reads from input that comes from server
+            {
+                Buffer.BlockCopy(input, 0, this.inputBuffer, this.inputBufPos, input.Length);    // May refactor to ArrayCopy
+                this.inputBufPos += input.Length;
+                return true;
+            }
+            return false;
         }
         #endregion // --------------------------------------------------
     }
