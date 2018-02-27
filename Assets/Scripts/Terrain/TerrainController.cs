@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 /*---------------------------------------------------------------------------------------
 --	SOURCE FILE:	TerrainController.cs
 --
@@ -43,11 +45,11 @@ public class TerrainController
      */
     public struct Encoding
     {
-        int[,] tiles;
-        Building[] buildings;
+        public int[,] tiles;
+        public Building[] buildings;
     };
-
     public Encoding Data { get; set; }
+    public byte[] CompressedData { get; set; }
 
     // Width of the terrain
     public long Width { get; set; }
@@ -127,7 +129,6 @@ public class TerrainController
     -- Generates an encoded 2D array with given width and height.
     -- Populates the map array with tile types based on given coefficients.
     -------------------------------------------------------------------------------------------------*/
-
     public bool GenerateEncoding()
     {
         int[,] map = new int[this.Width, this.Length];
@@ -177,7 +178,97 @@ public class TerrainController
                 }
             }
         }
+
+        this.Data = new Encoding() { tiles = map };
+        this.compressData();
+
         return true;
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: compressData()
+    --
+    -- DATE: Jan 23, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Benny Wang 
+    --
+    -- PROGRAMMER: Benny Wang 
+    --
+    -- INTERFACE: compressData()
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Compresses whatever is inside the Data member variable of this class and places it into the
+    -- CompressedData member of this class.
+    -------------------------------------------------------------------------------------------------*/
+    private void compressData()
+    {
+        byte[] tmp = { };
+        List<byte> compressed = new List<byte>();
+
+        tmp = System.BitConverter.GetBytes(this.Width);
+        foreach (byte t in tmp)
+        {
+            compressed.Add(t);
+        }
+        tmp = System.BitConverter.GetBytes(this.Length);
+        foreach (byte t in tmp)
+        {
+            compressed.Add(t);
+        }
+
+        for (int i = 0; i < this.Data.tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < this.Data.tiles.GetLength(1); j++)
+            {
+                tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
+                foreach (byte t in tmp)
+                {
+                    compressed.Add(t);
+                }
+            }
+        }
+
+        this.CompressedData = compressed.ToArray();
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: LoadByteArray()
+    --
+    -- DATE: Jan 23, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Benny Wang 
+    --
+    -- PROGRAMMER: Benny Wang 
+    --
+    -- INTERFACE: LoadByteArray(byte[] compressed)
+    --                  byte[] compressed: A byte array containt the terrain data.
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Takes in a byte array representation of the terrain data that was send over by the server and
+    -- loads it.
+    -------------------------------------------------------------------------------------------------*/
+    public void LoadByteArray(byte[] compressed)
+    {
+        this.Width = System.BitConverter.ToInt32(compressed, 0);
+        this.Length = System.BitConverter.ToInt32(compressed, 4);
+
+        int[,] map = new int[this.Width, this.Length];
+        for (int i = 8, x = 0, y = 0; i < compressed.Length; i += 4)
+        {
+            map[x, y] = System.BitConverter.ToInt32(compressed, i);
+            x++;
+            y++;
+        }
+
+        this.Data = new Encoding() { tiles = map, buildings = { } };
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -199,7 +290,6 @@ public class TerrainController
     -- Creates TerrainData and set its relevant values.
     -- Instantiate the Terrain GameObject and set its name and position.
     -------------------------------------------------------------------------------------------------*/
-
     public bool Instantiate()
     {
         TerrainData tData = new TerrainData
@@ -236,7 +326,6 @@ public class TerrainController
 -- This is the building initializer to create the buildings and returns an array
 -- of building objects.
 ----------------------------------------------------------------------------------------------------------------------*/
-
 public class Building
 {
     Building()

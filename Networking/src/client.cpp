@@ -1,7 +1,3 @@
-#include "client.h"
-
-
-
 Client::Client()
 	{
 
@@ -110,3 +106,4 @@ int main() {
 	}
 	return 1;
 }
+

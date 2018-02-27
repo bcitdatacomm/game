@@ -6,8 +6,7 @@
 #include <map>
 #include <poll.h>
 #include <iostream>
-#include "Connection.h"
-#include "Connection.cpp"
+#include <string.h>
 #ifndef SOCK_NONBLOCK
 #include <fcntl.h>
 #define SOCK_NONBLOCK O_NONBLOCK
@@ -19,8 +18,6 @@
 struct EndPoint {
 	uint32_t addr;
 	uint16_t port;
-	struct in_addr ip;
-	unsigned short uport;
 };
 
 class Server {
@@ -28,21 +25,20 @@ class Server {
 public:
 	Server();
 	int initializeSocket(short port);
-	void sendBytes(int clientId, char * data, unsigned len);
-	std::map<int, Connection> * clientMap;
+	int32_t sendBytes(EndPoint ep, char * data, unsigned len);
 	int32_t UdpPollSocket();
 	int32_t UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr);
-	void initializeConnectionPool();
 	sockaddr_in getServerAddr();
-	bool removeConnection(int socketID);
+	
+	void setEndPointIp(EndPoint * ep, char zero, char one, char two, char three);
+	
+	
 
 private:
-	int udpRecvSocket;
+	int udpSocket;
+
 	sockaddr_in serverAddr;
 	struct pollfd* poll_events;
 
 };
 
-extern "C" void Server_sendBytes(void * serverPtr, int clientId, char * data, unsigned len);
-
-extern "C" Server * Server_CreateServer();

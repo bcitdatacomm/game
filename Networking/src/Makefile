@@ -1,12 +1,15 @@
 CC= g++
-NAME=Server
-FLAGS= -std=c++11 -Wall -ggdb -pedantic
 
-Connection.o:
-	$(CC) $(FLAGS) Connection.cpp 
+NAME=Library
+FLAGS= -std=c++11 -Wall -ggdb -pedantic -c -fPIC
+LINK= -shared 
 
-Server.o:
-	$(CC) $(FLAGS) server.cpp
 
-library:
-	$(CC) -o Library.so server.cpp 
+server.o:
+	$(CC) $(FLAGS) server.cpp 
+library.o:
+	$(CC) $(FLAGS) library.cpp
+
+make library: server.o library.o
+	$(CC) -shared library.o server.o -o libNetwork.so
+
