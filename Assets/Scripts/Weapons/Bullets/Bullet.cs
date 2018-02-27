@@ -24,8 +24,8 @@ public class Bullet : MonoBehaviour {
 
         if (target != null)
         {
-        	target.health -= 10;
-	        Debug.Log("target hp:" + target.health);    		
+        	target.Health -= 10;
+	        Debug.Log("target hp:" + target.Health);    		
         }
         Destroy(gameObject);
     }

@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23670634442076150}
   - component: {fileID: 54180861901812728}
   - component: {fileID: 136770058434204666}
-  - component: {fileID: 114393097409338608}
+  - component: {fileID: 114863566502818494}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -99,7 +99,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1667903396286188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4029759660998492}
@@ -214,7 +214,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114393097409338608
+--- !u!114 &114863566502818494
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -222,19 +222,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1554942639801750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 149928de70c613e499f7d3a420b95d4a, type: 3}
+  m_Script: {fileID: 11500000, guid: e21da3858d1ab324a8a7808fed139e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  playerPos: {fileID: 0}
-  x_coordinate: 0
-  y_coordinate: 0
-  health: 100
-  moveSpeed: 5
-  lastHitBy: {fileID: 0}
-  bulletPrefab: {fileID: 1777791287502176, guid: ff68b9d3a4574e74ca922819c6be663b,
+  bulletPrefab: {fileID: 1777791287502176, guid: 7389d2277b61dc9458d492956adda06f,
     type: 2}
   bulletSpawn: {fileID: 4230088937393666}
+  Health: 100
+  MOVE_SPEED: 6
 --- !u!136 &136770058434204666
 CapsuleCollider:
   m_ObjectHideFlags: 1

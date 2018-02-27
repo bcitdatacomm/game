@@ -6,7 +6,7 @@ public class PlayerSpawner : MonoBehaviour
 {
     public GameObject OtherPlayerPrefab;
     public int NumberOfPlayers = 9;
-    public List<GameObject> OtherPlayerList;
+    public List<GameObject> OtherPlayerList { get; set; }
 
     // Use this for initialization
     void Start()

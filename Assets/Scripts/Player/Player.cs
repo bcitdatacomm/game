@@ -4,55 +4,54 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
 
-    public string displayName { get; set; }
-    public Transform playerPos { get; set; }
+    public string DisplayName { get; set; }
+    Transform playerPos { get; set; }
     public float xCoordinate { get; set; }
     public float yCoordinate { get; set; }
-    public int health = 100;
+    public int Health = 100;
     public float MOVE_SPEED = 6.0f;
 
     // GameObject player;// never init or called this
-    GameObject otherPlayerGameObject { get; set; }
+    //GameObject otherPlayerGameObject { get; set; }
     string playerTag { get; set; }
     string pickupTag { get; set; }
 
     // not practical, must incre thru list for every new pickup
     GameObject[] pickUps { get; set; }
-    bool playerInRange { get; set; }
-    float timer { get; set; }
-    public uint playerId { get; set; }
+    bool playerInRange;
+    float timer;
+    public uint PlayerId { get; set; }
 
     //public Weapon[] equippedWeapon; // need to have a Weapon class first (parent of gun and spell)
 
     // to know who killed you
-    public Player lastHitBy { get; set; }
+    public Player LastHitBy { get; set; }
     float TIME_BETWEEN_ATTACKS = 0.5f;
-    Rigidbody playerRigidbody { get; set; }
-    Vector3 movement { get; set; }
-    public GameObject bulletPrefab { get; set; }
-    public Transform bulletSpawn { get; set; }
+    Rigidbody playerRigidbody;
+    Vector3 movement;
 
-    private short GUN_BULLET_LIFETIME = (short)100;
+    private short GUN_BULLET_LIFETIME = 100;
     private int GUN_BULLET_SPEED = 6;
 
-    private short MELEE_BULLET_LIFETIME = (short)75;
+    private short MELEE_BULLET_LIFETIME = 75;
     private int MELEE_BULLET_SPEED = 3;
 
-    private bool meleeMode { get; set; }
-    GameObject otherPlayer { get; set; }
+    private bool meleeMode;
 
     // Use this for initialization
     void Start()
     {
         playerRigidbody = GetComponent<Rigidbody>();
         playerPos = GetComponent<Transform>();
-        otherPlayer = GameObject.FindGameObjectWithTag("otherPlayer");
+        //otherPlayer = GameObject.FindGameObjectWithTag("otherPlayer");
         playerTag = this.tag;
         pickupTag = "Item";
         // Random r = new Random();
         // playerId = r.Next(0, 32);
-        playerId = 0;
+        PlayerId = 0;
     }
 
     void FixedUpdate()
@@ -122,7 +121,7 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        short bulletLifeTime = GUN_BULLET_LIFE_TIME;
+        short bulletLifeTime = GUN_BULLET_LIFETIME;
         int bulletSpeed = GUN_BULLET_SPEED;
 
         var bullet = (GameObject)Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
@@ -153,23 +152,23 @@ public class Player : MonoBehaviour
             else
                 Debug.Log("picked up a gun!");
         }
-        else if (other.gameObject == otherPlayer)
-        {
-            Debug.Log("Entering");
-            playerInRange = true;
-            Debug.Log(playerInRange);
-        }
+        //else if (other.gameObject == otherPlayer)
+        //{
+        //    Debug.Log("Entering");
+        //    playerInRange = true;
+        //    Debug.Log(playerInRange);
+        //}
     }
 
 
-    void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject == otherPlayer)
-        {
-            Debug.Log("Leaving");
-            playerInRange = false;
-        }
-    }
+    //void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject == otherPlayer)
+    //    {
+    //        Debug.Log("Leaving");
+    //        playerInRange = false;
+    //    }
+    //}
 
 
 }
