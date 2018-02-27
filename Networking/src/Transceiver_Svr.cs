@@ -175,7 +175,7 @@ namespace COMP4981_NetworkingTest
         private void sendUpdateToClients()
         {
             byte[] dequeued;
-            
+
             while (this.runSender)
             {
                 if (this.updateQueueToSend.TryDequeue(out dequeued))
@@ -254,9 +254,10 @@ namespace COMP4981_NetworkingTest
         /// </summary>
         public void StartReceiver()
         {
-            this.runReceiver = false;
+            this.runReceiver = true;
             this.thrDatagramRcvr = new Thread(receiveFromClient);
             this.thrRxQueueReader = new Thread(readFromRcvdQueue);
+            this.thrDatagramRcvr.Start();
             this.thrRxQueueReader.Start();
         }
 
@@ -283,15 +284,14 @@ namespace COMP4981_NetworkingTest
         {
             byte[] buffRcvd;
 
-            while (runReceiver)
+            while (this.runReceiver)
             {
                 // TODO: use low level function to read from all connections
                 foreach (Connection conn in connPool)
                 {
                     buffRcvd = new byte[BUFF_SIZE];
-                    if (conn.ReadFromBuffer(buffRcvd))
+                    if (conn.ReadFromBuffer(ref buffRcvd))
                     {
-                        buffRcvd.CopyTo(buffRcvd, 0);
                         this.rcvdDatagramQueue.Enqueue(buffRcvd);
                     }
                     else
@@ -303,7 +303,7 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
-        /// Receives datagrams from clients.
+        /// Retrieves queued received messages and process them.
         /// 
         /// TODO: implement details.
         /// 
@@ -400,7 +400,7 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
-        /// Decapsulates received datagram
+        /// Decapsulates received datagram.
         /// 
         /// Author: Jeremy L
         /// </summary>
@@ -427,7 +427,7 @@ namespace COMP4981_NetworkingTest
         }
 
         /// <summary>
-        /// Deserializes the decapsulated datagram
+        /// Deserializes the decapsulated datagram.
         /// 
         /// Author: Jeremy L
         /// </summary>
