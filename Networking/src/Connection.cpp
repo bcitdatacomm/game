@@ -9,7 +9,7 @@
 */
 
 
-    Connection::Connection(struct sockaddr_in client, struct sockaddr_in server, int socketID)
+    Connection::Connection(sockaddr_in client, sockaddr_in server, int socketID)
         : m_in(server)
         , m_out(client)
         , m_socketID(socketID)
@@ -48,6 +48,16 @@
         return m_socketID;
     }
 
+	void Connection::write(const char * data, uint32_t len)
+	{
+
+		if (len + bufPos < MAX_BUF_SIZE)
+		{
+			memcpy(&m_buffer[bufPos], data, len);
+
+		}
+	}
+
     char* Connection::getBufferAddress()
     {
         return m_buffer;
@@ -64,3 +74,6 @@
         m_connectionStatus = newStatus;
     }
 
+// int main() {
+//     return 1;
+// }

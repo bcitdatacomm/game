@@ -10,9 +10,9 @@ public class NetworkConnectionDC
     //Transport layer host ID for this connection
     private int hostId = -1;
     //Unique identifier for this connection
-    private connectionId = -1;
+    private int connectionId = -1;
     private NetworkWriter m_Writer;
-    private isReady;
+    private bool isReady;
     //IP Address associated with the connection
     private string address;
     //Time last message was received on this connection
@@ -76,4 +76,14 @@ public class NetworkConnectionDC
     {
 
     }
+
+    [DllImport("CppLibrary.so")]
+    public static extern IntPtr CreateServer();
+
+    public static extern 
+
+
+
 }
+
+
