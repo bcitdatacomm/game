@@ -36,6 +36,7 @@ public:
 
 private:
 	int udpSocket;
+
 	sockaddr_in serverAddr;
 	struct pollfd* poll_events;
 

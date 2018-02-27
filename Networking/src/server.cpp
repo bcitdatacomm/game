@@ -1,3 +1,4 @@
+
 #ifndef SERVER_DEF
 #include "server.h"
 #define SERVER_DEF
@@ -32,6 +33,7 @@ int32_t Server::initializeSocket(short port)
 	int error = -1;
 
 	if ((error = bind(udpSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1))
+
 	{
 		perror("bind error: ");
 		return error;
@@ -51,6 +53,7 @@ int32_t Server::sendBytes(EndPoint ep, char * data, unsigned len)
 			
 	int32_t result = sendto(udpSocket, data, len, 0, (struct sockaddr*)&temp, sizeof(sockaddr_in));
 	return result;
+
 }
 
 sockaddr_in Server::getServerAddr() {
@@ -88,6 +91,7 @@ int32_t Server::UdpPollSocket()
 	int numfds = 1;
 	struct pollfd pollfds;
 	pollfds.fd = udpSocket;
+
 	pollfds.events = POLLIN;
 
 	int retVal = poll(&pollfds, numfds, 0);
@@ -101,43 +105,10 @@ int32_t Server::UdpPollSocket()
 	}
 
 	return SOCKET_NODATA;
+
 }
 
 
 
-/*
-int main() {
-	Server* serv = new Server();
-	serv->initializeSocket(5150);
-	int retVal;
-	int sockCount = 100;
-	while (true) {
-		if ((retVal = serv->UdpPollSocket()) == SOCKET_DATA_WAITING) {
-			std::cout << "received data" << std::endl;
-			EndPoint ep;
-			char buff[512];
-			int32_t result = serv->UdpRecvFrom(buff, 512, &ep);
-			
-			int a = ep.addr;
-			char* pChar;
- 
-			pChar = (char *)&a;
- 
-			std::cout << "IP addr:" << std::endl;
-			std::cout << pChar[3];
-			std::cout << pChar[2];
-			std::cout << pChar[1];
-			std::cout << pChar[0] << std::endl;
-			
-			std::cout << "Bytes received:  " << result << std::endl;
-			std::cout << buff << std::endl;
-			
-			int32_t sendRes = serv->sendBytes(ep, buff, result);
-			
-			std::cout << "Sent bytes: " <<  sendRes << std::endl;
-		
-		}
-	}
-	return 1;
-}
-*/
+
+

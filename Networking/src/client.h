@@ -20,6 +20,7 @@ public:
 	int32_t receiveBytes(char * buffer, uint32_t size);
 	int32_t UdpPollSocket();
 	void closeConnection();
+
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
