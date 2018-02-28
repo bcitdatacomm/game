@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 
 /*---------------------------------------------------------------------------------------
@@ -45,7 +47,7 @@ public class TerrainController
      */
     public struct Encoding
     {
-        public int[,] tiles;
+        public byte[,] tiles;
         public Building[] buildings;
     };
     public Encoding Data { get; set; }
@@ -78,8 +80,8 @@ public class TerrainController
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
     public const long DEFAULT_TILE_SIZE = 20;
-    public const long DEFAULT_CACTUS_COEFF = 1;
-    public const long DEFAULT_BUSH_COEFF = 1;
+    public const long DEFAULT_CACTUS_COEFF = 30; //30%
+    public const long DEFAULT_BUSH_COEFF = 30;
     public const string DEFAULT_NAME = "Terrain";
 
     /*-------------------------------------------------------------------------------------------------
@@ -123,7 +125,7 @@ public class TerrainController
     --
     -- INTERFACE: GenerateEncoding()
     --
-    -- RETURNS: void
+    -- RETURNS: boolean
     --
     -- NOTES:
     -- Generates an encoded 2D array with given width and height.
@@ -131,7 +133,7 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public bool GenerateEncoding()
     {
-        int[,] map = new int[this.Width, this.Length];
+        byte[,] map = new byte[this.Width, this.Length];
 
         for (long i = 0; i < this.Width; i++)
         {
@@ -140,7 +142,7 @@ public class TerrainController
                 // Check for border
                 if (i == 0 || i == this.Width || j == 0 || j == this.Length)
                 {
-                    map[i, j] = (int)TileTypes.GROUND;
+                    map[i, j] = (byte)TileTypes.GROUND;
                 }
                 else
                 {
@@ -149,30 +151,30 @@ public class TerrainController
                     {
                         if (randomValue < this.CactusCoeff)
                         {
-                            map[i, j] = (int)TileTypes.CACTUS;
+                            map[i, j] = (byte)TileTypes.CACTUS;
                         }
                         else if (randomValue < this.BushCoeff)
                         {
-                            map[i, j] = (int)TileTypes.BUSH;
+                            map[i, j] = (byte)TileTypes.BUSH;
                         }
                         else
                         {
-                            map[i, j] = (int)TileTypes.GROUND;
+                            map[i, j] = (byte)TileTypes.GROUND;
                         }
                     }
                     else
                     {
                         if (randomValue < this.BushCoeff)
                         {
-                            map[i, j] = (int)TileTypes.BUSH;
+                            map[i, j] = (byte)TileTypes.BUSH;
                         }
                         else if (randomValue < this.CactusCoeff)
                         {
-                            map[i, j] = (int)TileTypes.CACTUS;
+                            map[i, j] = (byte)TileTypes.CACTUS;
                         }
                         else
                         {
-                            map[i, j] = (int)TileTypes.GROUND;
+                            map[i, j] = (byte)TileTypes.GROUND;
                         }
                     }
                 }
@@ -192,7 +194,7 @@ public class TerrainController
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Benny Wang 
+    -- DESIGNER: Benny Wang
     --
     -- PROGRAMMER: Benny Wang 
     --
@@ -224,15 +226,72 @@ public class TerrainController
         {
             for (int j = 0; j < this.Data.tiles.GetLength(1); j++)
             {
-                tmp = System.BitConverter.GetBytes(this.Data.tiles[i, j]);
-                foreach (byte t in tmp)
-                {
-                    compressed.Add(t);
-                }
+                compressed.Add(this.Data.tiles[i, j]);
             }
         }
 
         this.CompressedData = compressed.ToArray();
+        this.CompressedData = compressByteArray();
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: compressByteArray()
+    --
+    -- DATE: Feb 28, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Roger Zhang 
+    --
+    -- PROGRAMMER: Roger Zhang 
+    --
+    -- INTERFACE: compressByteArray()
+    --
+    -- RETURNS: byte array of compressed data
+    --
+    -- NOTES:
+    -- Compress the byteArrayData to a smaller size using system I/O.
+    -------------------------------------------------------------------------------------------------*/
+    private byte[] compressByteArray()
+    {
+        MemoryStream compressedBA = new MemoryStream();
+        DeflateStream cstream = new DeflateStream(compressedBA, CompressionMode.Compress, true);
+        cstream.Write(this.CompressedData, 0, this.CompressedData.Length);
+        cstream.Close();
+        return compressedBA.ToArray();
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: compressByteArray()
+    --
+    -- DATE: Feb 28, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Roger Zhang 
+    --
+    -- PROGRAMMER: Roger Zhang 
+    --
+    -- INTERFACE: decompressByteArray(byte[] compBA)
+    --                          compBA - compressed data passed in
+    --
+    -- RETURNS: byte array of decompressed data
+    --
+    -- NOTES:
+    -- Decompress the byteArray to the normal byteArray size using system I/O.
+    -------------------------------------------------------------------------------------------------*/
+    private byte[] decompressByteArray(byte[] compBA)
+    {
+        MemoryStream decompressedBA = new MemoryStream(compBA);
+        DeflateStream dstream = new DeflateStream(decompressedBA, CompressionMode.Decompress, true);
+        int size = compBA.Length;
+        byte[] decompressedEncoding = new byte[size];
+        for (int i = 0; i < size; i++)
+        {
+            decompressedBA.Write(decompressedEncoding, 0, size);
+        }
+        dstream.Close();
+        return decompressedBA.ToArray();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -257,15 +316,24 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public void LoadByteArray(byte[] compressed)
     {
-        this.Width = System.BitConverter.ToInt32(compressed, 0);
-        this.Length = System.BitConverter.ToInt32(compressed, 4);
+        // Decompress first
+        byte[] decompressed = decompressByteArray(compressed);
 
-        int[,] map = new int[this.Width, this.Length];
-        for (int i = 8, x = 0, y = 0; i < compressed.Length; i += 4)
+        this.Width = System.BitConverter.ToInt64(decompressed, 0);
+        this.Length = System.BitConverter.ToInt64(decompressed, 8);
+
+        byte[,] map = new byte[this.Width, this.Length];
+
+        for (int i = 16; i < decompressed.Length;)
         {
-            map[x, y] = System.BitConverter.ToInt32(compressed, i);
-            x++;
-            y++;
+            for (long x = 0; x < this.Width; x++)
+            {
+                for (long y = 0; y < this.Length; y++)
+                {
+                    map[x, y] = decompressed[i];
+                    i++;
+                }
+            }
         }
 
         this.Data = new Encoding() { tiles = map, buildings = { } };
