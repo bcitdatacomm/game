@@ -52,8 +52,8 @@ namespace Networking
 
 			fixed( byte* tmpBuf = buffer) 
 			{
-					Int32 ret = ServerLibrary.Server_sendBytes (connection, server, new IntPtr (tmpBuf), bufLen);
-					return ret;
+				Int32 ret = ServerLibrary.Server_sendBytes (connection, server, new IntPtr (tmpBuf), bufLen);
+				return ret;
 			}
 
 		}
