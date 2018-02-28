@@ -56,13 +56,17 @@ public class gameServer : MonoBehaviour
 		for (int i  = 0; i < server.getNumConnections(); i++)
 		{
 			// Sets the coordinates for each player connected
-			double playerX = 0 + playerID;
-			double playerY = 0 + playerID;
+			float playerX = 0 + playerID;
+			float playerZ = 0 + playerID;
+            float rotation = 0;
 
 			System.Buffer.BlockCopy(System.BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
-			System.Buffer.BlockCopy(System.BitConverter.GetBytes(playerY), 0, clientData, offset + 4, 4);
+            offset += 4;
+			System.Buffer.BlockCopy(System.BitConverter.GetBytes(playerZ), 0, clientData, offset, 4);
+            offset += 4;
+            System.Buffer.BlockCopy(System.BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
+            offset += 4;
 
-			offset += 8;
 			playerID++;
 		}
 
