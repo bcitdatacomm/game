@@ -14,10 +14,10 @@ internal static unsafe class ServerLibrary
 	public static extern IntPtr Server_CreateServer();
 
 	[DllImport("Network.so")]
-	public static extern Int32 Server_sendBytes (IntPtr serverPtr, WrapperTest.EndPoint ep, IntPtr buffer, UInt32 len);
+	public static extern Int32 Server_sendBytes (IntPtr serverPtr, EndPoint ep, IntPtr buffer, UInt32 len);
 
 	[DllImport("Network.so")]
-	public static extern Int32 Server_recvBytes (IntPtr serverPtr, WrapperTest.EndPoint* ep, IntPtr buffer, UInt32 len);
+	public static extern Int32 Server_recvBytes (IntPtr serverPtr, EndPoint* ep, IntPtr buffer, UInt32 len);
 
 	[DllImport("Network.so")]
 	public static extern Int32 Server_PollSocket(IntPtr serverPtr);
