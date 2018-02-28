@@ -75,7 +75,7 @@ public class gameServer : MonoBehaviour
 		for (int i = 0; i < server.getNumConnections(); i++)
 		{
 			// Sets the player ID before being sent
-			clientData[372 + playerID] = playerID;
+			clientData[372] = playerID;
 
 			playerID++;
 			// Send each player their spawn location and ID
