@@ -230,7 +230,8 @@ public class TerrainController
             }
         }
 
-        this.CompressedData = compressByteArray(compressed.ToArray());
+        this.CompressedData = compressed.ToArray();
+        this.CompressedData = compressByteArray();
     }
 
     /*-------------------------------------------------------------------------------------------------
