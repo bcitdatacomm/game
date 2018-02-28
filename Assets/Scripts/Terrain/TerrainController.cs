@@ -251,11 +251,11 @@ public class TerrainController
     -- NOTES:
     -- Compress the byteArrayData to a smaller size using system I/O.
     -------------------------------------------------------------------------------------------------*/
-    private byte[] compressByteArray(byte[] input)
+    private byte[] compressByteArray()
     {
         MemoryStream compressedBA = new MemoryStream();
         DeflateStream cstream = new DeflateStream(compressedBA, CompressionMode.Compress, true);
-        cstream.Write(input, 0, input.Length);
+        cstream.Write(this.CompressedData, 0, this.CompressedData.Length);
         cstream.Close();
         return compressedBA.ToArray();
     }
