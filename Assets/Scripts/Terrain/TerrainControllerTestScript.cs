@@ -9,7 +9,9 @@ public class TerrainControllerTestScript : MonoBehaviour
     // Use this for initialization of the Terrain Object, and for testing function calls
     void Start()
     {
-        new TerrainController().Instantiate();
+        TerrainController tc = new TerrainController();
+        tc.GenerateEncoding();
+        tc.Instantiate();
     }
 
     // Unused
