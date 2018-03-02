@@ -2,7 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae59c394-1d50-4a63-93f1-6f2c3be4ab41" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/LoadSceneOnClick.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/QuitOnClick.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/SelectOnInput.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/Editor.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/Editor/SimpleHealthBarEditor.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/Editor/SimpleHealthBarWindow.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/README.txt.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/Scripts.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/Scripts/SimpleHealthBar.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts/AsteroidController.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts/GameManager.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts/HealthPickupController.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts/PlayerController.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/Simple Health Bar/_Asteroids Example/Scripts/PlayerHealth.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/GUI/TranslateCamera.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/Network/Client.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/Network/EndPoint.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/Scripts/Network/Server.cs.meta" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/Assets/smcs.rsp.meta" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.game/.idea/contentModel.xml" afterPath="$PROJECT_DIR$/.idea/.idea.game/.idea/contentModel.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.game/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.game/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/LoadSceneOnClick.cs.meta" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/QuitOnClick.cs.meta" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SelectOnInput.cs.meta" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TranslateCamera.cs.meta" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Assets/Simple Health Bar.meta" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -12,28 +42,27 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="gameServer.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+            <state relative-caret-position="180">
+              <caret line="15" column="4" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
               <folding>
-                <marker date="1519599670421" expanded="true" signature="6:92" ph="..." />
-                <marker date="1519599670421" expanded="true" signature="178:4372" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="451:2194" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="961:1289" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="1160:1285" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="1447:1799" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="1872:2067" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="1981:2063" ph="/* Send each player their spawn location and ID ... */" />
-                <marker date="1519599670421" expanded="true" signature="2071:2190" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
-                <marker date="1519599670421" expanded="true" signature="2198:2926" ph="/* Update is called once per frame ... */" />
-                <marker date="1519599670421" expanded="true" signature="3149:4370" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="3193:4364" ph="{...}" />
-                <marker date="1519599670421" expanded="true" signature="3324:3390" ph="/* Receive data from each client ... */" />
-                <marker date="1519599670421" expanded="true" signature="3465:3562" ph="/* Add all clients coordinates to toBroadcast ... */" />
-                <marker date="1519599670421" expanded="true" signature="3620:4354" ph="/* TODO: Bullets ... */" />
+                <marker date="1520028333530" expanded="false" signature="6:92" ph="..." />
+                <marker date="1520028333530" expanded="true" signature="178:3780" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="654:2574" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="1164:1492" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="1363:1488" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="1650:2190" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="2263:2447" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="2361:2443" ph="/* Send each player their spawn location and ID ... */" />
+                <marker date="1520028333530" expanded="true" signature="2451:2570" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
+                <marker date="1520028333530" expanded="true" signature="2593:3778" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="2637:3772" ph="{...}" />
+                <marker date="1520028333530" expanded="true" signature="2768:2834" ph="/* Receive data from each client ... */" />
+                <marker date="1520028333530" expanded="true" signature="2909:3006" ph="/* Add all clients coordinates to toBroadcast ... */" />
+                <marker date="1520028333530" expanded="true" signature="3064:3761" ph="/* TODO: Bullets ... */" />
               </folding>
             </state>
           </provider>
@@ -87,7 +116,7 @@
           <expand>
             <path>
               <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="game (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="game (2 projects)" type="977d5f41:SolutionExplorerNodeRider" />
             </path>
           </expand>
           <select />
@@ -130,11 +159,12 @@
       <option name="presentableId" value="Default" />
       <updated>1519588052750</updated>
       <workItem from="1519588057407" duration="8268000" />
+      <workItem from="1520027849875" duration="484000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8268000" />
+    <option name="totallyTimeSpent" value="8752000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -150,25 +180,25 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24609375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -183,64 +213,55 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520028333530" expanded="false" signature="6:92" ph="..." />
+            <marker date="1520028333530" expanded="true" signature="178:3780" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="654:2574" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1164:1492" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1363:1488" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1650:2190" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2263:2447" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2361:2443" ph="/* Send each player their spawn location and ID ... */" />
+            <marker date="1520028333530" expanded="true" signature="2451:2570" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
+            <marker date="1520028333530" expanded="true" signature="2593:3778" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2637:3772" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2768:2834" ph="/* Receive data from each client ... */" />
+            <marker date="1520028333530" expanded="true" signature="2909:3006" ph="/* Add all clients coordinates to toBroadcast ... */" />
+            <marker date="1520028333530" expanded="true" signature="3064:3761" ph="/* TODO: Bullets ... */" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/Terrain/TerrainController.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="370">
           <caret line="46" column="7" lean-forward="false" selection-start-line="46" selection-start-column="7" selection-end-line="46" selection-end-column="7" />
-          <folding>
-            <marker date="1519592663439" expanded="false" signature="6:44" ph="..." />
-            <marker date="1519592663439" expanded="true" signature="46:724" ph="/* --------------------------------------------------------------------------------------- ... */" />
-            <marker date="1519592663439" expanded="true" signature="755:6346" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="762:842" ph="/* Tile Types ... */" />
-            <marker date="1519592663439" expanded="true" signature="861:918" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="925:1022" ph="/* Encoding structure ... */" />
-            <marker date="1519592663439" expanded="true" signature="1049:1127" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="2072:2720" ph="/* ------------------------------------------------------------------------------------------------- ... */" />
-            <marker date="1519592663439" expanded="true" signature="2751:2974" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="2980:3590" ph="/* ------------------------------------------------------------------------------------------------- ... */" />
-            <marker date="1519592663439" expanded="true" signature="3625:5343" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="3733:5316" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="3794:5306" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="3921:4012" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4033:5292" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4171:4710" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4253:4368" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4431:4544" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4573:4688" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4735:5274" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4815:4928" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="4993:5108" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="5137:5252" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="5349:5935" ph="/* ------------------------------------------------------------------------------------------------- ... */" />
-            <marker date="1519592663439" expanded="true" signature="5965:6344" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="6024:6117" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="6348:6887" ph="/* -------------------------------------------------------------------------------------------------------------- ... */" />
-            <marker date="1519592663439" expanded="true" signature="6909:6941" ph="{...}" />
-            <marker date="1519592663439" expanded="true" signature="6926:6939" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/GameController/Server/gameServer.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+        <state relative-caret-position="180">
+          <caret line="15" column="4" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
           <folding>
-            <marker date="1519599670421" expanded="true" signature="6:92" ph="..." />
-            <marker date="1519599670421" expanded="true" signature="178:4372" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="451:2194" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="961:1289" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="1160:1285" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="1447:1799" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="1872:2067" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="1981:2063" ph="/* Send each player their spawn location and ID ... */" />
-            <marker date="1519599670421" expanded="true" signature="2071:2190" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
-            <marker date="1519599670421" expanded="true" signature="2198:2926" ph="/* Update is called once per frame ... */" />
-            <marker date="1519599670421" expanded="true" signature="3149:4370" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="3193:4364" ph="{...}" />
-            <marker date="1519599670421" expanded="true" signature="3324:3390" ph="/* Receive data from each client ... */" />
-            <marker date="1519599670421" expanded="true" signature="3465:3562" ph="/* Add all clients coordinates to toBroadcast ... */" />
-            <marker date="1519599670421" expanded="true" signature="3620:4354" ph="/* TODO: Bullets ... */" />
+            <marker date="1520028333530" expanded="false" signature="6:92" ph="..." />
+            <marker date="1520028333530" expanded="true" signature="178:3780" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="654:2574" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1164:1492" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1363:1488" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="1650:2190" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2263:2447" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2361:2443" ph="/* Send each player their spawn location and ID ... */" />
+            <marker date="1520028333530" expanded="true" signature="2451:2570" ph="/* Wait for all IDs to be echoed back as ACK, retransit ID on timeout ... */" />
+            <marker date="1520028333530" expanded="true" signature="2593:3778" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2637:3772" ph="{...}" />
+            <marker date="1520028333530" expanded="true" signature="2768:2834" ph="/* Receive data from each client ... */" />
+            <marker date="1520028333530" expanded="true" signature="2909:3006" ph="/* Add all clients coordinates to toBroadcast ... */" />
+            <marker date="1520028333530" expanded="true" signature="3064:3761" ph="/* TODO: Bullets ... */" />
           </folding>
         </state>
       </provider>
