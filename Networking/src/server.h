@@ -3,10 +3,10 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <map>
 #include <poll.h>
 #include <iostream>
 #include <string.h>
+#include "EndPoint.h"
 #ifndef SOCK_NONBLOCK
 #include <fcntl.h>
 #define SOCK_NONBLOCK O_NONBLOCK
@@ -15,10 +15,6 @@
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 
-struct EndPoint {
-	uint32_t addr;
-	uint16_t port;
-};
 
 class Server {
 
