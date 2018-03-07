@@ -80,7 +80,7 @@ public class TerrainController
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
     public const long DEFAULT_TILE_SIZE = 20;
-    public const long DEFAULT_CACTUS_COEFF = 30; //30%
+    public const long DEFAULT_CACTUS_COEFF = 30;
     public const long DEFAULT_BUSH_COEFF = 30;
     public const string DEFAULT_NAME = "Terrain";
 
