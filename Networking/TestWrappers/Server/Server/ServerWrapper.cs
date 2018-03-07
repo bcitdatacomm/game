@@ -1,16 +1,15 @@
 ﻿using System;
 
-
-namespace Networking
+namespace Server
 {
-	public unsafe class Server
+	public unsafe class ServerWrapper
 	{
 		public static Int32 SOCKET_NO_DATA = 0;
 		public static Int32 SOCKET_DATA_WAITING = 1;
 
 		private IntPtr server;
 
-		public Server()
+		public ServerWrapper()
 		{
 			server = ServerLibrary.Server_CreateServer();
 
@@ -29,26 +28,29 @@ namespace Networking
 
 
 		/**
-		 * Parameters: 
-		 * - EndPoint * ep: a pointer to an an
-		 * 
-		*/
-		public Int32 Recv(EndPoint * ep, byte[] buffer, Int32 len)
+         * Parameters: 
+         * - EndPoint * ep: a pointer to an an
+         * 
+        */
+		public Int32 Recv(ref EndPoint ep, byte[] buffer, Int32 len)
 		{
-			fixed(byte* tmpBuf = buffer) 
+			Int32 length;
+			fixed (byte* tmpBuf = buffer)
 			{
-				UInt32 bufLen = Convert.ToUInt32 (len);
-				Int32 length = ServerLibrary.Server_recvBytes(server, ep, new IntPtr(tmpBuf), bufLen);
-
+				fixed(EndPoint * p = &ep) 
+				{
+					UInt32 bufLen = Convert.ToUInt32(len);
+					length = ServerLibrary.Server_recvBytes(server, p, new IntPtr(tmpBuf), bufLen);
+				}
 				return length;
 			}
 		}
 
 		public Int32 Send(EndPoint ep, byte[] buffer, Int32 len)
 		{
-			fixed( byte* tmpBuf = buffer)
+			fixed (byte* tmpBuf = buffer)
 			{
-				UInt32 bufLen = Convert.ToUInt32 (len);
+				UInt32 bufLen = Convert.ToUInt32(len);
 				Int32 ret = ServerLibrary.Server_sendBytes(server, ep, new IntPtr(tmpBuf), bufLen);
 				return ret;
 			}
