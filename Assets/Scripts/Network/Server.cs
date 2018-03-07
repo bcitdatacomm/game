@@ -33,13 +33,16 @@ namespace Networking
 		 * - EndPoint * ep: a pointer to an an
 		 * 
 		*/
-		public Int32 Recv(EndPoint * ep, byte[] buffer, Int32 len)
+		public Int32 Recv(ref EndPoint ep, byte[] buffer, Int32 len)
 		{
-			fixed(byte* tmpBuf = buffer) 
+			Int32 length;
+			fixed (byte* tmpBuf = buffer)
 			{
-				UInt32 bufLen = Convert.ToUInt32 (len);
-				Int32 length = ServerLibrary.Server_recvBytes(server, ep, new IntPtr(tmpBuf), bufLen);
-
+				fixed(EndPoint * p = &ep) 
+				{
+					UInt32 bufLen = Convert.ToUInt32(len);
+					length = ServerLibrary.Server_recvBytes(server, p, new IntPtr(tmpBuf), bufLen);
+				}
 				return length;
 			}
 		}
