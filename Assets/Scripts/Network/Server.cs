@@ -22,9 +22,10 @@ namespace Networking
 			return err;
 		}
 
-		public Int32 Poll()
+		public bool Poll()
 		{
-			return ServerLibrary.Server_PollSocket(server);
+			Int32 p = ServerLibrary.Server_PollSocket(server);
+			return Convert.ToBoolean (p);
 		}
 
 
