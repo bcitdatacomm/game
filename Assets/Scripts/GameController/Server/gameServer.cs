@@ -97,9 +97,25 @@ public unsafe class gameServer : MonoBehaviour
             ticks++;
             nextTickTime += tickTime;
             Debug.Log("Tick Number: " + ticks);
- 
+
             // Receive data from each client
- 
+
+            // Add ID's of all players in the game
+            int offset = 373;
+            clientData[0] = 85;
+
+            foreach (connection conn in endpoints)
+            {
+                clientData[offset] = conn.connID;
+                offset++;
+            }
+
+            // Send the packet to each client
+            foreach (connection conn in endpoints)
+            {
+                server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+            }
+
             // Clear toBroadcast
             Array.Clear(toBroadcast, 0, toBroadcast.Length);
  
@@ -157,6 +173,10 @@ public unsafe class gameServer : MonoBehaviour
                             && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
                         {
                             recvConn = conn;
+                            if (recvBuffer[0].Equals(85))
+                            {
+                                updateCoord(recvConn.connID, recvBuffer);
+                            }
                             newConn = false;
                         }
                     }
@@ -179,10 +199,11 @@ public unsafe class gameServer : MonoBehaviour
         }
     } //End of recvThrdFunc
 
+    //Creates a new player's information
     private static void sendInitData(byte pID, EndPoint ep)
     {
         clientData[0] = 0;
-        clientData[372] = pID;
+        clientData[373] = pID;
         float playerx = 0 + playerID;
         float playerz = 0 + playerID;
         float rotation = 0;
@@ -199,5 +220,31 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         server.Send(ep, clientData, MAX_BUFFER_SIZE);
+    }
+
+    // Takes the recieved coords and updates client data
+    private static void updateCoord(byte pID, byte[] recvConn)
+    {
+        int offset = 13 + (pID * 12);
+
+        float playerX = BitConverter.ToSingle(recvConn, offset);
+        offset += 4;
+
+        float playerZ = BitConverter.ToSingle(recvConn, offset);
+        offset += 4;
+
+        float rotation = BitConverter.ToSingle(recvConn, offset);
+        offset += 4;
+
+        offset = 13 + (pID * 12);
+
+        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
+        offset += 4;
+
+        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, offset, 4);
+        offset += 4;
+
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
+        offset += 4;
     }
 }
