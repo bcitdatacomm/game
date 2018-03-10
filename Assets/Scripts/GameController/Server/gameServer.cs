@@ -16,6 +16,8 @@ public unsafe class gameServer : MonoBehaviour
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
+    private static Mutex mutex = new Mutex();
+
     private static Int32 SOCKET_NODATA = 0;
     private static Int32 SOCKET_DATA_WAITING = 1;
     private static ushort PORT_NO = 9999;
@@ -28,22 +30,22 @@ public unsafe class gameServer : MonoBehaviour
     private TerrainController terrainController;
     private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
     byte[] toBroadcast = new byte[MAX_BUFFER_SIZE];
-   
+
     // Some example server calls
-    private EndPoint endpoint;
+    // private EndPoint endpoint;
     private static List<connection> endpoints;
     public struct connection
     {
         public EndPoint end;
-        public byte connID; 
+        public byte connID;
     }
-    static byte playerID = 0;
+    static byte playerID = 1;
 
     // Use this for initialization
     void Start ()
     {
         server = new Server();
-        endpoint = new EndPoint("192.168.0.18", 42069);
+        // endpoint = new EndPoint("192.168.0.21", 42069);
         terrainController = new TerrainController();
         while (!terrainController.GenerateEncoding());
         TerrainController.Encoding encoded = terrainController.Data;
@@ -56,7 +58,7 @@ public unsafe class gameServer : MonoBehaviour
         recvThread.Start();
 
 
-        server.Send(endpoint, Encoding.ASCII.GetBytes("ShitDick"), 8);
+        //server.Send(endpoint, Encoding.ASCII.GetBytes("ShitDick"), 8);
         // Make a terrain packet (byte array) with encoded
         byte[] terrainPacket = new byte[1200];
 
@@ -89,19 +91,21 @@ public unsafe class gameServer : MonoBehaviour
         // Start the game timer
 
     }
- 
+
     void Update()
     {
         if (Time.time > nextTickTime)
         {
             ticks++;
             nextTickTime += tickTime;
-            Debug.Log("Tick Number: " + ticks);
+            // Debug.Log("Tick Number: " + ticks);
 
             // Receive data from each client
 
             // Add ID's of all players in the game
             int offset = 373;
+
+            mutex.WaitOne();
             clientData[0] = 85;
 
             foreach (connection conn in endpoints)
@@ -115,16 +119,17 @@ public unsafe class gameServer : MonoBehaviour
             {
                 server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
             }
+            mutex.ReleaseMutex();
 
             // Clear toBroadcast
             Array.Clear(toBroadcast, 0, toBroadcast.Length);
- 
+
             // Add all clients coordinates to toBroadcast
- 
+
             // Broadcast update to all connections
 //            server.Broadcast(toBroadcast);
- 
- 
+
+
             // TODO: Bullets
             //      for(bullet in bullets) {
             //          for(player in players) {
@@ -139,7 +144,7 @@ public unsafe class gameServer : MonoBehaviour
             //              }
             //          }
             //      }
- 
+
         }
     }
 
@@ -169,6 +174,7 @@ public unsafe class gameServer : MonoBehaviour
 
                     foreach(connection conn in endpoints)
                     {
+                        // If its in there
                         if (ep.addr.Byte0 == conn.end.addr.Byte0 && ep.addr.Byte1 == conn.end.addr.Byte1
                             && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
                         {
@@ -180,19 +186,32 @@ public unsafe class gameServer : MonoBehaviour
                             newConn = false;
                         }
                     }
+
+                    // Add the new conneciton
                     if(newConn == true)
                     {
-                        recvConn.end = ep;
-                        recvConn.connID = playerID;
-                        playerID++;
-                        endpoints.Add(recvConn);
-                        sendInitData(playerID, ep);
+                        if (playerID < 31)
+                        {
+                            recvConn.end = ep;
+                            recvConn.connID = playerID;
+                            playerID++;
+                            endpoints.Add(recvConn);
+                            sendInitData(playerID, ep);
 
-                        playerID++;
+                            Debug.Log("New client added");
+
+                            string debug = "";
+                            foreach (connection c in endpoints)
+                            {
+                                debug += c.connID + " ";
+                            }
+
+                            Debug.Log(debug);
+                        }
                     }
 
-                    Console.WriteLine("Received: " + contents);
-                    Console.WriteLine("From EndPoint: " + ep.addr.Byte3 + "." + ep.addr.Byte2 + "." + ep.addr.Byte1 + "." + ep.addr.Byte0 + '\n');
+                    // Console.WriteLine("Received: " + contents);
+                    // Console.WriteLine("From EndPoint: " + ep.addr.Byte3 + "." + ep.addr.Byte2 + "." + ep.addr.Byte1 + "." + ep.addr.Byte0 + '\n');
                     // Console.WriteLine(ep.CAddr);
                 }
             }
@@ -202,6 +221,7 @@ public unsafe class gameServer : MonoBehaviour
     //Creates a new player's information
     private static void sendInitData(byte pID, EndPoint ep)
     {
+        mutex.WaitOne();
         clientData[0] = 0;
         clientData[373] = pID;
         float playerx = 0 + playerID;
@@ -220,6 +240,7 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         server.Send(ep, clientData, MAX_BUFFER_SIZE);
+        mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
@@ -238,6 +259,7 @@ public unsafe class gameServer : MonoBehaviour
 
         offset = 13 + (pID * 12);
 
+        mutex.WaitOne();
         Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
         offset += 4;
 
@@ -245,6 +267,7 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
+        mutex.ReleaseMutex();
         offset += 4;
     }
 }
