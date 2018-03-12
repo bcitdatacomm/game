@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -38,7 +38,8 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465785, g: 0.49641252, b: 0.574817, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 1537462827}
   - component: {fileID: 1537462826}
   - component: {fileID: 1537462825}
+  - component: {fileID: 1537462829}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -194,6 +195,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1537462829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1537462824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54499f3c59e1d0846855a58cff9414a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Smoothing: 5
+  playerRendered: 0
 --- !u!1 &1669547863
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,9 +245,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1669547863}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 360494eadcabd4095a71ecb8a27c228c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f377ae599ad9034aa3a3513f93d7b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Pickups: []
+  OtherPlayerPrefab: {fileID: 1491156618983716, guid: bc229d5b46adbc94ca7babe10ded46cb,
+    type: 2}
+  PlayerPrefab: {fileID: 1710733247378124, guid: f3c93dfd70af0fe45b8cdebdd9cc4218,
+    type: 2}
+  BulletPrefab: {fileID: 1777791287502176, guid: 7389d2277b61dc9458d492956adda06f,
+    type: 2}
+  NumberOfPlayers: 2
 --- !u!1 &2125908165
 GameObject:
   m_ObjectHideFlags: 0

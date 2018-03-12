@@ -1,0 +1,11 @@
+Installing C# dependencies...
+Platform: linux, x86_64, name=centos, version=7
+
+Downloading package 'OmniSharp for Linux (x64)' (23915 KB) .................... Done!
+Downloading package '.NET Core Debugger (linux / x64)' (55378 KB) .................... Done!
+
+Installing package 'OmniSharp for Linux (x64)'
+Installing package '.NET Core Debugger (linux / x64)'
+
+Finished
+Failed to spawn 'dotnet --info'
