@@ -39,6 +39,34 @@ int Client::initializeSocket(short port, char * server)
 	return 0;
 }
 
+/**
+	Initializes client TCP socket to receive initial game data.
+	@author Calvin Lai
+**/
+int Client::initializeTCPSocket(short port, char * server) 
+{
+	if ((clientTCPSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) {
+		perror("failed to initialize socket");
+		return -1;
+	}
+
+	memset(&serverAddr, 0, sizeof(struct sockaddr_in));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(port);
+
+	if(inet_pton(AF_INET, server, &serverAddr.sin_addr) <= 0)
+    {
+        printf("\n inet_pton error occured\n");
+        return -1;
+    } 
+
+    if (connect(clientTCPSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+    {
+       printf("\n Error : Connect Failed \n");
+       return -1;
+    } 
+	return 1;
+}
 
 
 /**
