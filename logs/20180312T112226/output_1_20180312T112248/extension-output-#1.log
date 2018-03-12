@@ -1,0 +1,40 @@
+Looking for git in: git
+Using git 1.8.3.1 from git
+git rev-parse --show-toplevel
+git config --get commit.template
+git status -z -u
+git symbolic-ref --short HEAD
+git rev-parse feature-team5-gamecontroller-refactor
+git rev-parse --symbolic-full-name --abbrev-ref feature-team5-gamecontroller-refactor@{u}
+git rev-list --left-right feature-team5-gamecontroller-refactor...origin/feature-team5-gamecontroller-refactor
+git for-each-ref --format %(refname) %(objectname) --sort -committerdate
+git remote --verbose
+git show :User/settings.json
+git status -z -u
+git symbolic-ref --short HEAD
+git rev-parse feature-team5-gamecontroller-refactor
+git rev-parse --symbolic-full-name --abbrev-ref feature-team5-gamecontroller-refactor@{u}
+git rev-list --left-right feature-team5-gamecontroller-refactor...origin/feature-team5-gamecontroller-refactor
+git for-each-ref --format %(refname) %(objectname) --sort -committerdate
+git remote --verbose
+git status -z -u
+git symbolic-ref --short HEAD
+git rev-parse feature-team5-gamecontroller-refactor
+git rev-parse --symbolic-full-name --abbrev-ref feature-team5-gamecontroller-refactor@{u}
+git rev-list --left-right feature-team5-gamecontroller-refactor...origin/feature-team5-gamecontroller-refactor
+git for-each-ref --format %(refname) %(objectname) --sort -committerdate
+git remote --verbose
+git status -z -u
+git symbolic-ref --short HEAD
+git rev-parse feature-team5-gamecontroller-refactor
+git rev-parse --symbolic-full-name --abbrev-ref feature-team5-gamecontroller-refactor@{u}
+git rev-list --left-right feature-team5-gamecontroller-refactor...origin/feature-team5-gamecontroller-refactor
+git for-each-ref --format %(refname) %(objectname) --sort -committerdate
+git remote --verbose
+git status -z -u
+git symbolic-ref --short HEAD
+git rev-parse feature-team5-gamecontroller-refactor
+git rev-parse --symbolic-full-name --abbrev-ref feature-team5-gamecontroller-refactor@{u}
+git rev-list --left-right feature-team5-gamecontroller-refactor...origin/feature-team5-gamecontroller-refactor
+git for-each-ref --format %(refname) %(objectname) --sort -committerdate
+git remote --verbose

@@ -1,0 +1,86 @@
+[2018-03-12 11:22:27.166] [sharedprocess] [info] main {"machineId":"e778de2f0556eadf521acbd700b20b0c6f3a83af8e9d355ad1b1be42dfaa91a9"}
+[2018-03-12 11:22:27.178] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:27.207] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:28.308] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:28.310] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:28.313] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:28.365] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:28.366] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:31.217] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:34.120] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:34.121] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:34.124] [sharedprocess] [info] Scanned user extensions: 0
+[2018-03-12 11:22:34.149] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:34.151] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:37.861] [sharedprocess] [info] Installing extension: vim
+[2018-03-12 11:22:38.287] [sharedprocess] [info] Downloaded extension: vim
+[2018-03-12 11:22:39.476] [sharedprocess] [info] Extracted extension to /root/.vscode/extensions/vscodevim.vim-0.11.2: vscodevim.vim-0.11.2
+[2018-03-12 11:22:39.526] [sharedprocess] [info] Updated metadata of the extension: vscodevim.vim-0.11.2
+[2018-03-12 11:22:39.526] [sharedprocess] [info] Extensions installed successfully: vscodevim.vim
+[2018-03-12 11:22:39.644] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:39.646] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:39.669] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:39.672] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:48.881] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.883] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.883] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.891] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.893] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.900] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.902] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:22:48.971] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:48.972] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:48.974] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:48.975] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:48.977] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:22:51.934] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:27:47.674] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:27:47.674] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:27:47.682] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:27:47.774] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:27:47.781] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:27:50.459] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:05.112] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:06.923] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:06.923] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:06.926] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:06.958] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:06.960] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:07.026] [sharedprocess] [info] Scanned user extensions: 1
+[2018-03-12 11:28:07.041] [sharedprocess] [info] Installing extension: csharp
+[2018-03-12 11:28:07.052] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:07.442] [sharedprocess] [info] Downloaded extension: csharp
+[2018-03-12 11:28:07.772] [sharedprocess] [info] Extracted extension to /root/.vscode/extensions/ms-vscode.csharp-1.14.0: ms-vscode.csharp-1.14.0
+[2018-03-12 11:28:07.795] [sharedprocess] [info] Updated metadata of the extension: ms-vscode.csharp-1.14.0
+[2018-03-12 11:28:07.795] [sharedprocess] [info] Extensions installed successfully: ms-vscode.csharp
+[2018-03-12 11:28:07.909] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:07.929] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:09.701] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.703] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.711] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.722] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.724] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.731] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.793] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:09.798] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:09.800] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:09.804] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:09.816] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.820] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:28:09.841] [sharedprocess] [info] Scanned system extensions: 65
+[2018-03-12 11:28:12.850] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:33:12.871] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:38:12.878] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:43:12.886] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:48:12.900] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:53:12.911] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 11:58:12.919] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:03:12.926] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:08:12.934] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:13:12.946] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:18:12.958] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:23:12.994] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:28:13.003] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:33:13.014] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:38:13.028] [sharedprocess] [info] Scanned user extensions: 2
+[2018-03-12 12:43:13.038] [sharedprocess] [info] Scanned user extensions: 2
