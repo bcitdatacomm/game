@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Spell : MonoBehaviour
 {
-
     void Start()
     {
 
