@@ -140,7 +140,7 @@ public unsafe class gameServer : MonoBehaviour
                             recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                updateCoord(recvConn, recvBuffer);
+                                updateCoord(ref recvConn, recvBuffer);
                             }
                             newConn = false;
                         }
@@ -153,7 +153,7 @@ public unsafe class gameServer : MonoBehaviour
                         {
                             recvConn.end = ep;
                             recvConn.connID = playerID;
-                            sendInitData(recvConn);
+                            sendInitData(ref recvConn);
                             recvConn.playerHealth = 100;
 
                             endpoints.Add(recvConn);
@@ -177,7 +177,7 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     //Creates a new player's information
-    private static void sendInitData(connection conn)
+    private static void sendInitData(ref connection conn)
     {
         clientData[0] = 0;
         clientData[373] = conn.connID;
@@ -207,7 +207,7 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(connection conn, byte[] recvConn)
+    private static void updateCoord(ref connection conn, byte[] recvConn)
     {
         int offset = (13 + (conn.connID * 12)) - 12;
 
