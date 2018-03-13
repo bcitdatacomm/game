@@ -12,6 +12,8 @@
 #define SOCK_NONBLOCK O_NONBLOCK
 #endif
 
+
+#define MAX_FD 1
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 

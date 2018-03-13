@@ -13,6 +13,7 @@ server.o:
 library.o:
 	$(CC) $(FLAGS) library.cpp
 
-make library: server.o library.o client.o
-	$(CC) -shared library.o server.o client.o -o libNetwork.so
-
+library: server.o library.o client.o
+	$(CC) -shared library.o server.o client.o -o libNetwork.so & cp libNetwork.so /usr/lib/
+clean:
+	rm -f *.o & rm -f libNetwork.so
