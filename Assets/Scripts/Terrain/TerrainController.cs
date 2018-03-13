@@ -88,8 +88,9 @@ public class TerrainController
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
     public const long DEFAULT_TILE_SIZE = 20;
-    public const long DEFAULT_CACTUS_COEFF = 30;
-    public const long DEFAULT_BUSH_COEFF = 30;
+    // Changed to a percentage - ALam
+    public const float DEFAULT_CACTUS_PERC = 0.9998f;
+    public const float DEFAULT_BUSH_PERC = 0.9997f;
     public const string DEFAULT_NAME = "Terrain";
 
     /*-------------------------------------------------------------------------------------------------
@@ -162,33 +163,15 @@ public class TerrainController
                     // Changed the comparison signs around
                     if (randomValue > this.CactusPerc)
                     {
-                        if (randomValue < this.CactusCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.CACTUS;
-                        }
-                        else if (randomValue < this.BushCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.BUSH;
-                        }
-                        else
-                        {
-                            map[i, j] = (byte)TileTypes.GROUND;
-                        }
+                        map[i, j] = (byte)TileTypes.CACTUS;
+                    }
+                    else if (randomValue > this.BushPerc)
+                    {
+                        map[i, j] = (byte)TileTypes.BUSH;
                     }
                     else
                     {
-                        if (randomValue < this.BushCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.BUSH;
-                        }
-                        else if (randomValue < this.CactusCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.CACTUS;
-                        }
-                        else
-                        {
-                            map[i, j] = (byte)TileTypes.GROUND;
-                        }
+                        map[i, j] = (byte)TileTypes.GROUND;
                     }
                 }
             }
