@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour {
 
     public int ID { get; set; }
+    public byte Type;
     public int Damage;
     public float Speed;
     public float LifeTime;
