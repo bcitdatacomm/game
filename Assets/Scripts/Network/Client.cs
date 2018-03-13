@@ -34,6 +34,12 @@ namespace Networking
 			return Convert.ToBoolean (p);
 		}
 
+        public bool Select()
+        {
+            Int32 s = ServerLibrary.Client_SelectSocket(connection);
+            return Convert.ToBoolean(s);
+        }
+
 		public Int32 Recv(byte[] buffer, Int32 len)
 		{
 			fixed(byte* tmpBuf = buffer) 
