@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Networking
 {
 	public unsafe class Server
@@ -28,6 +27,12 @@ namespace Networking
 			return Convert.ToBoolean (p);
 		}
 
+        // 2018.3.12
+        // As a future replacement for Poll(). Currently just a place holder.
+        public Int32 Select()
+        {
+            return ServerLibrary.Server_SelectSocket(server);
+        }
 
 		/**
 		 * Parameters: 

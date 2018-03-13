@@ -18,6 +18,9 @@ internal static unsafe class Server
 		[DllImport("Library.so")]
 		public static extern Int32 Server_PollSocket(IntPtr serverPtr);
 
+		[DllImport ("Network")]
+		public static extern Int32 Server_SelectSocket (IntPtr serverPtr);
+
 		[DllImport("Library.so")]
 		public static extern Int32 Server_initServer (IntPtr serverPtr, ushort port);
 
