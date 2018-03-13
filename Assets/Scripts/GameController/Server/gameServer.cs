@@ -177,25 +177,23 @@ public unsafe class gameServer : MonoBehaviour
     {
         clientData[0] = 0;
         clientData[373] = pID;
-        float playerx = 0 + pID;
-        float playerz = 0 + pID;
+        float playerX = 0 + Convert.ToInt32(pID);
+        float playerZ = 0 + Convert.ToInt32(pID);
         float rotation = 0;
-        int offset = (13 + (pID * 12)) - 12;
 
         // Store player coordinates in Connection object
-        coordX = playerx;
-        coordZ = playerz;
+        coordX = playerX;
+        coordZ = playerZ;
         rotate = rotation;
 
-        // sets the coordinates for each player connected
-        Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, clientData, offset, 4);
-        offset += 4;
+        int positionOffset = (13 + (pID * 8)) - 8;
+        int rotationOffset = (253 + (pID * 4)) - 4;
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerz), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
 
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
+
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
 
         server.Send(ep, clientData, MAX_BUFFER_SIZE);
     }
