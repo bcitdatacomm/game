@@ -33,6 +33,7 @@ public unsafe class gameServer : MonoBehaviour
     public struct connection
     {
         public EndPoint end;
+        public byte[] recvBuffer;
         public byte connID;
 
         public float coordX;
@@ -89,16 +90,38 @@ public unsafe class gameServer : MonoBehaviour
 
             clientData[0] = 85;
 
-            foreach (connection conn in endpoints)
+            connection conn = new connection();
+            for (int i = 0; i < endpoints.Count; i++)
             {
+                conn = endpoints[i];
+
+                // New connection
+                if (endpoints[i].connID == 0)
+                {
+                    conn.connID = playerID;
+                    conn.end = endpoints[i].end;
+                    conn.playerHealth = 100;
+
+                    sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
+                    playerID++;
+                }
+
+                // Update clientdata with new coordinates
+                if (endpoints[i].recvBuffer != null)
+                {
+                    updateCoord(conn.recvBuffer, conn.connID, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
+                    conn.recvBuffer = null;
+                }
+
+                // Add player id to clientdata
                 clientData[offset] = conn.connID;
                 offset++;
             }
 
             // Send the packet to each client
-            foreach (connection conn in endpoints)
+            for (int i = 0; i < endpoints.Count; i++)
             {
-                server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+                server.Send(endpoints[i].end, clientData, MAX_BUFFER_SIZE);
             }
         }
     }
@@ -136,7 +159,7 @@ public unsafe class gameServer : MonoBehaviour
                             recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                updateCoord(recvBuffer, recvConn.connID, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
+                                recvConn.recvBuffer = recvBuffer;
                             }
                             newConn = false;
                         }
@@ -148,12 +171,9 @@ public unsafe class gameServer : MonoBehaviour
                         if (playerID < 31)
                         {
                             recvConn.end = ep;
-                            recvConn.connID = playerID;
-                            sendInitData(recvConn.connID, recvConn.end, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
-                            recvConn.playerHealth = 100;
+                            recvConn.connID = 0;
 
                             endpoints.Add(recvConn);
-                            playerID++;
 
                             Debug.Log("New client added");
 
