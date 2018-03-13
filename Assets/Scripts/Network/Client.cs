@@ -50,7 +50,7 @@ namespace Networking
 
 			fixed( byte* tmpBuf = buffer) 
 			{
-				Int32 ret = ServerLibrary.Cilent_sendBytes (connection, new IntPtr (tmpBuf), bufLen);
+				Int32 ret = ServerLibrary.Client_sendBytes (connection, new IntPtr (tmpBuf), bufLen);
 				return ret;
 			}
 
