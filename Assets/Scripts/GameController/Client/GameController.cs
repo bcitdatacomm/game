@@ -153,23 +153,15 @@ public class GameController : MonoBehaviour {
     void addPlayer(byte id, Vector3 position, Quaternion rotation)
     {
         GameObject player;
-        Player playerScript;
 
         if (id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, position, rotation);
             // this.MainCamera.GetComponent<CameraFollow>().SetOffset(player.transform);
-
-            playerScript = player.GetComponent<Player>();
-            playerScript.ClientController = this;
-            playerScript.PlayerId = this.currentPlayerId;
         }
         else
         {
             player = (GameObject)Instantiate(this.EnemyPrefab, position, rotation);
-
-            playerScript = player.GetComponent<Player>();
-            playerScript.PlayerId = id;
         }
 
         this.players.Add(id, player);
