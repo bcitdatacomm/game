@@ -13,6 +13,10 @@ using UnityEditor;
 --	FUNCTIONS:		public TerrainController()
 --                  public bool GenerateEncoding()
 --                  public bool Instantiate()
+--                  public byte[] compressByteArray()
+--                  public byte[] decompressByteArray()
+--                  public void compressData()
+--                  public void LoadByteArray()
 --
 --	DATE:			Feb 16th, 2018
 --
@@ -77,6 +81,9 @@ public class TerrainController
     // Bush gameobject prefab
     public GameObject BushPrefab { get; set; }
 
+    //Occupied positions on the map
+    public List<Vector2> occupiedPositions;
+
     // Define default constants
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
@@ -112,6 +119,7 @@ public class TerrainController
         this.TileSize = DEFAULT_TILE_SIZE;
         this.CactusPerc = DEFAULT_CACTUS_PERC;
         this.BushPerc = DEFAULT_BUSH_PERC;
+        this.occupiedPositions = new List<Vector2>();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -157,10 +165,12 @@ public class TerrainController
                     if (randomValue > this.CactusPerc)
                     {
                         map[i, j] = (byte)TileTypes.CACTUS;
+                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.BushPerc)
                     {
                         map[i, j] = (byte)TileTypes.BUSH;
+                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else
                     {
@@ -251,7 +261,7 @@ public class TerrainController
     }
 
     /*-------------------------------------------------------------------------------------------------
-    -- FUNCTION: compressByteArray()
+    -- FUNCTION: decompressByteArray()
     --
     -- DATE: Feb 28, 2018
     --
