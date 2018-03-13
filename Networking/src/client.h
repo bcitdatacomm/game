@@ -13,6 +13,7 @@
 #define SOCK_NONBLOCK O_NONBLOCK
 #endif
 
+#define MAX_FD 1
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 
@@ -27,9 +28,11 @@ public:
 	int32_t sendBytes(char * data, uint32_t len);
 	int32_t receiveBytes(char * buffer, uint32_t size);
 	int32_t UdpPollSocket();
+	int32_t UdpSelectSocket();
 	void closeConnection();
 
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
+	fd_set rset, allset;
 };
