@@ -29,8 +29,8 @@ public unsafe class gameServer : MonoBehaviour
 
     private TerrainController terrainController;
     private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
-    
-    
+
+
     private static List<connection> endpoints;
     public struct connection
     {
@@ -46,11 +46,11 @@ public unsafe class gameServer : MonoBehaviour
     static byte playerID = 1;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         server = new Server();
         terrainController = new TerrainController();
-        while (!terrainController.GenerateEncoding());
+        while (!terrainController.GenerateEncoding()) ;
         TerrainController.Encoding encoded = terrainController.Data;
 
         server.Init(42069);
@@ -74,7 +74,7 @@ public unsafe class gameServer : MonoBehaviour
 
         // Wait for all IDs to be echoed back as ACK, retransit ID on timeout
         */
-        
+
         // Set the game timer
         // Start the game timer
 
@@ -131,7 +131,7 @@ public unsafe class gameServer : MonoBehaviour
                     newConn = true;
                     string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
 
-                    foreach(connection conn in endpoints)
+                    foreach (connection conn in endpoints)
                     {
                         // If it's in there
                         if (ep.addr.Byte0 == conn.end.addr.Byte0 && ep.addr.Byte1 == conn.end.addr.Byte1
@@ -140,20 +140,20 @@ public unsafe class gameServer : MonoBehaviour
                             recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                updateCoord(ref recvConn, recvBuffer);
+                                updateCoord(recvBuffer, recvConn.connID, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
                             }
                             newConn = false;
                         }
                     }
 
                     // Add the new connection
-                    if(newConn == true)
+                    if (newConn == true)
                     {
                         if (playerID < 31)
                         {
                             recvConn.end = ep;
                             recvConn.connID = playerID;
-                            sendInitData(ref recvConn);
+                            sendInitData(recvConn.connID, recvConn.end, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
                             recvConn.playerHealth = 100;
 
                             endpoints.Add(recvConn);
@@ -177,19 +177,19 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     //Creates a new player's information
-    private static void sendInitData(ref connection conn)
+    private static void sendInitData(byte pID, EndPoint ep, ref float coordX, ref float coordZ, ref float rotate)
     {
         clientData[0] = 0;
-        clientData[373] = conn.connID;
-        float playerx = 0 + conn.connID;
-        float playerz = 0 + conn.connID;
+        clientData[373] = pID;
+        float playerx = 0 + pID;
+        float playerz = 0 + pID;
         float rotation = 0;
-        int offset = (13 + (conn.connID * 12)) - 12;
+        int offset = (13 + (pID * 12)) - 12;
 
         // Store player coordinates in Connection object
-        conn.coordX = playerx;
-        conn.coordZ = playerz;
-        conn.rotation = rotation;
+        coordX = playerx;
+        coordZ = playerz;
+        rotate = rotation;
 
         mutex.WaitOne();
         // sets the coordinates for each player connected
@@ -202,14 +202,14 @@ public unsafe class gameServer : MonoBehaviour
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
         offset += 4;
 
-        server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+        server.Send(ep, clientData, MAX_BUFFER_SIZE);
         mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(ref connection conn, byte[] recvConn)
+    private static void updateCoord(byte[] recvConn, byte pID, ref float coordX, ref float coordZ, ref float rotate)
     {
-        int offset = (13 + (conn.connID * 12)) - 12;
+        int offset = (13 + (pID * 12)) - 12;
 
         float playerX = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
@@ -221,11 +221,11 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         // Store player coordinates in Connection object
-        conn.coordX = playerX;
-        conn.coordZ = playerZ;
-        conn.rotation = rotation;
+        coordX = playerX;
+        coordZ = playerZ;
+        rotate = rotation;
 
-        offset = (13 + (conn.connID * 12)) - 12;
+        offset = (13 + (pID * 12)) - 12;
 
         mutex.WaitOne();
         Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
