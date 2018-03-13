@@ -1,4 +1,3 @@
-#include "server.h"
 
 extern "C" Server *Server_CreateServer();
 
@@ -11,6 +10,17 @@ extern "C" int32_t Server_SelectSocket(void *);
 extern "C" int32_t Server_sendBytes(void *, EndPoint, char *, uint32_t len);
 
 extern "C" int32_t Server_recvBytes(void *, EndPoint *, char *, uint32_t);
+
+extern "C" TCPServer * TCPServer_CreateServer();
+
+extern "C" int32_t TCPServer_initServer(void *);
+
+extern "C" int32_t TCPServer_acceptConnection(void *);
+
+extern "C" int32_t TCPServer_sendBytes(void *, int32_t, char *, uint32_t);
+
+extern "C" int32_t TCPServer_recvBytes(void *, int32_t, char *, uint32_t);
+
 
 extern "C" Client *Client_CreateClient();
 

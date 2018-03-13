@@ -1,3 +1,5 @@
+#ifndef TCP_DEF
+#define TCP_DEF
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -8,14 +10,11 @@
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
-
-
-
 #include <stdio.h>
 #include <netdb.h>
 #include <errno.h>
 
-
+#include "EndPoint.h"
 
 #ifndef SOCK_NONBLOCK
 #include <fcntl.h>
@@ -25,10 +24,7 @@
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 
-struct EndPoint {
-	uint32_t addr;
-	uint16_t port;
-};
+
 
 class TCPServer {
 
@@ -38,15 +34,15 @@ public:
 	int32_t acceptConnection();
 	int32_t sendBytes(int clientSocket, char * data, unsigned len);
 	int32_t receiveBytes(int clientSocket, char * buffer, unsigned len);
-	
-	
+
+
 
 private:
-	int udpSocket;
+	int listenSocket;
 
 	sockaddr_in serverAddr;
 	struct pollfd* poll_events;
 
 };
 
- 
+#endif
