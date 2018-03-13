@@ -140,7 +140,7 @@ public unsafe class gameServer : MonoBehaviour
                             recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                updateCoord(recvBuffer, recvConn.connID, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
+                                updateCoord(recvBuffer, recvConn.connID, recvConn.end, ref recvConn.coordX, ref recvConn.coordZ, ref recvConn.rotation);
                             }
                             newConn = false;
                         }
@@ -207,9 +207,9 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(byte[] recvConn, byte pID, ref float coordX, ref float coordZ, ref float rotate)
+    private static void updateCoord(byte[] recvConn, byte pID, EndPoint ep, ref float coordX, ref float coordZ, ref float rotate)
     {
-        int offset = (13 + (pID * 12)) - 12;
+        int offset = 2;
 
         float playerX = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
@@ -235,6 +235,7 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
+        server.Send(ep, clientData, MAX_BUFFER_SIZE);
         mutex.ReleaseMutex();
         offset += 4;
     }
