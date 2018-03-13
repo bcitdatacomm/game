@@ -110,7 +110,7 @@ int32_t Server::UdpPollSocket()
 int32_t Server::UdpSelectSocket()
 {
 	rset = allset; // structure assignment
-	select(maxfd + 1, &rset, NULL, NULL, NULL);
+	select(MAX_FD, &rset, NULL, NULL, NULL);
 
 	if (FD_ISSET(udpSocket, &rset)) // a upd msg is ready to be read
 	{
