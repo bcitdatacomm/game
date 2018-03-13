@@ -8,29 +8,19 @@ public class Player : MonoBehaviour
 
     public float MovementSpeed;
 
-    public Gun PrimaryWeapon;
-
     public Spell[] Spells;
-
-    public Stack<Bullet> FiredShots;
 
     void Start()
     {
+        Debug.Log("Player start");
         this.Heath = 100;
-
-        // Change this to unarmed when it is made
-        this.PrimaryWeapon = null;
-
         this.Spells = new Spell[3];
-
-        this.FiredShots = new Stack<Bullet>();
     }
 
     void FixedUpdate()
     {
         this.move();
         this.turn();
-        this.attack();
     }
 
     void move()
@@ -43,10 +33,5 @@ public class Player : MonoBehaviour
     void turn()
     {
 
-    }
-
-    void attack()
-    {
-        
     }
 }
