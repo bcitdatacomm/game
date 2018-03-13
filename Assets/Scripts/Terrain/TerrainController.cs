@@ -119,7 +119,6 @@ public class TerrainController
         this.TileSize = DEFAULT_TILE_SIZE;
         this.CactusPerc = DEFAULT_CACTUS_PERC;
         this.BushPerc = DEFAULT_BUSH_PERC;
-        this.occupiedPositions = new List<Vector2>();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -165,12 +164,10 @@ public class TerrainController
                     if (randomValue > this.CactusPerc)
                     {
                         map[i, j] = (byte)TileTypes.CACTUS;
-                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.BushPerc)
                     {
                         map[i, j] = (byte)TileTypes.BUSH;
-                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else
                     {
