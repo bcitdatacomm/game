@@ -69,7 +69,7 @@ public unsafe class unityEchoServer : MonoBehaviour {
      */
     private void recvThrdFunc()
     {
-        Int32 result;
+        bool result;
         Int32 totalRecv = 0;
         Int32 numRecvPass = 0;
         Int32 numPollFail = 0;
@@ -83,34 +83,30 @@ public unsafe class unityEchoServer : MonoBehaviour {
         {
             result = server.Poll();
 			// If data is waiting at the socket
-            if (result == SOCKET_DATA_WAITING)
+            if (result)
             {
                 Debug.Log("Poll success.");
 
-                fixed (EndPoint* ep_ptr = &ep)
+                numRecv = server.Recv(ref ep, recvBuffer, MAX_BUFFER_SIZE);
+                if (numRecv <= 0)
                 {
-                    numRecv = server.Recv(ep_ptr, recvBuffer, MAX_BUFFER_SIZE);
-                    if (numRecv <= 0)
+                    Debug.Log("Received Nothing.");
+                }
+                else
+                {
+                    numRecvPass++;
+                    Debug.Log("Received.");
+
+					/*Collapsable debug logs*/
+                    //string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
+                    ////Debug.Log("Received: " + numRecv);
+                    //Debug.Log("Contents: " + contents);
+                    //Debug.Log("From EP: " + ep.addr.Byte3 + '.' + ep.addr.Byte2 + '.' + ep.addr.Byte1 + '.' + ep.addr.Byte0);
+
+                    numBytesSent = server.Send(ep, recvBuffer, MAX_BUFFER_SIZE);
+                    if (numBytesSent != 0)
                     {
-                        Debug.Log("Received Nothing.");
-                    }
-                    else
-                    {
-                        numRecvPass++;
-                        Debug.Log("Received.");
-
-						/*Collapsable debug logs*/
-                        //string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
-                        ////Debug.Log("Received: " + numRecv);
-                        //Debug.Log("Contents: " + contents);
-                        //Debug.Log("From EP: " + ep.addr.Byte3 + '.' + ep.addr.Byte2 + '.' + ep.addr.Byte1 + '.' + ep.addr.Byte0);
-
-                        numBytesSent = server.Send(ep, recvBuffer, MAX_BUFFER_SIZE);
-                        if (numBytesSent != 0)
-                        {
-                            Debug.Log("Sent.");
-                        }
-
+                        Debug.Log("Sent.");
                     }
                 }
             }
