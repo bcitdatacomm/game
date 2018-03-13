@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <map>
 #include <poll.h>
+#include <errno.h>
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
@@ -31,14 +32,14 @@ class TCPServer {
 public:
 	TCPServer();
 	int32_t initializeSocket(short port);
-	int32_t acceptConnection();
+	int32_t acceptConnection(sockaddr_in*);
 	int32_t sendBytes(int clientSocket, char * data, unsigned len);
 	int32_t receiveBytes(int clientSocket, char * buffer, unsigned len);
 
 
 
 private:
-	int listenSocket;
+	int tcpSocket;
 
 	sockaddr_in serverAddr;
 	struct pollfd* poll_events;
