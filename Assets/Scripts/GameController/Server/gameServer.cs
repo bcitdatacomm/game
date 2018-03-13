@@ -96,7 +96,7 @@ public unsafe class gameServer : MonoBehaviour
                 conn = endpoints[i];
 
                 // New connection
-                if (endpoints[i].connID == 0)
+                if (endpoints[i].connID == 0 && playerID < 31)
                 {
                     conn.connID = playerID;
                     conn.end = endpoints[i].end;
@@ -121,7 +121,10 @@ public unsafe class gameServer : MonoBehaviour
             // Send the packet to each client
             for (int i = 0; i < endpoints.Count; i++)
             {
-                server.Send(endpoints[i].end, clientData, MAX_BUFFER_SIZE);
+                if (endpoints[i].connID != 0)
+                {
+                    server.Send(endpoints[i].end, clientData, MAX_BUFFER_SIZE);
+                }
             }
         }
     }
