@@ -16,8 +16,6 @@ public unsafe class gameServer : MonoBehaviour
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
-    private static Mutex mutex = new Mutex();
-
     private static Int32 SOCKET_NODATA = 0;
     private static Int32 SOCKET_DATA_WAITING = 1;
     private static ushort PORT_NO = 9999;
@@ -97,13 +95,11 @@ public unsafe class gameServer : MonoBehaviour
                 offset++;
             }
 
-            mutex.WaitOne();
             // Send the packet to each client
             foreach (connection conn in endpoints)
             {
                 server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
             }
-            mutex.ReleaseMutex();
         }
     }
 
@@ -191,7 +187,6 @@ public unsafe class gameServer : MonoBehaviour
         coordZ = playerz;
         rotate = rotation;
 
-        mutex.WaitOne();
         // sets the coordinates for each player connected
         Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, clientData, offset, 4);
         offset += 4;
@@ -203,14 +198,12 @@ public unsafe class gameServer : MonoBehaviour
         offset += 4;
 
         server.Send(ep, clientData, MAX_BUFFER_SIZE);
-        mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
     private static void updateCoord(byte[] recvConn, byte pID, ref float coordX, ref float coordZ, ref float rotate)
     {
-        int offset = (13 + (pID * 12)) - 12;
-
+        int offset = 2;
         float playerX = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
 
@@ -225,17 +218,13 @@ public unsafe class gameServer : MonoBehaviour
         coordZ = playerZ;
         rotate = rotation;
 
-        offset = (13 + (pID * 12)) - 12;
+        int positionOffset = (13 + (pID * 8)) - 8;
+        int rotationOffset = (253 + (pID * 4)) - 4;
 
-        mutex.WaitOne();
-        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
 
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
-        mutex.ReleaseMutex();
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
     }
 }
