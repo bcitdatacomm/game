@@ -15,26 +15,22 @@
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 
-
-class Server {
-
-public:
+class Server
+{
+  public:
 	Server();
 	int initializeSocket(short port);
-	int32_t sendBytes(EndPoint ep, char * data, unsigned len);
+	int32_t sendBytes(EndPoint ep, char *data, unsigned len);
 	int32_t UdpPollSocket();
-	int32_t UdpRecvFrom(char * buffer, uint32_t size, EndPoint * addr);
+	int32_t UdpSelectSocket();
+	int32_t UdpRecvFrom(char *buffer, uint32_t size, EndPoint *addr);
 	sockaddr_in getServerAddr();
-	
-	void setEndPointIp(EndPoint * ep, char zero, char one, char two, char three);
-	
-	
 
-private:
+	void setEndPointIp(EndPoint *ep, char zero, char one, char two, char three);
+
+  private:
 	int udpSocket;
-
 	sockaddr_in serverAddr;
-	struct pollfd* poll_events;
-
+	struct pollfd *poll_events;
+	fd_set rset, allset;
 };
-
