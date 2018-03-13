@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour {
         this.ID = GetInstanceID();
     }
 
-    void Update()
+    void FixedUpdate()
     {
 
     }
