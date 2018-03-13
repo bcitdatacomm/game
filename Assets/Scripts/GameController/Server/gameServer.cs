@@ -176,6 +176,7 @@ public unsafe class gameServer : MonoBehaviour
                     {
                         if (playerID < 31)
                         {
+                            recvConn = new connection();
                             recvConn.end = ep;
                             recvConn.connID = 0;
 
