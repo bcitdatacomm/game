@@ -18,12 +18,12 @@ public class GameController : MonoBehaviour {
     public const int ROTATION_OFFSET = 253;
 
     private byte currentPlayerId;
+
     private Dictionary<byte, GameObject> players;
 
     byte[] buffer;
     private Client client;
 
-    public Camera MainCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour {
 
     void Update()
     {
-        if (currentPlayerId != 0)
+        if (this.currentPlayerId != 0)
         {
             this.updateGameState();
         }
@@ -86,6 +86,8 @@ public class GameController : MonoBehaviour {
         }
 
         this.movePlayers(playerIDs, positions, rotations);
+
+        // 
     }
 
     void syncWithServer()
@@ -157,7 +159,6 @@ public class GameController : MonoBehaviour {
         if (id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, position, rotation);
-            // this.MainCamera.GetComponent<CameraFollow>().SetOffset(player.transform);
         }
         else
         {
@@ -185,16 +186,35 @@ public class GameController : MonoBehaviour {
 
     void sendPlayerDataToServer()
     {
+        int index = 2;
         GameObject currentPlayer = this.players[this.currentPlayerId];
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
 
+        // Put position data into the packet
         this.buffer[0] = TICK_HEADER;
         this.buffer[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, this.buffer, 2,  4);
-        Array.Copy(z    , 0, this.buffer, 6,  4);
-        Array.Copy(pheta, 0, this.buffer, 10, 4);
+        Array.Copy(x    , 0, this.buffer, index,  4);
+        index += 4;
+        Array.Copy(z    , 0, this.buffer, index,  4);
+        index += 4;
+        Array.Copy(pheta, 0, this.buffer, index, 4);
+        index += 4;
+
+        // Let the server know that a shot has been fired
+        Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Player>().FiredShots;
+
+        while (playerBullets.Count > 0)
+        {
+            Bullet bullet = playerBullets.Pop();
+            byte[] bulletID = BitConverter.GetBytes(bullet.ID);
+
+            Array.Copy(bulletID, 0, this.buffer, index, 4);
+            index += 4;
+
+            this.buffer[index] = bullet.Type;
+        }
 
         this.client.Send(this.buffer, PACKET_SIZE);
     }
