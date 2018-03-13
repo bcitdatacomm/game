@@ -112,6 +112,7 @@ public unsafe class gameServer : MonoBehaviour
                 {
                     updateCoord(conn.recvBuffer, conn.connID, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
                     conn.recvBuffer = null;
+                    endpoints[i] = conn;
                 }
 
                 // Add player id to clientdata
@@ -154,16 +155,17 @@ public unsafe class gameServer : MonoBehaviour
                     newConn = true;
                     string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
 
-                    foreach (connection conn in endpoints)
+                    for (int i = 0; i < endpoints.Count; i++)
                     {
                         // If it's in there
-                        if (ep.addr.Byte0 == conn.end.addr.Byte0 && ep.addr.Byte1 == conn.end.addr.Byte1
-                            && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
+                        if (ep.addr.Byte0 == endpoints[i].end.addr.Byte0 && ep.addr.Byte1 == endpoints[i].end.addr.Byte1
+                            && ep.addr.Byte2 == endpoints[i].end.addr.Byte2 && ep.addr.Byte3 == endpoints[i].end.addr.Byte3)
                         {
-                            recvConn = conn;
+                            recvConn = endpoints[i];
                             if (recvBuffer[0].Equals(85))
                             {
                                 recvConn.recvBuffer = recvBuffer;
+                                endpoints[i] = recvConn;
                             }
                             newConn = false;
                         }
