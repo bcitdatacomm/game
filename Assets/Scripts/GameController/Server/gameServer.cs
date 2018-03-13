@@ -29,10 +29,8 @@ public unsafe class gameServer : MonoBehaviour
 
     private TerrainController terrainController;
     private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
-    byte[] toBroadcast = new byte[MAX_BUFFER_SIZE];
-
-    // Some example server calls
-    // private EndPoint endpoint;
+    
+    
     private static List<connection> endpoints;
     public struct connection
     {
@@ -51,7 +49,6 @@ public unsafe class gameServer : MonoBehaviour
     void Start ()
     {
         server = new Server();
-        // endpoint = new EndPoint("192.168.0.21", 42069);
         terrainController = new TerrainController();
         while (!terrainController.GenerateEncoding());
         TerrainController.Encoding encoded = terrainController.Data;
@@ -63,8 +60,8 @@ public unsafe class gameServer : MonoBehaviour
         running = true;
         recvThread.Start();
 
-
-        //server.Send(endpoint, Encoding.ASCII.GetBytes("ShitDick"), 8);
+        /*
+         TODO: Implement this in TCP
         // Make a terrain packet (byte array) with encoded
         byte[] terrainPacket = new byte[1200];
 
@@ -72,27 +69,12 @@ public unsafe class gameServer : MonoBehaviour
         terrainPacket[0] = 15;
         int packetSize = 1;
 
-        // Add data (compressedData should get merged in soon)
-        //foreach (byte dataByte in encoded.compressedData)
-        //{
-        //    // Add all the bytes to the packet
-        //    terrainPacket[packetSize] = dataByte;
-
-        //    packetSize += 1;
-
-        //    // If we hit the packet size, send the packet and start over
-        //    if (packetSize == 1200)
-        //    {
-        //        // Send the packet THIS NEEDS TO BE RELIABLE (future)
-        //        server.Broadcast(terrainPacket);
-        //        packetSize = 1;
-        //    }
-        //}
-
         long tileWidth = this.terrainController.Width;
         long tileLength = this.terrainController.Length;
 
         // Wait for all IDs to be echoed back as ACK, retransit ID on timeout
+        */
+        
         // Set the game timer
         // Start the game timer
 
@@ -104,11 +86,7 @@ public unsafe class gameServer : MonoBehaviour
         {
             ticks++;
             nextTickTime += tickTime;
-            // Debug.Log("Tick Number: " + ticks);
 
-            // Receive data from each client
-
-            // Add ID's of all players in the game
             int offset = 373;
 
             mutex.WaitOne();
@@ -126,30 +104,6 @@ public unsafe class gameServer : MonoBehaviour
                 server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
             }
             mutex.ReleaseMutex();
-
-            // Clear toBroadcast
-            Array.Clear(toBroadcast, 0, toBroadcast.Length);
-
-            // Add all clients coordinates to toBroadcast
-
-            // Broadcast update to all connections
-//            server.Broadcast(toBroadcast);
-
-
-            // TODO: Bullets
-            //      for(bullet in bullets) {
-            //          for(player in players) {
-            //              //copied http://cgp.wikidot.com/circle-to-circle-collision-detection
-            //              //compare the distance to combined radii
-            //              int dx = x2 - x1;
-            //              int dy = y2 - y1;
-            //              int radii = radius1 + radius2;
-            //              if ( ( dx * dx )  + ( dy * dy ) < radii * radii )
-            //              {
-            //                  Console.WriteLine("The 2 circles are colliding!");
-            //              }
-            //          }
-            //      }
 
         }
     }
@@ -171,7 +125,7 @@ public unsafe class gameServer : MonoBehaviour
                 numRead = server.Recv(&ep, recvBuffer, MAX_BUFFER_SIZE);
                 if (numRead <= 0)
                 {
-                    Console.WriteLine("Failed to read from socket.");
+                    Debug.Log("Failed to read from socket.");
                 }
                 else
                 {
@@ -180,31 +134,30 @@ public unsafe class gameServer : MonoBehaviour
 
                     foreach(connection conn in endpoints)
                     {
-                        // If its in there
+                        // If it's in there
                         if (ep.addr.Byte0 == conn.end.addr.Byte0 && ep.addr.Byte1 == conn.end.addr.Byte1
                             && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
                         {
                             recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                updateCoord(recvConn, recvBuffer);
+                                UpdateCoord(recvConn.connID, recvBuffer);
                             }
                             newConn = false;
                         }
                     }
 
-                    // Add the new conneciton
+                    // Add the new connection
                     if(newConn == true)
                     {
                         if (playerID < 31)
                         {
                             recvConn.end = ep;
                             recvConn.connID = playerID;
-                            playerID++;
-                            sendInitData(playerID, recvConn);
-                            recvConn.playerHealth = 100;
-
+                            SendInitData(playerID, ep);
                             endpoints.Add(recvConn);
+
+                            playerID++;
 
                             Debug.Log("New client added");
 
@@ -218,27 +171,20 @@ public unsafe class gameServer : MonoBehaviour
                         }
                     }
 
-                    // Console.WriteLine("Received: " + contents);
-                    // Console.WriteLine("From EndPoint: " + ep.addr.Byte3 + "." + ep.addr.Byte2 + "." + ep.addr.Byte1 + "." + ep.addr.Byte0 + '\n');
-                    // Console.WriteLine(ep.CAddr);
                 }
             }
         }
-    } //End of recvThrdFunc
+    }
 
     //Creates a new player's information
-    private static void sendInitData(byte pID, connection conn)
+    private static void SendInitData(byte pID, EndPoint ep)
     {
         clientData[0] = 0;
         clientData[373] = pID;
         float playerx = 0 + pID;
         float playerz = 0 + pID;
         float rotation = 0;
-        int offset = 13 + (playerID * 12);
-
-        conn.coordX = playerx;
-        conn.coordZ = playerz;
-        conn.rotation = rotation;
+        int offset = (13 + (pID * 12)) - 12;
 
         mutex.WaitOne();
         // sets the coordinates for each player connected
@@ -251,14 +197,14 @@ public unsafe class gameServer : MonoBehaviour
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
         offset += 4;
 
-        server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+        server.Send(ep, clientData, MAX_BUFFER_SIZE);
         mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(connection conn, byte[] recvConn)
+    private static void UpdateCoord(byte pID, byte[] recvConn)
     {
-        int offset = 13 + (conn.connID * 12);
+        int offset = (13 + (pID * 12)) - 12;
 
         float playerX = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
@@ -269,11 +215,7 @@ public unsafe class gameServer : MonoBehaviour
         float rotation = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
 
-        conn.coordX = playerX;
-        conn.coordZ = playerZ;
-        conn.rotation = rotation;
-
-        offset = 13 + (conn.connID * 12);
+        offset = (13 + (pID * 12)) - 12;
 
         mutex.WaitOne();
         Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
