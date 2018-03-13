@@ -14,6 +14,6 @@ library.o:
 	$(CC) $(FLAGS) library.cpp
 
 library: server.o library.o client.o
-	$(CC) -shared library.o server.o client.o -o libNetwork.so & cp libNetwork.so /usr/lib/
+	$(CC) $(LINK) library.o server.o client.o -o libNetwork.so && cp 'libNetwork.so' ../../Assets/Plugins/Network.so
 clean:
 	rm -f *.o & rm -f libNetwork.so
