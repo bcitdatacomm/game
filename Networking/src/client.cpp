@@ -1,3 +1,9 @@
+#ifndef CLIENT_DEF
+#include "client.h"
+#define CLIENT_DEF
+#endif
+
+
 Client::Client()
 	{
 
@@ -7,9 +13,9 @@ Client::Client()
 /**
 	Initializes client socket
 **/
-int Client::initializeSocket(short port, char * server)
+int Client::initializeSocket(EndPoint ep)
 {
-	if ((clientSocket = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, 0)) == -1)
+	if ((clientSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
 	{
 		perror("failed to initialize socket");
 		return -1;
@@ -25,15 +31,20 @@ int Client::initializeSocket(short port, char * server)
 
 	memset(&serverAddr, 0, sizeof(struct sockaddr_in));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(port);
+	serverAddr.sin_port = htons(ep.port);
+        serverAddr.sin_addr.s_addr = htonl(ep.addr);
 
-	if (inet_aton(server, &serverAddr.sin_addr) == 0)
+
+    int error = -1;
+
+    if ((error = connect(clientSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1))
+
     {
-        perror("inet_aton() failed\n");
-        exit(1);
+        perror("connect error: ");
+        return error;
     }
 
-	return 0;
+    return 0;
 }
 
 
@@ -41,11 +52,14 @@ int Client::initializeSocket(short port, char * server)
 /**
 	Sends char array to all connected clients
 **/
-void Client::sendBytes(char * data, unsigned len)
+int32_t Client::sendBytes(char * data, unsigned len)
 {
-	if (sendto(clientSocket, data, len , 0 , (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1) {
+	int32_t retVal;
+	if ((retVal = send(clientSocket, data, len , 0)) == -1) {
 		perror("client send error");
 	}
+
+	return retVal;
 }
 
 
@@ -55,9 +69,7 @@ void Client::sendBytes(char * data, unsigned len)
 **/
 int32_t Client::receiveBytes(char * buffer, uint32_t size)
 {
-
-	socklen_t len = sizeof(serverAddr);
-	int32_t bytesRead = recvfrom(clientSocket, buffer, size, 0, (struct sockaddr *)&serverAddr, &len);
+	int32_t bytesRead = recv(clientSocket, buffer, size, 0);
 
 	return bytesRead;
 }
@@ -84,26 +96,5 @@ int32_t Client::UdpPollSocket()
 
 void Client::closeConnection() {
 	close(clientSocket);
-}
-
-
-int main() {
-	Client client;
-	client.initializeSocket(5150, (char *)"192.168.0.2");
-
-	char temp[] = "Hello";
-	char buffer[100];
-
-	client.sendBytes(temp, 6);
-
-	int count  = 0;
-	while (true) {
-		int y = client.UdpPollSocket();
-		if (y == SOCKET_DATA_WAITING) {
-			client.receiveBytes(buffer, 6);
-			printf("%s\n", buffer);
-		}
-	}
-	return 1;
 }
 
