@@ -102,6 +102,7 @@ public unsafe class gameServer : MonoBehaviour
                     conn.end = endpoints[i].end;
                     conn.playerHealth = 100;
 
+                    endpoints[i] = conn;
                     sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
                     playerID++;
                 }
