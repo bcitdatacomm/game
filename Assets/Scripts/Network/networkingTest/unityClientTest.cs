@@ -22,7 +22,7 @@ public class unityClientTest : MonoBehaviour {
 	public static int SOCKET_NODATA = 0;
 	public static int SOCKET_DATA_WAITING = 1;
 	private static int MAX_BUFFER_SIZE 	= 1200;
-	private static string destIP 		= "192.168.0.13";
+    private static string destIP = "142.232.18.9";
 	private ushort portNo	 			= 9999;
 	private static bool running;
 	byte i								= 65;
@@ -123,7 +123,7 @@ public class unityClientTest : MonoBehaviour {
 
 		while (running)
 		{
-			if (client.Poll())
+			if (client.Select())
 			{
 				Debug.Log ("Poll success.");
 				numRead = client.Recv(recvBuffer, MAX_BUFFER_SIZE);

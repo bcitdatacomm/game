@@ -27,11 +27,10 @@ namespace Networking
 			return Convert.ToBoolean (p);
 		}
 
-        // 2018.3.12
-        // As a future replacement for Poll(). Currently just a place holder.
-        public Int32 Select()
+        public bool Select()
         {
-            return ServerLibrary.Server_SelectSocket(server);
+            Int32 s = ServerLibrary.Server_SelectSocket(server);
+            return Convert.ToBoolean (s);
         }
 
 		/**

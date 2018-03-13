@@ -36,6 +36,9 @@ namespace Networking {
         [DllImport ("Network")]
         public static extern Int32 Client_PollSocket (IntPtr clientPtr);
 
+        [DllImport("Network")]
+        public static extern Int32 Client_SelectSocket(IntPtr clientPtr);
+
         [DllImport ("Network")]
         public static extern Int32 Client_initClient (IntPtr clientPtr, EndPoint ep);
 

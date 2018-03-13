@@ -61,6 +61,11 @@ extern "C" int32_t Client_PollSocket(void *clientPtr)
     return ((Client *)clientPtr)->UdpPollSocket();
 }
 
+extern "C" int32_t Client_SelectSocket(void *clientPtr)
+{
+    return ((Client *)clientPtr)->UdpSelectSocket();
+}
+
 extern "C" int32_t Client_initClient(void *clientPtr, EndPoint ep)
 {
     return ((Client *)clientPtr)->initializeSocket(ep);
