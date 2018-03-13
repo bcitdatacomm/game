@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
+using UnityEditor;
 
 /*---------------------------------------------------------------------------------------
 --	SOURCE FILE:	TerrainController.cs
@@ -63,10 +64,10 @@ public class TerrainController
     public long TileSize { get; set; }
 
     // Cactus appearing percent
-    public double CactusCoeff { get; set; }
+    public float CactusPerc { get; set; }
 
     // Bush appearing percent
-    public double BushCoeff { get; set; }
+    public float BushPerc { get; set; }
 
     // Building array of building objects
     public Building[] Buildings { get; set; }
@@ -80,8 +81,9 @@ public class TerrainController
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
     public const long DEFAULT_TILE_SIZE = 20;
-    public const long DEFAULT_CACTUS_COEFF = 30;
-    public const long DEFAULT_BUSH_COEFF = 30;
+    // Changed to a percentage - ALam
+    public const float DEFAULT_CACTUS_PERC = 0.9998f;
+    public const float DEFAULT_BUSH_PERC = 0.9997f;
     public const string DEFAULT_NAME = "Terrain";
 
     /*-------------------------------------------------------------------------------------------------
@@ -108,8 +110,8 @@ public class TerrainController
         this.Width = DEFAULT_WIDTH;
         this.Length = DEFAULT_LENGTH;
         this.TileSize = DEFAULT_TILE_SIZE;
-        this.CactusCoeff = DEFAULT_CACTUS_COEFF;
-        this.BushCoeff = DEFAULT_BUSH_COEFF;
+        this.CactusPerc = DEFAULT_CACTUS_PERC;
+        this.BushPerc = DEFAULT_BUSH_PERC;
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -146,36 +148,23 @@ public class TerrainController
                 }
                 else
                 {
-                    double randomValue = Random.value * 101;
-                    if (this.CactusCoeff < this.BushCoeff)
+                    // Changed by Alam
+
+                    // Changed back to just being 0.0 to 1.0
+                    float randomValue = Random.value;
+
+                    // Changed the comparison signs around
+                    if (randomValue > this.CactusPerc)
                     {
-                        if (randomValue < this.CactusCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.CACTUS;
-                        }
-                        else if (randomValue < this.BushCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.BUSH;
-                        }
-                        else
-                        {
-                            map[i, j] = (byte)TileTypes.GROUND;
-                        }
+                        map[i, j] = (byte)TileTypes.CACTUS;
+                    }
+                    else if (randomValue > this.BushPerc)
+                    {
+                        map[i, j] = (byte)TileTypes.BUSH;
                     }
                     else
                     {
-                        if (randomValue < this.BushCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.BUSH;
-                        }
-                        else if (randomValue < this.CactusCoeff)
-                        {
-                            map[i, j] = (byte)TileTypes.CACTUS;
-                        }
-                        else
-                        {
-                            map[i, j] = (byte)TileTypes.GROUND;
-                        }
+                        map[i, j] = (byte)TileTypes.GROUND;
                     }
                 }
             }
@@ -366,8 +355,71 @@ public class TerrainController
             name = DEFAULT_NAME
         };
 
-        GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
+        // Gets the number of tile types
+        int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
+        // Create a new treeprototype array with length corresponding to number of items in TileTypes
+        TreePrototype[] newTreePrototypes = new TreePrototype[numTileTypes];
 
+        // Grab the rock prefabs
+        GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
+
+        // Create new tree prototype objects
+        for (int i = 0; i < newTreePrototypes.Length; i++)
+        {
+            newTreePrototypes[i] = new TreePrototype();
+        }
+
+        // Assign the prefab to the prototypes
+        newTreePrototypes[1].prefab = rockPrefab;
+        newTreePrototypes[2].prefab = cactusPrefab;
+
+        // Assign the new tree prototype array to tData
+        tData.treePrototypes = newTreePrototypes;
+        // Refresh because you have to
+        tData.RefreshPrototypes();
+
+        // Use list because of dynamic sizing
+        List<TreeInstance> treeInstances = new List<TreeInstance>();
+
+        for (int i = 0; i < Data.tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < Data.tiles.GetLength(1); j++)
+            {
+                if (Data.tiles[i, j] == (byte)TileTypes.BUSH)
+                {
+                    TreeInstance newInstance = new TreeInstance();
+                    // This uses ratios for position rather than coordinates...
+                    // ex. if you pass in 0.5f for x, you place object at half the width of the map
+                    newInstance.position = new Vector3((float)i / this.Width, 0, (float)j / this.Length);
+                    // This changes the scaling of the instance relative to the prototype/prefab
+                    newInstance.heightScale = 1f;
+                    newInstance.widthScale = 1f;
+                    // This selects the prototype/prefab
+                    newInstance.prototypeIndex = 1;
+                    // Assign the instance to the list
+                    treeInstances.Add(newInstance);
+                }
+
+                if (Data.tiles[i, j] == (byte)TileTypes.CACTUS)
+                {
+                    TreeInstance newInstance = new TreeInstance();
+                    newInstance.position = new Vector3((float)i / this.Width, 0, (float)j / this.Length);
+                    newInstance.heightScale = 1f;
+                    newInstance.widthScale = 1f;
+                    newInstance.prototypeIndex = 2;
+                    treeInstances.Add(newInstance);
+                }
+            }
+        }
+        if (tData.treePrototypes.Length > 0)
+        {
+            // Convert the list to an array and assign to tData
+            tData.treeInstances = treeInstances.ToArray();
+        }
+
+        // Spawn the terrain
+        GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
         terrain.name = DEFAULT_NAME;
         terrain.transform.position = new Vector3(-Width / 2, 0, -Length / 2);
 
