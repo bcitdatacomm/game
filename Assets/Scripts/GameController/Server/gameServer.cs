@@ -11,7 +11,7 @@ using System.Threading;
 public unsafe class gameServer : MonoBehaviour
 {
     // Member Data
-    private float nextTickTime = 0.0f;
+    private static float nextTickTime = 0.0f;
     private static int ticksPerSecond = 32;
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
@@ -28,22 +28,21 @@ public unsafe class gameServer : MonoBehaviour
     private TerrainController terrainController;
     private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
 
-
     private static List<connection> endpoints;
     public struct connection
     {
-        public EndPoint end;
-        public byte connID;
-        public byte[] recvBuffer;
-        public byte connID;
+        public EndPoint ep;
+        public byte[] buffer;
+        public byte id;
 
-        public float coordX;
-        public float coordZ;
-        public float rotation;
+        public float x;
+        public float z;
+        public float r;
 
-        public int playerHealth;
+        public int h;
     }
     static byte playerID = 1;
+    static float spawnPoint = 2.0f;
 
     // Use this for initialization
     void Start()
@@ -63,7 +62,7 @@ public unsafe class gameServer : MonoBehaviour
         /*
          TODO: Implement this in TCP
         // Make a terrain packet (byte array) with encoded
-        byte[] terrainPacket = new byte[1200];
+        byte[] terrainPacket = new byte[1200];endpoints[i]
 
         // Set header and amount of packet taken up
         terrainPacket[0] = 15;
@@ -87,55 +86,61 @@ public unsafe class gameServer : MonoBehaviour
             ticks++;
             nextTickTime += tickTime;
 
-            int offset = 373;
+            craftTickPacket();
+            sendPacketToClients();
+        }
+    }
 
-            clientData[0] = 85;
+    private static void craftTickPacket()
+    {
+        int offset = 373;
+        clientData[0] = 85;
 
-            for (int i = 0; i < endpoints.Count; i++)
+        for (int i = 0; i < endpoints.Count; i++)
+        {
+            connection conn = endpoints[i];
+
+            // New connection
+            if (conn.id == 0 && playerID < 30)
             {
-                connection conn = endpoints[i];
-
-                // New connection
-                if (conn.connID == 0 && playerID < 30)
-                {
-                    conn.connID = playerID;
-                    conn.playerHealth = 100;
-                    playerID++;
-                    sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
-                }
-
-                // Update clientdata with new coordinates
-                if (conn.recvBuffer != null)
-                {
-                    updateCoord(conn.recvBuffer, conn.connID, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
-                    conn.recvBuffer = null;
-                }
-
-                endpoints[i] = conn;
-
-                // Add player id to clientdata
-                clientData[offset] = conn.connID;
-                offset++;
+                conn.id = playerID;
+                playerID++;
+                sendInitData(ref conn);
             }
 
-            // Send the packet to each client
-            for (int i = 0; i < endpoints.Count; i++)
+            // Update clientdata with new coordinates
+            if (conn.buffer != null)
             {
-                if (endpoints[i].connID != 0)
-                {
-                    server.Send(endpoints[i].end, clientData, MAX_BUFFER_SIZE);
-                }
+                updateCoord(ref conn);
+                conn.buffer = null;
+            }
+
+            endpoints[i] = conn;
+
+            // Add player id to clientdata
+            clientData[offset] = conn.id;
+            offset++;
+        }
+    }
+
+    private static void sendPacketToClients()
+    {
+        Debug.Log("send | " + byteArrayToString(clientData));
+        for (int i = 0; i < endpoints.Count; i++)
+        {
+            if (endpoints[i].id != 0)
+            {
+                server.Send(endpoints[i].ep, clientData, MAX_BUFFER_SIZE);
             }
         }
     }
 
     public static void recvThrdFunc()
     {
+
         byte[] recvBuffer = new byte[MAX_BUFFER_SIZE];
         Int32 numRead;
         EndPoint ep = new EndPoint();
-        bool newConn = true;
-        connection recvConn;
 
         while (running)
         {
@@ -143,109 +148,109 @@ public unsafe class gameServer : MonoBehaviour
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
             if (server.Poll() == SOCKET_DATA_WAITING)
             {
+                connection recvConn = new connection();
                 numRead = server.Recv(&ep, recvBuffer, MAX_BUFFER_SIZE);
-                if (numRead <= 0)
+
+                if (numRead != MAX_BUFFER_SIZE)
                 {
                     Debug.Log("Failed to read from socket.");
                 }
                 else
                 {
-                    newConn = true;
-                    string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
-
-                    for (int i = 0; i < endpoints.Count; i++)
+                    Debug.Log("recv | " + byteArrayToString(recvBuffer));
+                    switch (recvBuffer[0])
                     {
-                        // If it's in there
-                        if (ep.addr.Byte0 == endpoints[i].end.addr.Byte0 && ep.addr.Byte1 == endpoints[i].end.addr.Byte1
-                            && ep.addr.Byte2 == endpoints[i].end.addr.Byte2 && ep.addr.Byte3 == endpoints[i].end.addr.Byte3)
-                        {
-                            if (recvBuffer[0].Equals(85))
-                            {
-                                recvConn = endpoints[i];
-                                recvConn.recvBuffer = recvBuffer;
-                                endpoints[i] = recvConn;
-                            }
-                            newConn = false;
-                        }
+                        case 69:
+                            addNewClient(ep);
+                            break;
+                        
+                        case 85:
+                            saveBuffer(ep, recvBuffer);
+                            break;
+
+                        default:
+                            break;
                     }
+                }
+            }
+        }
+    }
 
-                    // Add the new connection
-                    if (newConn == true)
-                    {
-                        if (playerID < 31)
-                        {
-                            recvConn.end = ep;
-                            recvConn.connID = 0;
+    private static void addNewClient(EndPoint ep)
+    {
+        connection newPlayer = new connection();
+        
+        if (playerID < 31)
+        {
+            newPlayer.ep = ep;
+            newPlayer.id = 0;
 
-                            endpoints.Add(recvConn);
+            endpoints.Add(newPlayer);
+        }
+    }
 
-                            string debug = "New Client Added | ";
-                            foreach (connection c in endpoints)
-                            {
-                                debug += c.connID + " ";
-                            }
-
-                            Debug.Log(debug);
-                        }
-                    }
-
+    private static void saveBuffer(EndPoint ep, byte[] buffer)
+    {
+        for (int i = 0; i < endpoints.Count; i++)
+        {
+            if (endpoints[i].id == buffer[1])
+            {
+                if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
+                    && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
+                {
+                    connection tmp = endpoints[i];
+                    tmp.buffer = buffer;
+                    endpoints[i] = tmp;
                 }
             }
         }
     }
 
     //Creates a new player's information
-    private static void sendInitData(byte pID, EndPoint ep, ref float coordX, ref float coordZ, ref float rotate)
+    private static void sendInitData(ref connection conn)
     {
         clientData[0] = 0;
-        clientData[373] = pID;
-        float playerX = UnityEngine.Random.Range(-10.0f, 10.0f);
-        float playerZ = UnityEngine.Random.Range(-10.0f, 10.0f);
-        float rotation = 0;
+        clientData[373] = conn.id;
 
-        // Store player coordinates in Connection object
-        coordX = playerX;
-        coordZ = playerZ;
-        rotate = rotation;
+        int positionOffset = (13 + (conn.id * 8)) - 8;
+        int rotationOffset = (253 + (conn.id * 4)) - 4;
 
-        int positionOffset = (13 + (pID * 8)) - 8;
-        int rotationOffset = (253 + (pID * 4)) - 4;
+        conn.x = spawnPoint * 5;
+        conn.z = spawnPoint * 5;
+        spawnPoint *= spawnPoint;
+        conn.r = 0.0f;
+        conn.h = 100;
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
+        Array.Copy(BitConverter.GetBytes(conn.x), 0, clientData, positionOffset, 4);
+        Array.Copy(BitConverter.GetBytes(conn.z), 0, clientData, positionOffset + 4, 4);
+        Array.Copy(BitConverter.GetBytes(conn.r), 0, clientData, rotationOffset, 4);
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
-
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
-
-        server.Send(ep, clientData, MAX_BUFFER_SIZE);
+        server.Send(conn.ep, clientData, MAX_BUFFER_SIZE);
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(byte[] recvConn, byte pID, ref float coordX, ref float coordZ, ref float rotate)
+    private static void updateCoord(ref connection conn)
     {
-        int offset = 2;
-        float playerX = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
+        if (!conn.buffer[0].Equals(85))
+        {
+            return;
+        }
 
-        float playerZ = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
+        if (conn.buffer[1] != conn.id)
+        {
+            return;
+        }
 
-        float rotation = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
+        int positionOffset = (13 + (conn.id * 8)) - 8;
+        int rotationOffset = (253 + (conn.id * 4)) - 4;
 
-        // Store player coordinates in Connection object
-        coordX = playerX;
-        coordZ = playerZ;
-        rotate = rotation;
+        Array.Copy(conn.buffer, 2, clientData, positionOffset, 4);
+        Array.Copy(conn.buffer, 6, clientData, positionOffset + 4, 4);
+        Array.Copy(conn.buffer, 10, clientData, rotationOffset, 4);
 
-        int positionOffset = (13 + (pID * 8)) - 8;
-        int rotationOffset = (253 + (pID * 4)) - 4;
-
-        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
-
-        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
-
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
+        conn.x = BitConverter.ToSingle(conn.buffer, 2);
+        conn.z = BitConverter.ToSingle(conn.buffer, 6);
+        conn.r = BitConverter.ToSingle(conn.buffer, 10);
     }
 
     static string byteArrayToString(byte[] ba)

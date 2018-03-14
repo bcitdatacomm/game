@@ -7,7 +7,7 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "142.232.18.98";
+    public const string SERVER_ADDRESS = "192.168.0.20";
     public const ushort SERVER_PORT = 42069;
     public const int PACKET_SIZE = 1200;
     public const byte INIT_HEADER = 0;
@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour {
         client.Send(initPacket, PACKET_SIZE);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (this.currentPlayerId != 0)
         {
@@ -86,8 +86,6 @@ public class GameController : MonoBehaviour {
         }
 
         this.movePlayers(playerIDs, positions, rotations);
-
-        // 
     }
 
     void syncWithServer()
@@ -168,14 +166,15 @@ public class GameController : MonoBehaviour {
         this.players.Add(id, player);
     }
 
-    void movePlayers(List<byte> playerIds, List<Vector3> positions, List<Quaternion> rotations)
+    void movePlayers(List<byte> playerIDs, List<Vector3> positions, List<Quaternion> rotations)
     {
         try
         {
-            for (int i = 0; i < playerIds.Count; i++)
+            for (int i = 0; i < playerIDs.Count; i++)
             {
-                this.players[playerIds[i]].transform.position = positions[i];
-                this.players[playerIds[i]].transform.rotation = rotations[i];
+                Debug.Log("Applying position : " + positions[i] + " and rotation : " + rotations[i] + " to id : " + playerIDs[i]);
+                this.players[playerIDs[i]].transform.position = positions[i];
+                this.players[playerIDs[i]].transform.rotation = rotations[i];
             }
         }
         catch (Exception e)
@@ -203,7 +202,9 @@ public class GameController : MonoBehaviour {
         Array.Copy(pheta, 0, packet, index, 4);
         index += 4;
 
-        // Let the server know that a shot has been fired
+        /*
+        // The reference to the stack of fired bullets does not work
+
         Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
 
         while (playerBullets.Count > 0)
@@ -216,7 +217,8 @@ public class GameController : MonoBehaviour {
 
             packet[index] = bullet.Type;
         }
+        */
 
-        this.client.Send(packet, PACKET_SIZE);
+        Debug.Log(this.client.Send(packet, PACKET_SIZE));
     }
 }
