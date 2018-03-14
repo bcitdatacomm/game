@@ -28,7 +28,7 @@ namespace Networking
 			}
         }
 
-    
+
 		public Int32 Recv(Int32 socket, byte[] buffer, Int32 len)
 		{
 			Int32 length;
