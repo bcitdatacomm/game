@@ -1,17 +1,7 @@
-﻿#ifndef TCP_DEF
-#include "tcpserver.h"
-#define TCP_DEF
-#endif
-
-#ifndef CLIENT_DEF
+﻿#include "tcpserver.h"
 #include "client.h"
-#define CLIENT_DEF
-#endif
-
-#ifndef SERVER_DEF
 #include "server.h"
-#define SERVER_DEF
-#endif
+
 
 
 

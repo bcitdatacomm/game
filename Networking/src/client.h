@@ -1,3 +1,6 @@
+#ifndef CLIENT_DEF
+#define CLIENT_DEF
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/udp.h>
@@ -34,5 +37,8 @@ public:
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
+
 	fd_set rset, allset;
 };
+
+#endif
