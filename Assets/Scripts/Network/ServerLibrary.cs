@@ -49,7 +49,7 @@ namespace Networking {
         public static extern Int32 TCPServer_initServer(IntPtr serverPtr, ushort port);
 
         [DllImport("Network")]
-        public static extern Int32 TCPServer_acceptConnection(IntPtr serverPtr);
+        public static extern Int32 TCPServer_acceptConnection(IntPtr serverPtr, EndPoint * ep);
 
         [DllImport("Network")]
         public static extern Int32 TCPServer_sendBytes(Int32 serverPtr, Int32 clientSocket, IntPtr data, UInt32 len);
