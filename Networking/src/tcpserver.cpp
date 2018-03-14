@@ -49,16 +49,22 @@ int32_t TCPServer::initializeSocket	(short port)
 }
 
 
-int32_t TCPServer::acceptConnection(sockaddr_in* client)
+int32_t TCPServer::acceptConnection(EndPoint* ep)
 {
 	int clientSocket;
-	//struct sockaddr_in client;
-	socklen_t client_len = sizeof(client);
-	if ((clientSocket = accept(tcpSocket, (struct sockaddr *)&client, &client_len)) == -1)
+	sockaddr_in clientAddr;
+	socklen_t addrSize = sizeof(clientAddr);
+	memset(&clientAddr, 0, addrSize);
+
+	if ((clientSocket = accept(tcpSocket, (struct sockaddr *)&clientAddr, &addrSize)) == -1)
 	{
 		std::cout << strerror(errno) << std::endl;
 		return 0;
 	}
+
+	ep->port = ntohs(clientAddr.sin_port);
+	ep->addr = ntohl(clientAddr.sin_addr.s_addr);
+
 	return clientSocket;
 }
 
@@ -87,16 +93,13 @@ int main ()
 {
 
 	int	clientSocket;
-	int clientArray[MAX_NUM_CLIENTS];
-	int port;
-	struct sockaddr_in client;
 	char buffer[200];
-
+	EndPoint ep;
 	TCPServer tcpserver;
 
 	tcpserver.initializeSocket(SERVER_TCP_PORT);
 
-	clientSocket = tcpserver.acceptConnection(&client);
+	clientSocket = tcpserver.acceptConnection(&ep);
 
 	while (TRUE)
 	{
