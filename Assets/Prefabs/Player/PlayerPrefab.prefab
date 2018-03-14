@@ -169,7 +169,6 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -304,6 +303,7 @@ MonoBehaviour:
   Heath: 100
   MovementSpeed: 7
   Spells: []
+  speed: 6
 --- !u!114 &114641177808748606
 MonoBehaviour:
   m_ObjectHideFlags: 1
