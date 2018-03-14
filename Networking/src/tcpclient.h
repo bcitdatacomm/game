@@ -25,14 +25,11 @@ public:
 	int initializeSocket(EndPoint ep);
 	int32_t sendBytes(char * data, uint32_t len);
 	int32_t receiveBytes(char * buffer, uint32_t size);
-
 	void closeConnection();
-
 
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
-
 
 };
 

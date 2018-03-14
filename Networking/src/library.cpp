@@ -97,3 +97,31 @@ extern "C" int32_t TCPServer_recvBytes(void * serverPtr, int32_t clientSocket, c
 {
 	return ((TCPServer *)serverPtr)->receiveBytes(clientSocket, buffer, bufSize);
 }
+
+
+
+//TCP CLIENT
+extern "C" TCPClient *TCPClient_CreateClient()
+{
+    return new TCPClient();
+}
+
+extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
+{
+    return ((TCPClient *)serverPtr)->initializeSocket(ep);
+}
+
+extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len)
+{
+    return ((TCPClient *)serverPtr)->sendBytes(buffer, len);
+}
+
+extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len)
+{
+    return ((TCPClient *)serverPtr)->receiveBytes(buffer, len);
+}
+
+extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
+{
+    return ((TCPClient *)serverPtr)->closeConnection();
+}
