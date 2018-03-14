@@ -49,9 +49,49 @@ namespace Networking
 		{
 			addr = new CAddr (ipAddr);
 			port = p;
+        }
+
+        public override int GetHashCode ()
+        {
+            return (int) (CAddr.Packet ^ Port);
+        }
+
+		public override string ToString ()
+		{
+			return string.Format ("{0}.{1}.{2}.{3}:{4}", addr.Byte3, addr.Byte2, addr.Byte1, addr.Byte0, port);
 		}
+
+		 public static bool operator == (EndPoint x, EndPoint y)
+		{
+            return Compare(x, y) == 0;
+        }
+
+        public static bool operator != (EndPoint x, EndPoint y)
+        {
+            return Compare(x, y) != 0;
+        }
+
+        internal static int Compare (EndPoint x, EndPoint y)
+        {
+            if (x.CAddr.Packet > y.CAddr.Packet) return 1;
+            if (x.CAddr.Packet < y.CAddr.Packet) return -1;
+
+            if (x.port > y.port) return 1;
+            if (x.port < y.port) return -1;
+
+            return 0;
+        }
 	}
 
+    public class EndPointComparer : IEqualityComparer<EndPoint> {
+        bool IEqualityComparer<EndPoint>.Equals (EndPoint x, EndPoint y) {
+            return EndPoint.Compare(x, y) == 0;
+        }
+
+        int IEqualityComparer<EndPoint>.GetHashCode (EndPoint obj) {
+            return obj.GetHashCode();
+        }
+    }
 
 
 }
