@@ -3,9 +3,9 @@
 
 
 TCPClient::TCPClient()
-	{
+{
 
-	}
+}
 
 
 
@@ -14,7 +14,7 @@ TCPClient::TCPClient()
 	Initializes client TCP socket to receive initial game data.
 	@author Calvin Lai
 **/
-int TCPClient::initializeSocket(EndPoint ep)
+int TCPClient::initializeSocket(EndPoint * ep)
 {
 	if ((clientSocket = socket(AF_INET, SOCK_STREAM  , 0)) == -1) {
 		perror("failed to initialize socket");
@@ -23,24 +23,24 @@ int TCPClient::initializeSocket(EndPoint ep)
 
 	int optFlag = 1;
 
-  if(setsockopt(clientSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
-  {
-    perror("set opts failed");
-    return -1;
-  }
+	if(setsockopt(clientSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
+	{
+		perror("set opts failed");
+		return -1;
+	}
 
 	memset(&serverAddr, 0, sizeof(struct sockaddr_in));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(ep.port);
-  serverAddr.sin_addr.s_addr = htonl(ep.addr);
+	serverAddr.sin_port = htons(ep->port);
+	serverAddr.sin_addr.s_addr = htonl(ep->addr);
 
 
-  if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
-  {
-  	printf("\n Error : Connect Failed \n");
+	if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+	{
+		printf("\n Error : Connect Failed \n");
 		perror("failure");
-    return -1;
-  }
+		return -1;
+	}
 	return 0;
 
 }
