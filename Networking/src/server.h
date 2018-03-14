@@ -1,4 +1,6 @@
+#ifndef SERVER_DEF
 #include <sys/types.h>
+#define SERVER_DEF
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/in.h>
@@ -36,3 +38,5 @@ class Server
 	struct pollfd *poll_events;
 	fd_set rset, allset;
 };
+
+#endif
