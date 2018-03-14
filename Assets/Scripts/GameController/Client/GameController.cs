@@ -191,15 +191,16 @@ public class GameController : MonoBehaviour {
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
+        byte[] packet = new byte[PACKET_SIZE];
 
         // Put position data into the packet
-        this.buffer[0] = TICK_HEADER;
-        this.buffer[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, this.buffer, index,  4);
+        packet[0] = TICK_HEADER;
+        packet[1] = this.currentPlayerId;
+        Array.Copy(x    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(z    , 0, this.buffer, index,  4);
+        Array.Copy(z    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, this.buffer, index, 4);
+        Array.Copy(pheta, 0, packet, index, 4);
         index += 4;
 
         // Let the server know that a shot has been fired
@@ -210,12 +211,12 @@ public class GameController : MonoBehaviour {
             Bullet bullet = playerBullets.Pop();
             byte[] bulletID = BitConverter.GetBytes(bullet.ID);
 
-            Array.Copy(bulletID, 0, this.buffer, index, 4);
+            Array.Copy(bulletID, 0, packet, index, 4);
             index += 4;
 
-            this.buffer[index] = bullet.Type;
+            packet[index] = bullet.Type;
         }
 
-        this.client.Send(this.buffer, PACKET_SIZE);
+        this.client.Send(packet, PACKET_SIZE);
     }
 }
