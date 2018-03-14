@@ -62,7 +62,7 @@ public unsafe class gameServer : MonoBehaviour
         /*
          TODO: Implement this in TCP
         // Make a terrain packet (byte array) with encoded
-        byte[] terrainPacket = new byte[1200];
+        byte[] terrainPacket = new byte[1200];endpoints[i]
 
         // Set header and amount of packet taken up
         terrainPacket[0] = 15;
@@ -90,30 +90,27 @@ public unsafe class gameServer : MonoBehaviour
 
             clientData[0] = 85;
 
-            connection conn = new connection();
             for (int i = 0; i < endpoints.Count; i++)
             {
-                conn = endpoints[i];
+                connection conn = endpoints[i];
 
                 // New connection
-                if (endpoints[i].connID == 0 && playerID < 31)
+                if (conn.connID == 0 && playerID < 30)
                 {
                     conn.connID = playerID;
-                    conn.end = endpoints[i].end;
                     conn.playerHealth = 100;
-
-                    endpoints[i] = conn;
-                    sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
                     playerID++;
+                    sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
                 }
 
                 // Update clientdata with new coordinates
-                if (endpoints[i].recvBuffer != null)
+                if (conn.recvBuffer != null)
                 {
                     updateCoord(conn.recvBuffer, conn.connID, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
                     conn.recvBuffer = null;
-                    endpoints[i] = conn;
                 }
+
+                endpoints[i] = conn;
 
                 // Add player id to clientdata
                 clientData[offset] = conn.connID;
@@ -146,7 +143,7 @@ public unsafe class gameServer : MonoBehaviour
             if (server.Poll() == SOCKET_DATA_WAITING)
             {
                 numRead = server.Recv(&ep, recvBuffer, MAX_BUFFER_SIZE);
-                if (numRead <= 0)
+                if (numRead != MAX_BUFFER_SIZE)
                 {
                     Debug.Log("Failed to read from socket.");
                 }
@@ -161,9 +158,9 @@ public unsafe class gameServer : MonoBehaviour
                         if (ep.addr.Byte0 == endpoints[i].end.addr.Byte0 && ep.addr.Byte1 == endpoints[i].end.addr.Byte1
                             && ep.addr.Byte2 == endpoints[i].end.addr.Byte2 && ep.addr.Byte3 == endpoints[i].end.addr.Byte3)
                         {
-                            recvConn = endpoints[i];
                             if (recvBuffer[0].Equals(85))
                             {
+                                recvConn = endpoints[i];
                                 recvConn.recvBuffer = recvBuffer;
                                 endpoints[i] = recvConn;
                             }
@@ -176,15 +173,12 @@ public unsafe class gameServer : MonoBehaviour
                     {
                         if (playerID < 31)
                         {
-                            recvConn = new connection();
                             recvConn.end = ep;
                             recvConn.connID = 0;
 
                             endpoints.Add(recvConn);
 
-                            Debug.Log("New client added");
-
-                            string debug = "";
+                            string debug = "New Client Added | ";
                             foreach (connection c in endpoints)
                             {
                                 debug += c.connID + " ";
@@ -204,8 +198,8 @@ public unsafe class gameServer : MonoBehaviour
     {
         clientData[0] = 0;
         clientData[373] = pID;
-        float playerX = 0 + Convert.ToInt32(pID);
-        float playerZ = 0 + Convert.ToInt32(pID);
+        float playerX = UnityEngine.Random.Range(-10.0f, 10.0f);
+        float playerZ = UnityEngine.Random.Range(-10.0f, 10.0f);
         float rotation = 0;
 
         // Store player coordinates in Connection object
@@ -251,5 +245,15 @@ public unsafe class gameServer : MonoBehaviour
         Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
 
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
+    }
+
+    static string byteArrayToString(byte[] ba)
+    {
+        StringBuilder sb = new StringBuilder(ba.Length * 2);
+        foreach (byte b in ba)
+        {
+            sb.AppendFormat("{0:x2}", b);
+        }
+        return sb.ToString();
     }
 }
