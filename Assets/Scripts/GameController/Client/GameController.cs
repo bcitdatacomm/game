@@ -172,6 +172,10 @@ public class GameController : MonoBehaviour {
         {
             for (int i = 0; i < playerIDs.Count; i++)
             {
+                if (playerIDs[i] == this.currentPlayerId)
+                {
+                    continue;
+                }
                 Debug.Log("Applying position : " + positions[i] + " and rotation : " + rotations[i] + " to id : " + playerIDs[i]);
                 this.players[playerIDs[i]].transform.position = positions[i];
                 this.players[playerIDs[i]].transform.rotation = rotations[i];

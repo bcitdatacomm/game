@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     {
         float deltaX = Input.GetAxis("Horizontal") * Time.deltaTime * MovementSpeed;
         float deltaZ = Input.GetAxis("Vertical") * Time.deltaTime * MovementSpeed;
-        this.transform.Translate(deltaX, 0, deltaZ);
+        this.transform.Translate(deltaX, 1, deltaZ);
     }
 
     void turn()
