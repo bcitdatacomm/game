@@ -16,8 +16,6 @@ public unsafe class gameServer : MonoBehaviour
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
-    private static Mutex mutex = new Mutex();
-
     private static Int32 SOCKET_NODATA = 0;
     private static Int32 SOCKET_DATA_WAITING = 1;
     private static ushort PORT_NO = 9999;
@@ -36,6 +34,14 @@ public unsafe class gameServer : MonoBehaviour
     {
         public EndPoint end;
         public byte connID;
+        public byte[] recvBuffer;
+        public byte connID;
+
+        public float coordX;
+        public float coordZ;
+        public float rotation;
+
+        public int playerHealth;
     }
     static byte playerID = 1;
 
@@ -83,22 +89,43 @@ public unsafe class gameServer : MonoBehaviour
 
             int offset = 373;
 
-            mutex.WaitOne();
             clientData[0] = 85;
 
-            foreach (connection conn in endpoints)
+            for (int i = 0; i < endpoints.Count; i++)
             {
+                connection conn = endpoints[i];
+
+                // New connection
+                if (conn.connID == 0 && playerID < 30)
+                {
+                    conn.connID = playerID;
+                    conn.playerHealth = 100;
+                    playerID++;
+                    sendInitData(conn.connID, conn.end, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
+                }
+
+                // Update clientdata with new coordinates
+                if (conn.recvBuffer != null)
+                {
+                    updateCoord(conn.recvBuffer, conn.connID, ref conn.coordX, ref conn.coordZ, ref conn.rotation);
+                    conn.recvBuffer = null;
+                }
+
+                endpoints[i] = conn;
+
+                // Add player id to clientdata
                 clientData[offset] = conn.connID;
                 offset++;
             }
 
             // Send the packet to each client
-            foreach (connection conn in endpoints)
+            for (int i = 0; i < endpoints.Count; i++)
             {
-                server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+                if (endpoints[i].connID != 0)
+                {
+                    server.Send(endpoints[i].end, clientData, MAX_BUFFER_SIZE);
+                }
             }
-            mutex.ReleaseMutex();
-
         }
     }
 
@@ -126,16 +153,17 @@ public unsafe class gameServer : MonoBehaviour
                     newConn = true;
                     string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
 
-                    foreach (connection conn in endpoints)
+                    for (int i = 0; i < endpoints.Count; i++)
                     {
                         // If it's in there
-                        if (ep.addr.Byte0 == conn.end.addr.Byte0 && ep.addr.Byte1 == conn.end.addr.Byte1
-                            && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
+                        if (ep.addr.Byte0 == endpoints[i].end.addr.Byte0 && ep.addr.Byte1 == endpoints[i].end.addr.Byte1
+                            && ep.addr.Byte2 == endpoints[i].end.addr.Byte2 && ep.addr.Byte3 == endpoints[i].end.addr.Byte3)
                         {
-                            recvConn = conn;
                             if (recvBuffer[0].Equals(85))
                             {
-                                UpdateCoord(recvConn.connID, recvBuffer);
+                                recvConn = endpoints[i];
+                                recvConn.recvBuffer = recvBuffer;
+                                endpoints[i] = recvConn;
                             }
                             newConn = false;
                         }
@@ -147,14 +175,11 @@ public unsafe class gameServer : MonoBehaviour
                         if (playerID < 31)
                         {
                             recvConn.end = ep;
-                            recvConn.connID = playerID;
+                            recvConn.connID = 0;
+
                             endpoints.Add(recvConn);
-                            SendInitData(playerID, ep);
-                            playerID++;
 
-                            Debug.Log("New client added");
-
-                            string debug = "";
+                            string debug = "New Client Added | ";
                             foreach (connection c in endpoints)
                             {
                                 debug += c.connID + " ";
@@ -170,35 +195,35 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     //Creates a new player's information
-    private static void SendInitData(byte pID, EndPoint ep)
+    private static void sendInitData(byte pID, EndPoint ep, ref float coordX, ref float coordZ, ref float rotate)
     {
-        mutex.WaitOne();
         clientData[0] = 0;
         clientData[373] = pID;
-        float playerx = 0 + playerID;
-        float playerz = 0 + playerID;
+        float playerX = UnityEngine.Random.Range(-10.0f, 10.0f);
+        float playerZ = UnityEngine.Random.Range(-10.0f, 10.0f);
         float rotation = 0;
-        int offset = 13 + (playerID * 12);
 
-        // sets the coordinates for each player connected
-        Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, clientData, offset, 4);
-        offset += 4;
+        // Store player coordinates in Connection object
+        coordX = playerX;
+        coordZ = playerZ;
+        rotate = rotation;
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerz), 0, clientData, offset, 4);
-        offset += 4;
+        int positionOffset = (13 + (pID * 8)) - 8;
+        int rotationOffset = (253 + (pID * 4)) - 4;
 
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
+
+        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
+
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
 
         server.Send(ep, clientData, MAX_BUFFER_SIZE);
-        mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
-    private static void UpdateCoord(byte pID, byte[] recvConn)
+    private static void updateCoord(byte[] recvConn, byte pID, ref float coordX, ref float coordZ, ref float rotate)
     {
-        int offset = 13 + (pID * 12);
-
+        int offset = 2;
         float playerX = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
 
@@ -208,17 +233,28 @@ public unsafe class gameServer : MonoBehaviour
         float rotation = BitConverter.ToSingle(recvConn, offset);
         offset += 4;
 
-        offset = 13 + (pID * 12);
+        // Store player coordinates in Connection object
+        coordX = playerX;
+        coordZ = playerZ;
+        rotate = rotation;
 
-        mutex.WaitOne();
-        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
-        offset += 4;
+        int positionOffset = (13 + (pID * 8)) - 8;
+        int rotationOffset = (253 + (pID * 4)) - 4;
 
-        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, offset, 4);
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, positionOffset, 4);
 
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
-        mutex.ReleaseMutex();
-        offset += 4;
+        Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, positionOffset + 4, 4);
+
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, rotationOffset, 4);
+    }
+
+    static string byteArrayToString(byte[] ba)
+    {
+        StringBuilder sb = new StringBuilder(ba.Length * 2);
+        foreach (byte b in ba)
+        {
+            sb.AppendFormat("{0:x2}", b);
+        }
+        return sb.ToString();
     }
 }
