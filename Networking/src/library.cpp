@@ -83,9 +83,9 @@ extern "C" int32_t TCPServer_initServer(void * serverPtr, short port)
 	return ((TCPServer *)serverPtr)->initializeSocket(port);
 }
 
-extern "C" int32_t TCPServer_acceptConnection(void * serverPtr)
+extern "C" int32_t TCPServer_acceptConnection(void * serverPtr, EndPoint * ep)
 {
-	return ((TCPServer *)serverPtr)->acceptConnection();
+	return ((TCPServer *)serverPtr)->acceptConnection(ep);
 }
 
 extern "C" int32_t TCPServer_sendBytes(void * serverPtr, int32_t clientSocket, char * data, uint32_t len)
