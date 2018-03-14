@@ -33,3 +33,19 @@ extern "C" int32_t Client_PollSocket(void *clientPtr);
 extern "C" int32_t Client_SelectSocket(void *clientPtr);
 
 extern "C" int32_t Client_initClient(void *clientPtr, EndPoint ep);
+
+
+
+
+
+extern "C" TCPClient *TCPClient_CreateClient();
+
+extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep);
+
+extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len);
+
+extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len);
+
+extern "C" int32_t TCPClient_closeConnection(void *clientPtr);
+
+
