@@ -1,6 +1,14 @@
-﻿namespace Networking {
+﻿using System;
+
+using System.Runtime.InteropServices;
+using System.Security;
+
+
+namespace Client
+{
 	[StructLayout(LayoutKind.Explicit, Pack = 1)]
-	public struct CAddr{
+	public struct CAddr
+	{
 
 		public static readonly CAddr Loopback = new CAddr("127.0.0.1");
 
@@ -16,7 +24,8 @@
 		public readonly byte Byte3;
 
 
-		public CAddr (string ip) {
+		public CAddr(string ip)
+		{
 			string[] parts = ip.Split('.');
 			Packet = 0;
 			Byte0 = byte.Parse(parts[3]);
@@ -25,7 +34,8 @@
 			Byte3 = byte.Parse(parts[0]);
 		}
 
-		public CAddr (byte a, byte b, byte c, byte d) {
+		public CAddr(byte a, byte b, byte c, byte d)
+		{
 			Packet = 0;
 			Byte0 = d;
 			Byte1 = c;
@@ -36,9 +46,17 @@
 	}
 
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public struct UdpAddr {
+	public struct EndPoint
+	{
 		public readonly CAddr addr;
 		public readonly ushort port;
+
+
+		public EndPoint(string ipAddr, ushort p)
+		{
+			addr = new CAddr(ipAddr);
+			port = p;
+		}
 	}
 }
 
