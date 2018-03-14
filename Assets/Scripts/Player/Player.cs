@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int Heath;
+    public int Health;
 
     public int Armor;
 
@@ -21,8 +21,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         Debug.Log("Player start");
-        this.Heath = 100;
-        this.Heath = 0;
+        this.Health = 100;
+        this.Armor = 0;
         this.Spells = new Spell[3];
     }
 
