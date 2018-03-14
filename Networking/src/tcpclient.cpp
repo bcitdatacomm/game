@@ -93,12 +93,12 @@ int main()
 	TCPClient client;
 	EndPoint ep;
 
-	char * addr = reinterpret_cast<char *>(&(ep.addr));
+	byte * addr = reinterpret_cast<byte *>(&(ep.addr));
 
-	addr[0] = (char) 92;
-	addr[1] = (char) 18;
-	addr[2] = (char) 232;
-	addr[3] = (char) 142;
+	addr[0] = (byte) 113;
+	addr[1] = (byte) 18;
+	addr[2] = (byte) 232;
+	addr[3] = (byte) 142;
 	ep.port = 9999;
 
 
