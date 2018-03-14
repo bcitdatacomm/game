@@ -7,7 +7,7 @@ namespace Networking
 
 		private IntPtr tcpServer;
 
-		public Server()
+		public TCPServer()
 		{
 			tcpServer = ServerLibrary.TCPServer_CreateServer();
 
@@ -20,19 +20,22 @@ namespace Networking
 		}
 
 
-        public Int32 AcceptConnection()
+		public Int32 AcceptConnection(ref EndPoint ep)
         {
-            return ServerLibrary.TCPServer_acceptConnection(tcpServer);
+			fixed(EndPoint* p = &ep)
+			{
+				return ServerLibrary.TCPServer_acceptConnection(tcpServer, p);
+			}
         }
 
-    
+
 		public Int32 Recv(Int32 socket, byte[] buffer, Int32 len)
 		{
 			Int32 length;
 			fixed (byte* tmpBuf = buffer)
 			{
 				UInt32 bufLen = Convert.ToUInt32(len);
-				length = ServerLibrary.TCPServer_recvBytes(server, socket, new IntPtr(tmpBuf), bufLen);
+				length = ServerLibrary.TCPServer_recvBytes(tcpServer, socket, new IntPtr(tmpBuf), bufLen);
 				
 				return length;
 			}
@@ -43,7 +46,7 @@ namespace Networking
 			fixed( byte* tmpBuf = buffer)
 			{
 				UInt32 bufLen = Convert.ToUInt32 (len);
-				Int32 ret = ServerLibrary.TCPServer_sendBytes(server, socket, new IntPtr(tmpBuf), bufLen);
+				Int32 ret = ServerLibrary.TCPServer_sendBytes(tcpServer, socket, new IntPtr(tmpBuf), bufLen);
 				return ret;
 			}
 		}

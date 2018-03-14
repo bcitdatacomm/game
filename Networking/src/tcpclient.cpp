@@ -93,20 +93,20 @@ int main()
 	TCPClient client;
 	EndPoint ep;
 
-	byte * addr = reinterpret_cast<byte *>(&(ep.addr));
+	char * addr = reinterpret_cast<char *>(&(ep.addr));
 
-	addr[0] = (byte) 113;
-	addr[1] = (byte) 18;
-	addr[2] = (byte) 232;
-	addr[3] = (byte) 142;
+	addr[0] = (char) 1;
+	addr[1] = (char) 0;
+	addr[2] = (char) 0;
+	addr[3] = (char) 127;
 	ep.port = 9999;
 
 
 	result = client.initializeSocket(ep);
 	printf("result is %d\n", result);
 	char temp[] = "Hello\n";
-	char buffer[200];
-	char rBuffer[200];
+	char buffer[2048];
+	char rBuffer[2048];
 	sprintf(buffer, "hello wilson");
 	client.sendBytes(buffer, sizeof(buffer));
 	printf("got past send\n");
