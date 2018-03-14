@@ -106,7 +106,7 @@ extern "C" TCPClient *TCPClient_CreateClient()
     return new TCPClient();
 }
 
-extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint * ep)
+extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
 {
     return ((TCPClient *)serverPtr)->initializeSocket(ep);
 }
