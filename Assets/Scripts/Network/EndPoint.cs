@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Networking
 {
@@ -53,7 +54,7 @@ namespace Networking
 
         public override int GetHashCode ()
         {
-            return (int) (CAddr.Packet ^ Port);
+            return (int) (addr.Packet ^ port);
         }
 
         public override string ToString ()
@@ -73,8 +74,8 @@ namespace Networking
 
         internal static int Compare (EndPoint x, EndPoint y)
         {
-            if (x.CAddr.Packet > y.CAddr.Packet) return 1;
-            if (x.CAddr.Packet < y.CAddr.Packet) return -1;
+            if (x.addr.Packet > y.addr.Packet) return 1;
+            if (x.addr.Packet < y.addr.Packet) return -1;
 
             if (x.port > y.port) return 1;
             if (x.port < y.port) return -1;

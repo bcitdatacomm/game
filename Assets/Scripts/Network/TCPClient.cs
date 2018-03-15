@@ -2,7 +2,7 @@ using System;
 
 namespace Networking
 {
-	public class TCPClient
+	public unsafe class TCPClient
 	{
 		private IntPtr tcpClient;
 
