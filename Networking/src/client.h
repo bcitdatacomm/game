@@ -37,7 +37,6 @@ private:
 	int clientSocket;
 	sockaddr_in serverAddr;
 
-	fd_set rset, allset;
 };
 
 #endif
