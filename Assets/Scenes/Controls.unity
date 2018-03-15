@@ -1082,8 +1082,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 92104460}
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.8361204
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1134,6 +1134,7 @@ GameObject:
   - component: {fileID: 489307744}
   - component: {fileID: 489307743}
   - component: {fileID: 489307742}
+  - component: {fileID: 489307745}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -1257,6 +1258,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 489307740}
+--- !u!114 &489307745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 489307740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c33f959ff64c430bafd606d17aaa66b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainInputField: {fileID: 0}
 --- !u!1 &626272050
 GameObject:
   m_ObjectHideFlags: 0
@@ -4398,7 +4411,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Enter IP Address
 --- !u!222 &1970594175
 CanvasRenderer:
   m_ObjectHideFlags: 0
