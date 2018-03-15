@@ -8,14 +8,6 @@ using Networking;
 public class GameController : MonoBehaviour {
 
     public const string SERVER_ADDRESS = "192.168.0.20";
-    public const ushort SERVER_PORT = 42069;
-    public const int PACKET_SIZE = 1200;
-    public const byte INIT_HEADER = 0;
-    public const byte TICK_HEADER = 85;
-    public const byte ACK_HEADER = 170;
-    public const int ID_OFFSET = 373;
-    public const int POSITION_OFFSET = 13;
-    public const int ROTATION_OFFSET = 253;
 
     private byte currentPlayerId;
 
@@ -32,14 +24,14 @@ public class GameController : MonoBehaviour {
         currentPlayerId = 0;
         players = new Dictionary<byte, GameObject>();
 
-        buffer = new byte[PACKET_SIZE];
+        buffer = new byte[R.Net.Size.SERVER_TICK];
         client = new Client();
-        client.Init(SERVER_ADDRESS, SERVER_PORT);
+        client.Init(SERVER_ADDRESS, R.Net.PORT);
 
-        byte[] initPacket = new byte[PACKET_SIZE];
-        initPacket[0] = 69;
+        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
+        initPacket[0] = R.Net.Header.NEW_CLIENT;
 
-        client.Send(initPacket, PACKET_SIZE);
+        client.Send(initPacket, R.Net.Size.CLIENT_TICK);
     }
 
     void FixedUpdate()
@@ -63,7 +55,7 @@ public class GameController : MonoBehaviour {
             return;
         }
 
-        if (client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
+        if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
         }
@@ -95,16 +87,16 @@ public class GameController : MonoBehaviour {
             return;
         }
 
-        if (this.client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
+        if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
         }
 
-        if (this.buffer[0] != INIT_HEADER)
+        if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
         {
             return;
         }
-        this.currentPlayerId = buffer[ID_OFFSET];
+        this.currentPlayerId = buffer[R.Net.Offset.PID];
         this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
     }
 
@@ -113,7 +105,7 @@ public class GameController : MonoBehaviour {
         List<byte> playerIDs = new List<byte>();
         for (int i = 0; i < 30; i++)
         {
-            byte id = data[ID_OFFSET + i];
+            byte id = data[R.Net.Offset.PID + i];
 
             if (id == 0)
             {
@@ -130,8 +122,8 @@ public class GameController : MonoBehaviour {
         List<Vector3> positions = new List<Vector3>();
         for (int i = 0; i < 30; i++)
         {
-            float x = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8));
-            float z = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8) + 4);
+            float x = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_POSITIONS + (i * 8));
+            float z = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_POSITIONS + (i * 8) + 4);
             Vector3 position = new Vector3(x, 0, z);
             positions.Add(position);
         }
@@ -143,7 +135,7 @@ public class GameController : MonoBehaviour {
         List<Quaternion> rotations = new List<Quaternion>();
         for (int i = 0; i < 30; i++)
         {
-            float pheta = BitConverter.ToSingle(data, ROTATION_OFFSET + (i * 4));
+            float pheta = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_ROTATIONS + (i * 4));
             Quaternion rotation = Quaternion.Euler(new Vector3(0, pheta, 0));
             rotations.Add(rotation);
         }
@@ -194,10 +186,10 @@ public class GameController : MonoBehaviour {
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
-        byte[] packet = new byte[PACKET_SIZE];
+        byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
 
         // Put position data into the packet
-        packet[0] = TICK_HEADER;
+        packet[0] = R.Net.Header.TICK;
         packet[1] = this.currentPlayerId;
         Array.Copy(x    , 0, packet, index,  4);
         index += 4;
@@ -223,6 +215,6 @@ public class GameController : MonoBehaviour {
         }
         */
 
-        Debug.Log(this.client.Send(packet, PACKET_SIZE));
+        Debug.Log(this.client.Send(packet, R.Net.Size.CLIENT_TICK));
     }
 }

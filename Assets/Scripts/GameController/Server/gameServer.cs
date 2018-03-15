@@ -12,21 +12,17 @@ public unsafe class gameServer : MonoBehaviour
 {
     // Member Data
     private static float nextTickTime = 0.0f;
-    private static int ticksPerSecond = 32;
+    private static int ticksPerSecond = 64;
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
-    private static Int32 SOCKET_NODATA = 0;
-    private static Int32 SOCKET_DATA_WAITING = 1;
-    private static ushort PORT_NO = 9999;
-    private static int MAX_BUFFER_SIZE = 1200;
     private static Server server;
     private static IntPtr serverInstance;
     private static bool running;
     private static Thread recvThread;
 
     private TerrainController terrainController;
-    private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
+    private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
     private static List<connection> endpoints;
     public struct connection
@@ -52,7 +48,7 @@ public unsafe class gameServer : MonoBehaviour
         while (!terrainController.GenerateEncoding()) ;
         TerrainController.Encoding encoded = terrainController.Data;
 
-        server.Init(42069);
+        server.Init(R.Net.PORT);
 
         endpoints = new List<connection>();
         recvThread = new Thread(recvThrdFunc);
@@ -93,8 +89,8 @@ public unsafe class gameServer : MonoBehaviour
 
     private static void craftTickPacket()
     {
-        int offset = 373;
-        clientData[0] = 85;
+        int offset = R.Net.Offset.PLAYER_IDS;
+        clientData[0] = R.Net.Header.TICK;
 
         for (int i = 0; i < endpoints.Count; i++)
         {
@@ -130,7 +126,7 @@ public unsafe class gameServer : MonoBehaviour
         {
             if (endpoints[i].id != 0)
             {
-                server.Send(endpoints[i].ep, clientData, MAX_BUFFER_SIZE);
+                server.Send(endpoints[i].ep, clientData, R.Net.Size.SERVER_TICK);
             }
         }
     }
@@ -138,7 +134,7 @@ public unsafe class gameServer : MonoBehaviour
     public static void recvThrdFunc()
     {
 
-        byte[] recvBuffer = new byte[MAX_BUFFER_SIZE];
+        byte[] recvBuffer = new byte[R.Net.Size.CLIENT_TICK];
         Int32 numRead;
         EndPoint ep = new EndPoint();
 
@@ -148,10 +144,9 @@ public unsafe class gameServer : MonoBehaviour
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
             if (server.Poll())
             {
-                connection recvConn = new connection();
-                numRead = server.Recv(ref ep, recvBuffer, MAX_BUFFER_SIZE);
+                numRead = server.Recv(ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
 
-                if (numRead != MAX_BUFFER_SIZE)
+                if (numRead != R.Net.Size.CLIENT_TICK)
                 {
                     Debug.Log("Failed to read from socket.");
                 }
@@ -160,11 +155,11 @@ public unsafe class gameServer : MonoBehaviour
                     Debug.Log("recv | " + byteArrayToString(recvBuffer));
                     switch (recvBuffer[0])
                     {
-                        case 69:
+                        case R.Net.Header.NEW_CLIENT:
                             addNewClient(ep);
                             break;
                         
-                        case 85:
+                        case R.Net.Header.TICK:
                             saveBuffer(ep, recvBuffer);
                             break;
 
@@ -210,10 +205,10 @@ public unsafe class gameServer : MonoBehaviour
     private static void sendInitData(ref connection conn)
     {
         clientData[0] = 0;
-        clientData[373] = conn.id;
+        clientData[R.Net.Offset.PLAYER_IDS] = conn.id;
 
-        int positionOffset = (13 + (conn.id * 8)) - 8;
-        int rotationOffset = (253 + (conn.id * 4)) - 4;
+        int positionOffset = (R.Net.Offset.PLAYER_POSITIONS + (conn.id * 8)) - 8;
+        int rotationOffset = (R.Net.Offset.PLAYER_ROTATIONS + (conn.id * 4)) - 4;
 
         conn.x = spawnPoint * 5;
         conn.z = spawnPoint * 5;
@@ -225,7 +220,7 @@ public unsafe class gameServer : MonoBehaviour
         Array.Copy(BitConverter.GetBytes(conn.z), 0, clientData, positionOffset + 4, 4);
         Array.Copy(BitConverter.GetBytes(conn.r), 0, clientData, rotationOffset, 4);
 
-        server.Send(conn.ep, clientData, MAX_BUFFER_SIZE);
+        server.Send(conn.ep, clientData, R.Net.Size.SERVER_TICK);
     }
 
     // Takes the recieved coords and updates client data
@@ -236,21 +231,21 @@ public unsafe class gameServer : MonoBehaviour
             return;
         }
 
-        if (conn.buffer[1] != conn.id)
+        if (conn.buffer[R.Net.Offset.PID] != conn.id)
         {
             return;
         }
 
-        int positionOffset = (13 + (conn.id * 8)) - 8;
-        int rotationOffset = (253 + (conn.id * 4)) - 4;
+        int positionOffset = (R.Net.Offset.PLAYER_POSITIONS + (conn.id * 8)) - 8;
+        int rotationOffset = (R.Net.Offset.PLAYER_ROTATIONS + (conn.id * 4)) - 4;
 
-        Array.Copy(conn.buffer, 2, clientData, positionOffset, 4);
-        Array.Copy(conn.buffer, 6, clientData, positionOffset + 4, 4);
-        Array.Copy(conn.buffer, 10, clientData, rotationOffset, 4);
+        Array.Copy(conn.buffer, R.Net.Offset.X, clientData, positionOffset, 4);
+        Array.Copy(conn.buffer, R.Net.Offset.Z, clientData, positionOffset + 4, 4);
+        Array.Copy(conn.buffer, R.Net.Offset.R, clientData, rotationOffset, 4);
 
-        conn.x = BitConverter.ToSingle(conn.buffer, 2);
-        conn.z = BitConverter.ToSingle(conn.buffer, 6);
-        conn.r = BitConverter.ToSingle(conn.buffer, 10);
+        conn.x = BitConverter.ToSingle(conn.buffer, R.Net.Offset.X);
+        conn.z = BitConverter.ToSingle(conn.buffer, R.Net.Offset.Z);
+        conn.r = BitConverter.ToSingle(conn.buffer, R.Net.Offset.R);
     }
 
     static string byteArrayToString(byte[] ba)
