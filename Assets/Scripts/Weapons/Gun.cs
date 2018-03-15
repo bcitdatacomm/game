@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : Item
+public class Gun : MonoBehaviour
 {
     public Bullet BulletPrefab;
 
@@ -70,21 +70,6 @@ public class Gun : Item
             {
                 this.FiredShots.Push(firedShot);
             }
-
-			currAmmo--;
-			if (currAmmo == 0)
-			{
-				reloading = true;
-			}
         }
-
-		if (reloading == true)
-		{
-			reloadTime = Time.time;
-			if (reloadTime < 0)
-			{
-				currAmmo = maxAmmo;
-			}
-		}
     }
 }
