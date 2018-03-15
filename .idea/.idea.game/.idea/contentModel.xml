@@ -6,6 +6,24 @@
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="Code" t="Include">
+          <e p="CameraController.cs" t="Include" />
+          <e p="RPGCharacterControllerFREE.cs" t="Include" />
+          <e p="RPGCharacterGUI.cs" t="Include" />
+        </e>
+        <e p="Elements" t="Include">
+          <e p="ImageEffects" t="Include">
+            <e p="Shaders" t="Include">
+              <e p="_BloomAndFlares" t="Include">
+                <e p="VignetteShader.shader" t="Include" />
+              </e>
+              <e p="frag_ao.cginc" t="Include" />
+              <e p="PrepareSunShaftsBlur.shader" t="Include" />
+              <e p="RadialBlur.shader" t="Include" />
+              <e p="ShowAlphaChannel.shader" t="Include" />
+            </e>
+          </e>
+        </e>
         <e p="Fonts" t="Include">
           <e p="Jupiter" t="Include">
             <e p="LICENSE.txt" t="Include" />
@@ -25,26 +43,6 @@
           <e p="Editor" t="Include">
             <e p="JetBrains" t="Include">
               <e p="Unity3DRider.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="RPG Character Animation Pack" t="Include">
-          <e p="Code" t="Include">
-            <e p="CameraController.cs" t="Include" />
-            <e p="RPGCharacterControllerFREE.cs" t="Include" />
-            <e p="RPGCharacterGUI.cs" t="Include" />
-          </e>
-          <e p="Elements" t="Include">
-            <e p="ImageEffects" t="Include">
-              <e p="Shaders" t="Include">
-                <e p="_BloomAndFlares" t="Include">
-                  <e p="VignetteShader.shader" t="Include" />
-                </e>
-                <e p="frag_ao.cginc" t="Include" />
-                <e p="PrepareSunShaftsBlur.shader" t="Include" />
-                <e p="RadialBlur.shader" t="Include" />
-                <e p="ShowAlphaChannel.shader" t="Include" />
-              </e>
             </e>
           </e>
         </e>
@@ -191,38 +189,65 @@
             <e p="HighnoonPlayer.cs" t="Include" />
           </e>
           <e p="GameController" t="Include">
+            <e p="Client" t="Include">
+              <e p="GameController.cs" t="Include" />
+              <e p="LocalhostServer.cs" t="Include" />
+            </e>
             <e p="Server" t="Include">
               <e p="gameServer.cs" t="Include" />
             </e>
           </e>
-          <e p="LoadSceneOnClick.cs" t="Include" />
-          <e p="QuitOnClick.cs" t="Include" />
-          <e p="SelectOnInput.cs" t="Include" />
+          <e p="GUI" t="Include">
+            <e p="LoadSceneOnClick.cs" t="Include" />
+            <e p="QuitOnClick.cs" t="Include" />
+            <e p="SelectOnInput.cs" t="Include" />
+            <e p="Simple Health Bar" t="Include">
+              <e p="_Asteroids Example" t="Include">
+                <e p="Scripts" t="Include">
+                  <e p="AsteroidController.cs" t="Include" />
+                  <e p="GameManager.cs" t="Include" />
+                  <e p="HealthPickupController.cs" t="Include" />
+                  <e p="PlayerController.cs" t="Include" />
+                  <e p="PlayerHealth.cs" t="Include" />
+                </e>
+              </e>
+              <e p="Editor" t="Include">
+                <e p="SimpleHealthBarEditor.cs" t="Include" />
+                <e p="SimpleHealthBarWindow.cs" t="Include" />
+              </e>
+              <e p="README.txt" t="Include" />
+              <e p="Scripts" t="Include">
+                <e p="SimpleHealthBar.cs" t="Include" />
+              </e>
+            </e>
+            <e p="TranslateCamera.cs" t="Include" />
+          </e>
+          <e p="Network" t="Include">
+            <e p="Client.cs" t="Include" />
+            <e p="EndPoint.cs" t="Include" />
+            <e p="Server.cs" t="Include" />
+            <e p="ServerLibrary.cs" t="Include" />
+          </e>
+          <e p="Player" t="Include">
+            <e p="CameraFollow.cs" t="Include" />
+            <e p="Player.cs" t="Include" />
+            <e p="PlayerSpawner.cs" t="Include" />
+          </e>
+          <e p="R.cs" t="Include" />
           <e p="Terrain" t="Include">
             <e p="TerrainController.cs" t="Include" />
             <e p="TerrainControllerTestScript.cs" t="Include" />
           </e>
-          <e p="TranslateCamera.cs" t="Include" />
-        </e>
-        <e p="Simple Health Bar" t="Include">
-          <e p="_Asteroids Example" t="Include">
-            <e p="Scripts" t="Include">
-              <e p="AsteroidController.cs" t="Include" />
-              <e p="GameManager.cs" t="Include" />
-              <e p="HealthPickupController.cs" t="Include" />
-              <e p="PlayerController.cs" t="Include" />
-              <e p="PlayerHealth.cs" t="Include" />
+          <e p="Weapons" t="Include">
+            <e p="Bullets" t="Include">
+              <e p="Bullet.cs" t="Include" />
             </e>
-          </e>
-          <e p="Editor" t="Include">
-            <e p="SimpleHealthBarEditor.cs" t="Include" />
-            <e p="SimpleHealthBarWindow.cs" t="Include" />
-          </e>
-          <e p="README.txt" t="Include" />
-          <e p="Scripts" t="Include">
-            <e p="SimpleHealthBar.cs" t="Include" />
+            <e p="Gun.cs" t="Include" />
+            <e p="Item.cs" t="Include" />
+            <e p="Spell.cs" t="Include" />
           </e>
         </e>
+        <e p="smcs.rsp" t="Include" />
         <e p="UnityPackages" t="Include">
           <e p="JsonNetSample" t="Include">
             <e p="JsonNetSample.cs" t="Include" />
