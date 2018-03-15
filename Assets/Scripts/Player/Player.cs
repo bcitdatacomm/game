@@ -10,7 +10,13 @@ public class Player : MonoBehaviour
 
     public float MovementSpeed;
 
+    public Item currentItem;
+
+    public Inventory inventory;
+
     public Spell[] Spells;
+
+    byte[] checkInventory;
 
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
@@ -23,7 +29,8 @@ public class Player : MonoBehaviour
         Debug.Log("Player start");
         this.Health = 100;
         this.Armor = 0;
-        this.Spells = new Spell[3];
+        this.Spells = new Spell[3]; // Maybe unneeded...
+        this.inventory = new Inventory();
     }
 
     void Awake()
@@ -47,6 +54,8 @@ public class Player : MonoBehaviour
 
         // Turn the player to face the mouse cursor.
         turn();
+
+
     }
 
     void move(float h, float v)
@@ -90,4 +99,21 @@ public class Player : MonoBehaviour
 
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        IInventoryItem item = hit.collider.GetComponent<IInventoryItem>();
+        if(item != null)
+        {
+            Debug.Log("Pick up item");
+            inventory.AddItem(item);
+        }
+    }
+
+    //public byte[] getByteInventory()
+    //{
+    //    checkInventory = {inventory };
+
+    //    return checkInventory;
+    //}
 }
