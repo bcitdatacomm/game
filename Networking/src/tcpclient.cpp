@@ -51,8 +51,9 @@ int TCPClient::initializeSocket(EndPoint ep)
 
 
 
-void TCPClient::closeConnection() {
+int32_t TCPClient::closeConnection() {
 	close(clientSocket);
+	return 0;
 }
 
 /**
@@ -86,7 +87,7 @@ int32_t TCPClient::receiveBytes(char * buffer, uint32_t len)
 	return (len - bytesToRead);
 }
 
-
+/*
 int main()
 {
 	int result;
@@ -119,11 +120,13 @@ int main()
 		break;
 			//printf("%s\n", buffer);
 		//int y = client.UdpPollSocket();
-		/*
+		
 		if (y == SOCKET_DATA_WAITING) {
 			client.receiveTCPBytes(buffer, 6);
 			printf("%s\n", buffer);
-		}*/
+		}
 	}
 	return 1;
 }
+
+*/
