@@ -51,4 +51,4 @@ extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t l
 
 extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len);
 
-extern "C" int32_t TCPClient_closeConnection(void *clientPtr);
+extern "C" int32_t TCPClient_closeConnection(void *clientPtr, int32_t sockfd);

@@ -131,7 +131,7 @@ extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t l
     return ((TCPClient *)clientPtr)->receiveBytes(buffer, len);
 }
 
-extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
+extern "C" int32_t TCPClient_closeConnection(void *clientPtr, int32_t sockfd)
 {
-    ((TCPClient *)clientPtr)->closeConnection();
+    ((TCPClient *)clientPtr)->closeConnection(sockfd);
 }

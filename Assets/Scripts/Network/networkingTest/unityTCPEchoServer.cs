@@ -94,7 +94,6 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 
 		while (running)
 		{
-			Debug.Log ("I'm fucking calling receive");
 			numRecv = server.Recv (client, recvBuffer, MAP_BUFFER_SIZE);
 			Debug.Log ("Completed receive");
 			if (numRecv > 0)

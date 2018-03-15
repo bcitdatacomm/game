@@ -46,8 +46,8 @@ int TCPClient::initializeSocket(EndPoint ep)
 
 
 
-int32_t TCPClient::closeConnection() {
-	return close(clientSocket);
+int32_t TCPClient::closeConnection(int32_t sockfd) {
+	return close(sockfd);
 }
 
 /**

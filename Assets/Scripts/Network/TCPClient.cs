@@ -5,6 +5,7 @@ namespace Networking
 	public unsafe class TCPClient
 	{
 		private IntPtr tcpClient;
+        private Int32 clientSocket;
 
 		public TCPClient()
 		{
@@ -36,13 +37,13 @@ namespace Networking
 
 		public Int32 Init(EndPoint ep)
 		{
-			Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
-			return err;
+			clientSocket = ServerLibrary.TCPClient_initClient(tcpClient, ep);
+			return clientSocket;
 		}
 
 		public Int32 CloseConnection()
 		{
-			Int32 err = ServerLibrary.TCPClient_closeConnection();
+			Int32 err = ServerLibrary.TCPClient_closeConnection(clientSocket);
 			return err;
 		}
 	}

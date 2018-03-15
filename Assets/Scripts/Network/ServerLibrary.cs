@@ -76,7 +76,7 @@ namespace Networking {
 		public static extern Int32 TCPClient_recvBytes(IntPtr serverPtr, IntPtr data, UInt32 len);
 
         [DllImport("Network")]
-        public static extern Int32 TCPClient_closeConnection();
+        public static extern Int32 TCPClient_closeConnection(Int32 sockfd);
 
     }
 
