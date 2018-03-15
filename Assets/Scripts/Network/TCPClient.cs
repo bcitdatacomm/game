@@ -13,7 +13,7 @@ namespace Networking
 
 		public Int32 Send(byte[] buffer, Int32 len)
 		{
-			fixed( byte* tmpBuf = buffer)
+			fixed (byte* tmpBuf = buffer)
 			{
 				UInt32 bufLen = Convert.ToUInt32 (len);
 				Int32 ret = ServerLibrary.TCPClient_sendBytes(tcpClient, new IntPtr(tmpBuf), bufLen);
