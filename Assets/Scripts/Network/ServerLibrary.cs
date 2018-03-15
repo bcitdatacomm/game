@@ -57,6 +57,12 @@ namespace Networking {
         [DllImport("Network")]
         public static extern Int32 TCPServer_recvBytes(IntPtr serverPtr, Int32 clientSocket, IntPtr data, UInt32 len);
 
+        [DllImport("Network")]
+        public static extern Int32 TCPServer_closeClientSocket(Int32 clientSocket);
+
+        [DllImport("Network")]
+        public static extern Int32 TCPServer_closeListenSocket();
+
 		[DllImport("Network")]
 		public static extern IntPtr TCPClient_CreateClient();
 
@@ -69,6 +75,8 @@ namespace Networking {
 		[DllImport("Network")]
 		public static extern Int32 TCPClient_recvBytes(IntPtr serverPtr, IntPtr data, UInt32 len);
 
+        [DllImport("Network")]
+        public static extern Int32 TCPClient_closeConnection();
 
     }
 
