@@ -7,29 +7,29 @@ using Networking;
 
 /**
  * Simple echo server implementation using our Networking library.
- * This class is used as a Unity script which can be attached to a prefab for 
+ * This class is used as a Unity script which can be attached to a prefab for
  * testing. (I used Server)
- * 
- * Throughput seems to be limited by Client's Update rate, ~200 updates sent/received per second 
+ *
+ * Throughput seems to be limited by Client's Update rate, ~200 updates sent/received per second
  */
 public unsafe class unityTCPEchoServer : MonoBehaviour {
 
-	private static int MAX_BUFFER_SIZE = 8192;
+	private static int MAP_BUFFER_SIZE = 8192;
 	public static int SOCKET_NODATA = 0;
 	public static int SOCKET_DATA_WAITING = 1;
 
 	private TCPServer server;
-	private ushort portNo = 9999;
+	private ushort portNo = 42069;
 	private bool running;
 	private EndPoint ep;
 
 
 	/*
 	 * Creates and initializes the Server object and recv thread.
-	 */ 
+	 */
 	void Start ()
 	{
-		Debug.Log("Starting Server-Echo test");
+		Debug.Log("Starting TCP Server-Echo test");
 
 		// Creates a blank EndPoint which will be filled by the Server.Recv call.
 		ep = new EndPoint();
@@ -42,8 +42,10 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 		if (result != 0)
 		{
 			Debug.Log("Failed to initialize socket");
+			Debug.Log(result);
 		}
-			
+
+
 		recvThread = new Thread(recvThrdFunc);
 		running = true;
 		recvThread.Start();
@@ -60,10 +62,10 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 
 	/*
      * Thread function to read incoming packets.
-     * 
+     *
      * Currently works when tested using lab computers.
-     * Initially, the server would recv only the first packet. 
-     * 
+     * Initially, the server would recv only the first packet.
+     *
      * Sleep call was removed, with successful recv on the server side.
      *
      */
@@ -74,24 +76,32 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 		Int32 numRecvPass = 0;
 		Int32 numPollFail = 0;
 		Int32 numSent = 0;
+		Int32 numRecv = 0;
 		Int32 numBytesSent;
 		Int32 client;
 
-		byte[] recvBuffer = new byte[MAX_BUFFER_SIZE];
-		Int32 numRecv;
+		byte[] recvBuffer = new byte[MAP_BUFFER_SIZE];
+
+		Debug.Log ("I want to accept.");
+		client = server.AcceptConnection (ref ep);
+		Debug.Log ("Exited Accept.");
+		if (client == -1)
+		{
+			Debug.Log ("Fuck I couldn't accept fuck.");
+		}
 
 		while (running)
 		{
-			
-			client = server.AcceptConnection (ref ep);
-			if (client == -1)
+			Debug.Log ("I'm fucking calling receive");
+			numRecv = server.Recv (client, recvBuffer, MAP_BUFFER_SIZE);
+			Debug.Log ("Completed receive");
+			if (numRecv > 0)
 			{
-				Debug.Log ("Fuck I couldn't accept fuck.");
+				string contents = System.Text.Encoding.UTF8.GetString (recvBuffer);
+				Debug.Log ("Received: " + contents);
 			}
-			server.Recv (client, recvBuffer, MAX_BUFFER_SIZE);
-			string contents = System.Text.Encoding.UTF8.GetString (recvBuffer);
-			Debug.Log ("Received: " + contents);
-			numSent = server.Send (client, recvBuffer, MAX_BUFFER_SIZE);
+
+			numSent = server.Send (client, recvBuffer, MAP_BUFFER_SIZE);
 			if (numSent > 0)
 			{
 				Debug.Log ("Sent.");

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Networking
 {
@@ -22,6 +23,7 @@ namespace Networking
 
 		public Int32 AcceptConnection(ref EndPoint ep)
         {
+			Debug.Log ("Entered Accept");
 			fixed(EndPoint* p = &ep)
 			{
 				return ServerLibrary.TCPServer_acceptConnection(tcpServer, p);
@@ -31,6 +33,7 @@ namespace Networking
 
 		public Int32 Recv(Int32 socket, byte[] buffer, Int32 len)
 		{
+			Debug.Log ("Entered recv");
 			Int32 length;
 			fixed (byte* tmpBuf = buffer)
 			{

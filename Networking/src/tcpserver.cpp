@@ -1,9 +1,10 @@
 #include "tcpserver.h"
+#include <cerrno>
 
-#define SERVER_TCP_PORT 9999	// Default port
+#define SERVER_TCP_PORT 		9999	// Default port
 #define BUFLEN					1200		//Buffer length
-#define MAX_NUM_CLIENTS 30
-#define TRUE						1
+#define MAX_NUM_CLIENTS 		30
+#define TRUE					1
 #define FALSE 					0
 
 
@@ -19,19 +20,24 @@ int32_t TCPServer::initializeSocket	(short port)
 	if ((tcpSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		perror ("Can't create a socket");
-		std::cout << strerror(errno) << std::endl;
-		exit(1);
+		//std::cout << strerror(errno) << std::endl;
+		return -5;
 	}
 	int optFlag = 1;
 
 	if(setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
 	{
 		perror("set opts failed");
-		return -1;
+		return -4;
+	}
+	if(setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEPORT, &optFlag, sizeof(optFlag)) == -1)
+	{
+		perror("set opts 2 failed");
+		return -8;
 	}
 
 	// Zero memory of server sockaddr_in struct
-	bzero((char *)&server, sizeof(struct sockaddr_in));
+	memset(&server, 0, sizeof(struct sockaddr_in));
 
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
@@ -40,12 +46,14 @@ int32_t TCPServer::initializeSocket	(short port)
 	if (bind(tcpSocket, (struct sockaddr *)&server, sizeof(server)) == -1)
 	{
 		perror("Can't bind name to socket");
-		std::cout << strerror(errno) << std::endl;
-		exit(1);
+		perror("failed bind.");
+		return errno;
 	}
-
-	listen(tcpSocket, MAX_NUM_CLIENTS);
-	return 1;
+	if (listen(tcpSocket, MAX_NUM_CLIENTS) == -1)
+	{
+		return errno;
+	}
+	return 0;
 }
 
 
@@ -58,7 +66,6 @@ int32_t TCPServer::acceptConnection(EndPoint* ep)
 
 	if ((clientSocket = accept(tcpSocket, (struct sockaddr *)&clientAddr, &addrSize)) == -1)
 	{
-		std::cout << strerror(errno) << std::endl;
 		return 0;
 	}
 
@@ -88,7 +95,7 @@ int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 	return (len - bytesToRead);
 }
 
-/* 
+/*
 int main ()
 {
 
