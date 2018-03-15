@@ -13,11 +13,6 @@
 
 #include "EndPoint.h"
 
-#define SERVER "142.232.135.38"
-#define SOCKET_DATA_WAITING 555
-#define SOCKET_NODATA 666
-
-
 class TCPClient {
 
 public:

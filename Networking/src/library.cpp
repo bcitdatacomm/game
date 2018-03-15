@@ -1,7 +1,7 @@
 ﻿#include "tcpserver.h"
 #include "client.h"
 #include "server.h"
-
+#include "tcpclient.h"
 
 
 
@@ -108,20 +108,21 @@ extern "C" TCPClient *TCPClient_CreateClient()
 
 extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
 {
-    return ((TCPClient *)serverPtr)->initializeSocket(ep);
+    return ((TCPClient *)clientPtr)->initializeSocket(ep);
 }
 
 extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len)
 {
-    return ((TCPClient *)serverPtr)->sendBytes(buffer, len);
+    return ((TCPClient *)clientPtr)->sendBytes(buffer, len);
 }
 
 extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len)
 {
-    return ((TCPClient *)serverPtr)->receiveBytes(buffer, len);
+    return ((TCPClient *)clientPtr)->receiveBytes(buffer, len);
 }
 
 extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
 {
-    return ((TCPClient *)serverPtr)->closeConnection();
+    ((TCPClient *)clientPtr)->closeConnection();
+    return 1;
 }

@@ -17,7 +17,10 @@ tcpserver.o:
 library.o:
 	$(CC) $(FLAGS) library.cpp
 
-library: server.o library.o client.o tcpserver.o
-	$(CC) $(LINK) library.o tcpserver.o server.o client.o -o libNetwork.so && cp 'libNetwork.so' ../../Assets/Plugins/Network.so
+tcpclient.o:
+	$(CC) $(FLAGS) tcpclient.cpp
+
+library: server.o library.o client.o tcpserver.o tcpclient.o
+	$(CC) $(LINK) library.o tcpserver.o server.o client.o tcpclient.o -o libNetwork.so && cp 'libNetwork.so' ../../Assets/Plugins/Network.so
 clean:
 	rm -f *.o & rm -f libNetwork.so

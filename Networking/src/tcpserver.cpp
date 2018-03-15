@@ -88,7 +88,7 @@ int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 	return (len - bytesToRead);
 }
 
-
+/* 
 int main ()
 {
 
@@ -113,3 +113,5 @@ int main ()
 	close(clientSocket);
 	return(0);
 }
+
+*/
