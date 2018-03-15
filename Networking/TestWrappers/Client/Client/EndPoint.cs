@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 
-namespace Client
+namespace Networking
 {
 	[StructLayout(LayoutKind.Explicit, Pack = 1)]
 	public struct CAddr
