@@ -15,12 +15,13 @@ public class Bullet : MonoBehaviour {
     void Start()
     {
         this.ID = GetInstanceID();
-
-        // TODO: Destroy object after LifeTime is up
+		Destroy (this.gameObject, LifeTime);
     }
 
     void FixedUpdate()
     {
 		this.transform.position = this.transform.position + direction * Speed;
     }
+
+
 }
