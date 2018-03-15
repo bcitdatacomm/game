@@ -21,10 +21,6 @@ extern "C" int32_t Server_PollSocket(void *serverPtr)
     return ((Server *)serverPtr)->UdpPollSocket();
 }
 
-extern "C" int32_t Server_SelectSocket(void *serverPtr)
-{
-    return ((Server *)serverPtr)->UdpSelectSocket();
-}
 
 extern "C" int32_t Server_sendBytes(void *serverPtr, EndPoint ep, char *data, uint32_t len)
 {

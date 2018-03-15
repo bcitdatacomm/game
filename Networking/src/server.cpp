@@ -7,8 +7,6 @@
 Server::Server()
 {
 	poll_events = new pollfd;
-	FD_ZERO(&allset);			// select socket-set reset
-	FD_SET(udpSocket, &allset); // select socket-set set
 }
 
 int32_t Server::initializeSocket(short port)
@@ -107,16 +105,4 @@ int32_t Server::UdpPollSocket()
 	return SOCKET_NODATA;
 }
 
-int32_t Server::UdpSelectSocket()
-{
-	rset = allset; // structure assignment
-	select(MAX_FD, &rset, NULL, NULL, NULL);
-
-	if (FD_ISSET(udpSocket, &rset)) // a upd msg is ready to be read
-	{
-		return SOCKET_DATA_WAITING;
-	}
-
-	return SOCKET_NODATA;
-}
 
