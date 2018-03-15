@@ -103,9 +103,9 @@ extern "C" int32_t TCPServer_closeClientSocket(void* serverPtr, int32_t clientSo
     return ((TCPServer*)serverPtr)->closeClientSocket(clientSocket);
 }
 
-extern "C" int32_t TCPServer_closeListenSocket(void* serverPtr)
+extern "C" int32_t TCPServer_closeListenSocket(void* serverPtr, int32_t sockfd)
 {
-    return ((TCPServer*)serverPtr)->closeListenSocket();
+    return ((TCPServer*)serverPtr)->closeListenSocket(sockfd);
 }
 
 

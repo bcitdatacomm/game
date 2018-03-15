@@ -25,7 +25,7 @@ extern "C" int32_t TCPServer_recvBytes(void *, int32_t, char *, uint32_t);
 
 extern "C" int32_t TCPServer_closeClientSocket(int32_t);
 
-extern "C" int32_t TCPServer_closeListenSocket();
+extern "C" int32_t TCPServer_closeListenSocket(int32_t);
 
 
 

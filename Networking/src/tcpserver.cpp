@@ -52,7 +52,7 @@ int32_t TCPServer::initializeSocket	(short port)
 	{
 		return errno;
 	}
-	return 0;
+	return tcpSocket;
 }
 
 
@@ -93,13 +93,13 @@ int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 	return (len - bytesToRead);
 }
 
-int32_t TCPServer::closeClientSocket(int clientSocket)
+int32_t TCPServer::closeClientSocket(int32_t clientSocket)
 {
 	return close (clientSocket);
 }
 
-int32_t TCPServer::closeListenSocket()
+int32_t TCPServer::closeListenSocket(int32_t sockfd)
 {
- 	close(tcpSocket);
-	return errno;
+	int32_t result = close(sockfd);
+	return result;
 }

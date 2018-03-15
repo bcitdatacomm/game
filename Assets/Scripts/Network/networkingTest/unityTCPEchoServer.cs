@@ -22,6 +22,7 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 	private ushort portNo = 42069;
 	private bool running;
 	private EndPoint ep;
+    private Int32 result;
 
 
 	/*
@@ -34,12 +35,11 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 		// Creates a blank EndPoint which will be filled by the Server.Recv call.
 		ep = new EndPoint();
 		Thread recvThread;
-		Int32 result;
 
 		// Create and initialize a server.
 		server = new TCPServer();
 		result = server.Init(portNo);
-		if (result != 0)
+		if (result <= 0)
 		{
 			Debug.Log("Failed to initialize socket");
 			
@@ -59,7 +59,7 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 	{
 		Debug.Log("DISABLED.");
 		running = false;
-		server.CloseListenSocket();
+		server.CloseListenSocket(result);
 	}
 
 	/*

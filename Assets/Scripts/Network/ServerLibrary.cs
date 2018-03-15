@@ -61,7 +61,7 @@ namespace Networking {
         public static extern Int32 TCPServer_closeClientSocket(Int32 clientSocket);
 
         [DllImport("Network")]
-        public static extern Int32 TCPServer_closeListenSocket();
+        public static extern Int32 TCPServer_closeListenSocket(Int32 sockfd);
 
 		[DllImport("Network")]
 		public static extern IntPtr TCPClient_CreateClient();

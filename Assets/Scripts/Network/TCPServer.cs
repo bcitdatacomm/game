@@ -7,6 +7,7 @@ namespace Networking
     {
 
 		private IntPtr tcpServer;
+        private Int32 serverSocket;
 
 		public TCPServer()
 		{
@@ -15,8 +16,9 @@ namespace Networking
 
 		public Int32 Init(ushort port)
 		{
-			Int32 err = ServerLibrary.TCPServer_initServer(tcpServer, port);
-			return err;
+			serverSocket = ServerLibrary.TCPServer_initServer(tcpServer, port);
+
+			return serverSocket;
 		}
 
 
@@ -58,9 +60,9 @@ namespace Networking
 				return ServerLibrary.TCPServer_closeClientSocket(clientSocket);
 		}
 
-		public Int32 CloseListenSocket()
+		public Int32 CloseListenSocket(Int32 sockfd)
 		{
-                Int32 result = ServerLibrary.TCPServer_closeListenSocket();
+            Int32 result = ServerLibrary.TCPServer_closeListenSocket(serverSocket);
             Debug.Log("Close op result: " + result);
             return result;
 		}
