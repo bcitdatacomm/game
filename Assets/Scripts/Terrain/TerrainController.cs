@@ -362,6 +362,8 @@ public class TerrainController
             name = DEFAULT_NAME
         };
 
+        ///////////////////////////////////////////////////
+
         // Gets the number of tile types
         int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
         // Create a new treeprototype array with length corresponding to number of items in TileTypes
@@ -424,6 +426,22 @@ public class TerrainController
             // Convert the list to an array and assign to tData
             tData.treeInstances = treeInstances.ToArray();
         }
+
+        ///////////////////////////////////////////////////
+
+        // Create a new splat prototype array
+        SplatPrototype[] newSplatPrototypes = new SplatPrototype[1];
+
+        //Create a new splat prototype object
+        newSplatPrototypes[0] = new SplatPrototype();
+
+        // Grab the texture and set it
+        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/GrassyRocks.jpg", typeof(Texture2D));
+
+        // Assign the new splat prototype array to tData
+        tData.splatPrototypes = newSplatPrototypes;
+
+        ///////////////////////////////////////////////////
 
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
