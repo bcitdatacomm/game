@@ -36,7 +36,7 @@ namespace Networking
 
 		public Int32 Init(EndPoint ep)
 		{
-			Int32 err = ServerLibrary.TCPClient_initClient(tcpServer, ep);
+			Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
 			return err;
 		}
 	}
