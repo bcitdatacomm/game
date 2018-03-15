@@ -38,56 +38,41 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Store the input axes.
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        // Move the player around the scene.
-        move(h, v);
-
-        // Turn the player to face the mouse cursor.
+		move();
         turn();
     }
 
-    void move(float h, float v)
+    void move()
     {
-        // Set the movement vector based on the axis input.
-        movement.Set(h, 0f, v);
-
-        // Normalise the movement vector and make it proportional to the speed per second.
-        movement = movement.normalized * MovementSpeed * Time.deltaTime;
-
-        // Move the player to it's current position plus the movement.
-        playerRigidbody.MovePosition(transform.position + movement);
+		if (Input.GetKey("w"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, .1f);
+		}
+		if (Input.GetKey("s"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, -.1f);
+		}
+		if (Input.GetKey("a"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (-.1f, 0, 0);
+		}
+		if (Input.GetKey("d"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (.1f, 0, 0);
+		}
     }
 
     void turn()
     {
-        // Create a ray from the mouse cursor on screen in the direction of the camera.
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        // Create a RaycastHit variable to store information about what was hit by the ray.
-        RaycastHit floorHit;
-
-        // Perform the raycast and if it hits something on the floor layer...
-        if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
-        {
-            // Create a vector from the player to the point on the floor the raycast from the mouse hit.
-            Vector3 playerToMouse = floorHit.point - transform.position;
-
-            // Ensure the vector is entirely along the floor plane.
-            playerToMouse.y = 0f;
-
-            // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
-            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
-
-            // Set the player's rotation to this new rotation.
-            playerRigidbody.MoveRotation(newRotation);
-        }
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //transform.LookAt(ray.GetPoint(0), Vector3.forward);
-
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
+		Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
+		Plane plane=new Plane(Vector3.up, Vector3.zero);
+		float distance;
+		if(plane.Raycast(ray, out distance))
+		{
+			Vector3 target=ray.GetPoint(distance);
+			Vector3 direction=target-transform.position;
+			float rotation=Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
+			transform.rotation=Quaternion.Euler(0, rotation, 0);
+		}
     }
 }

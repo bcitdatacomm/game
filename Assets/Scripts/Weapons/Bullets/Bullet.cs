@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour {
     public float Speed;
     public float LifeTime;
     public int AoE;
+	public Vector3 direction;
 
     void Start()
     {
@@ -20,6 +21,6 @@ public class Bullet : MonoBehaviour {
 
     void FixedUpdate()
     {
-
+		this.transform.position = this.transform.position + direction * Speed;
     }
 }
