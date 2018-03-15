@@ -7,7 +7,7 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.20";
+    public const string SERVER_ADDRESS = "142.232.18.13";
     public const ushort SERVER_PORT = 42069;
     public const int PACKET_SIZE = 1200;
     public const byte INIT_HEADER = 0;
@@ -223,6 +223,6 @@ public class GameController : MonoBehaviour {
         }
         */
 
-        Debug.Log(this.client.Send(packet, PACKET_SIZE));
+        this.client.Send(packet, PACKET_SIZE);
     }
 }
