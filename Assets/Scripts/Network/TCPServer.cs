@@ -11,7 +11,6 @@ namespace Networking
 		public TCPServer()
 		{
 			tcpServer = ServerLibrary.TCPServer_CreateServer();
-
 		}
 
 		public Int32 Init(ushort port)
@@ -39,7 +38,7 @@ namespace Networking
 			{
 				UInt32 bufLen = Convert.ToUInt32(len);
 				length = ServerLibrary.TCPServer_recvBytes(tcpServer, socket, new IntPtr(tmpBuf), bufLen);
-				
+
 				return length;
 			}
 		}
@@ -53,6 +52,18 @@ namespace Networking
 				return ret;
 			}
 		}
+
+		public Int32 CloseClientSocket(Int32 clientSocket)
+		{
+				return ServerLibrary.TCPServer_closeClientSocket(clientSocket);
+		}
+
+		public Int32 CloseListenSocket()
+		{
+                Int32 result = ServerLibrary.TCPServer_closeListenSocket();
+            Debug.Log("Close op result: " + result);
+            return result;
+		}
+
 	}
 }
-

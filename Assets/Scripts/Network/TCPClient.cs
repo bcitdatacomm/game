@@ -39,6 +39,11 @@ namespace Networking
 			Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
 			return err;
 		}
+
+		public Int32 CloseConnection()
+		{
+			Int32 err = ServerLibrary.TCPClient_closeConnection();
+			return err;
+		}
 	}
 }
-

@@ -1,7 +1,6 @@
 #include "tcpserver.h"
 #include <cerrno>
 
-#define SERVER_TCP_PORT 		9999	// Default port
 #define BUFLEN					1200		//Buffer length
 #define MAX_NUM_CLIENTS 		30
 #define TRUE					1
@@ -76,12 +75,11 @@ int32_t TCPServer::acceptConnection(EndPoint* ep)
 }
 
 
-
-
 int32_t TCPServer::sendBytes(int clientSocket, char * data, unsigned len)
 {
 	return send(clientSocket, data, len, 0);
 }
+
 
 int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 {
@@ -95,30 +93,13 @@ int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 	return (len - bytesToRead);
 }
 
-/*
-int main ()
+int32_t TCPServer::closeClientSocket(int clientSocket)
 {
-
-	int	clientSocket;
-	char buffer[200];
-	EndPoint ep;
-	TCPServer tcpserver;
-
-	tcpserver.initializeSocket(SERVER_TCP_PORT);
-
-	clientSocket = tcpserver.acceptConnection(&ep);
-
-	while (TRUE)
-	{
-		tcpserver.receiveBytes(clientSocket, buffer, 200);
-
-		fprintf(stderr, "Received: %s", buffer);
-		fflush(stderr);
-		tcpserver.sendBytes(clientSocket, buffer, 200);
-	}
-
-	close(clientSocket);
-	return(0);
+	return close (clientSocket);
 }
 
-*/
+int32_t TCPServer::closeListenSocket()
+{
+ 	close(tcpSocket);
+	return errno;
+}

@@ -35,6 +35,8 @@ public:
 	int32_t acceptConnection(EndPoint* ep);
 	int32_t sendBytes(int clientSocket, char * data, unsigned len);
 	int32_t receiveBytes(int clientSocket, char * buffer, unsigned len);
+	int32_t closeClientSocket(int clientSocket);
+	int32_t closeListenSocket();
 
 
 

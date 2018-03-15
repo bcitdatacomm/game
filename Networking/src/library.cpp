@@ -98,6 +98,16 @@ extern "C" int32_t TCPServer_recvBytes(void * serverPtr, int32_t clientSocket, c
 	return ((TCPServer *)serverPtr)->receiveBytes(clientSocket, buffer, bufSize);
 }
 
+extern "C" int32_t TCPServer_closeClientSocket(void* serverPtr, int32_t clientSocket)
+{
+    return ((TCPServer*)serverPtr)->closeClientSocket(clientSocket);
+}
+
+extern "C" int32_t TCPServer_closeListenSocket(void* serverPtr)
+{
+    return ((TCPServer*)serverPtr)->closeListenSocket();
+}
+
 
 
 //TCP CLIENT
@@ -124,5 +134,4 @@ extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t l
 extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
 {
     ((TCPClient *)clientPtr)->closeConnection();
-    return 1;
 }

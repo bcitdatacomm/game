@@ -42,8 +42,9 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 		if (result != 0)
 		{
 			Debug.Log("Failed to initialize socket");
-			Debug.Log(result);
+			
 		}
+        Debug.Log("Server Init result: " + result);
 
 
 		recvThread = new Thread(recvThrdFunc);
@@ -58,6 +59,7 @@ public unsafe class unityTCPEchoServer : MonoBehaviour {
 	{
 		Debug.Log("DISABLED.");
 		running = false;
+		server.CloseListenSocket();
 	}
 
 	/*
