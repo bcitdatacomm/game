@@ -6,8 +6,6 @@
 
 Client::Client()
 {
-	FD_ZERO(&allset);			// select socket-set reset
-	FD_SET(clientSocket, &allset); // select socket-set set
 }
 
 
@@ -94,20 +92,9 @@ int32_t Client::UdpPollSocket()
 }
 
 
-int32_t Client::UdpSelectSocket()
-{
-	rset = allset; // structure assignment
-	select(MAX_FD, &rset, NULL, NULL, NULL);
 
-	if (FD_ISSET(clientSocket, &rset)) // a upd msg is ready to be read
-	{
-		return SOCKET_DATA_WAITING;
-	}
-
-	return SOCKET_NODATA;
-}
-
-void Client::closeConnection() {
+int32_t Client::closeConnection() {
 	close(clientSocket);
+	return 0;
 }
 
