@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,15 +19,22 @@ public class Player : MonoBehaviour
     int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
 	  public Vector3 net;
+    private Spell_Test spell1;
+    private Spell_Test spell2;
+    private Spell_Test spell3;
 
     void Start()
     {
         Debug.Log("Player start");
         this.Health = 100;
         this.Armor = 0;
-        this.Spells = new Spell[3]; // Maybe unneeded...
-		    net = Vector3.zero;
-		    MovementSpeed = .1f;
+        this.Spells = new Spell[3];
+        net = Vector3.zero;
+        MovementSpeed = .1f;
+        spell1 = this.transform.GetChild(3).GetComponent<Spell_Test>();
+        spell2 = this.transform.GetChild(4).GetComponent<Spell_Test>();
+        spell3 = this.transform.GetChild(5).GetComponent<Spell_Test>();
+
     }
 
     void Awake()
@@ -44,6 +51,7 @@ public class Player : MonoBehaviour
     {
 		  move();
       turn();
+      switch_spell();
     }
 
     void move()
@@ -87,6 +95,31 @@ public class Player : MonoBehaviour
 			float rotation=Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
 			transform.rotation=Quaternion.Euler(0, rotation, 0);
 		}
+    }
+
+    void switch_spell()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log("switch_spell 1");
+            spell1.enabled = true;
+            spell2.enabled = false;
+            spell3.enabled = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Debug.Log("switch_spell 2");
+            spell1.enabled = false;
+            spell2.enabled = true;
+            spell3.enabled = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Debug.Log("switch_spell 3");
+            spell1.enabled = false;
+            spell2.enabled = false;
+            spell3.enabled = true;
+        }
     }
 
     void OnTriggerEnter(Collider other)
