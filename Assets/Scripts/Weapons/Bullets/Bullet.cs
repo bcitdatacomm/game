@@ -10,14 +10,18 @@ public class Bullet : MonoBehaviour {
     public float Speed;
     public float LifeTime;
     public int AoE;
+	public Vector3 direction;
 
     void Start()
     {
         this.ID = GetInstanceID();
+		Destroy (this.gameObject, LifeTime);
     }
 
     void FixedUpdate()
     {
-
+		this.transform.position = this.transform.position + direction * Speed;
     }
+
+
 }
