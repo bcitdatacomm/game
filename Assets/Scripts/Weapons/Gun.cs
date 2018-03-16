@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Gun : Item
 {
     public Bullet BulletPrefab;
 
     public Stack<Bullet> FiredShots;
 
-    public float FireRate;
+    //public float FireRate;
 
     private float nextShotTime;
 
