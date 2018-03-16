@@ -67,6 +67,10 @@ public class Player : MonoBehaviour
 			this.transform.position = this.transform.position + new Vector3 (MovementSpeed, 0, 0);
 			net = net + new Vector3 (MovementSpeed, 0, 0);
 		}
+		if (Input.GetKey("r"))
+		{
+			transform.GetChild(2).GetComponent<Gun>().Reload();
+		}
     }
 
     void turn()
