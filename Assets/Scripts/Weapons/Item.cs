@@ -11,4 +11,9 @@ public class Item : MonoBehaviour
     public float Reload;
     public float ClipSize;
 
+    void Update()
+    {
+        /* Rotates all item subclasses, looks pretty */
+        transform.Rotate(new Vector3(15, 30, 45) * Time.deltaTime);
+    }
 }

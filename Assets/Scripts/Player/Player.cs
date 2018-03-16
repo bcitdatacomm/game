@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
         this.Health = 100;
         this.Armor = 0;
         this.Spells = new Spell[3]; // Maybe unneeded...
-        this.inventory = new Inventory();
+        //this.inventory = new Inventory();
     }
 
     void Awake()
@@ -90,14 +90,16 @@ public class Player : MonoBehaviour
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    void OnTriggerEnter(Collider other)
     {
-        IInventoryItem item = hit.collider.GetComponent<IInventoryItem>();
+        IInventoryItem item = other.GetComponent<IInventoryItem>();
+
         if(item != null)
         {
             Debug.Log("Pick up item");
             inventory.AddItem(item);
         }
+        Debug.Log("item added to inventory");
     }
 
     //public byte[] getByteInventory()
