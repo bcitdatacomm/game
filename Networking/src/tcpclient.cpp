@@ -39,7 +39,7 @@ int TCPClient::initializeSocket(EndPoint ep)
 		perror("failure");
 		return -1;
 	}
-	return 0;
+	return clientSocket;
 
 }
 
@@ -47,15 +47,7 @@ int TCPClient::initializeSocket(EndPoint ep)
 
 int32_t TCPClient::closeConnection(int32_t sockfd)
 {
-	int result = close(sockfd);
-	if (result == -1)
-	{
-		return errno;
-	}
-	else
-	{
-		return result;
-	}
+	return close(sockfd);
 }
 
 /**

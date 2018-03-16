@@ -45,7 +45,7 @@ namespace Networking
 
 		public Int32 CloseConnection(Int32 sockfd)
 		{
-			Int32 err = ServerLibrary.TCPClient_closeConnection(clientSocket);
+			Int32 err = ServerLibrary.TCPClient_closeConnection(sockfd);
 			return err;
 		}
 	}

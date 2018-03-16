@@ -17,13 +17,13 @@ class TCPClient {
 
 public:
 	TCPClient();
-	int initializeSocket(EndPoint ep);
+	int32_t initializeSocket(EndPoint ep);
 	int32_t sendBytes(char * data, uint32_t len);
 	int32_t receiveBytes(char * buffer, uint32_t size);
 	int32_t closeConnection(int32_t sockfd);
 
 private:
-	int clientSocket;
+	int32_t clientSocket;
 	sockaddr_in serverAddr;
 
 };

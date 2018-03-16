@@ -1,4 +1,4 @@
-﻿using System;
+  ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -45,8 +45,9 @@ public class unityTCPClientTest : MonoBehaviour {
 		ep = new EndPoint (destIP, portNo);
 		// Init initializes the socket and attempts to connect to the EndPoint (server)
 		result = client.Init (ep);
+
         Debug.Log("Init result: " + result);
-        if (result == 0)
+        if (result > 0)
         {
             // Starts the recv thread (listens for the echo)
 			clientsockfd = result;
