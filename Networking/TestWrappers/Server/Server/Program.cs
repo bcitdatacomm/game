@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Server
+namespace Networking
 {
 	class MainClass
 	{
@@ -17,18 +17,19 @@ namespace Server
 			outbuffer[5] = (byte)'y';
 			outbuffer[6] = (byte)'e';
 
-			ServerWrapper s = new ServerWrapper();
+			Server s = new Server();
 			EndPoint ep = new EndPoint ();
 
-			int initVal = s.Init(42000);
+			int initVal = s.Init(42069);
 			int  len = 2048;
 			for (;;)
 			{
-				if(s.Poll() == ServerWrapper.SOCKET_DATA_WAITING)
+				if(s.Poll())
 				{
 					rcvLen = s.Recv (ref ep, inBuffer, len);
-					s.Send (ep, outbuffer, 7);
+					s.Send (ep, outbuffer, len);
 				}
+                
 			}
 		}
 	}

@@ -1,7 +1,5 @@
-#ifndef CLIENT_DEF
 #include "client.h"
-#define CLIENT_DEF
-#endif
+
 
 
 Client::Client()
@@ -12,11 +10,10 @@ Client::Client()
 /**
 	Initializes client socket
 **/
-int Client::initializeSocket(EndPoint ep)
+int32_t Client::initializeSocket(EndPoint ep)
 {
 	if ((clientSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
 	{
-		perror("failed to initialize socket");
 		return -1;
 	}
 
@@ -24,7 +21,6 @@ int Client::initializeSocket(EndPoint ep)
 
 	if(setsockopt(clientSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
 	{
-		perror("set opts failed");
 		return -1;
 	}
 
@@ -39,7 +35,6 @@ int Client::initializeSocket(EndPoint ep)
     if ((error = connect(clientSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1))
 
     {
-        perror("connect error: ");
         return error;
     }
 
@@ -55,7 +50,6 @@ int32_t Client::sendBytes(char * data, unsigned len)
 {
 	int32_t retVal;
 	if ((retVal = send(clientSocket, data, len , 0)) == -1) {
-		perror("client send error");
 	}
 
 	return retVal;
@@ -91,10 +85,4 @@ int32_t Client::UdpPollSocket()
 	return SOCKET_NODATA;
 }
 
-
-
-int32_t Client::closeConnection() {
-	close(clientSocket);
-	return 0;
-}
 
