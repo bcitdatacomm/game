@@ -194,6 +194,7 @@
               <e p="LocalhostServer.cs" t="Include" />
             </e>
             <e p="Server" t="Include">
+              <e p="connectionData.cs" t="Include" />
               <e p="gameServer.cs" t="Include" />
             </e>
           </e>
@@ -225,8 +226,14 @@
           <e p="Network" t="Include">
             <e p="Client.cs" t="Include" />
             <e p="EndPoint.cs" t="Include" />
+            <e p="networkingTest" t="Include">
+              <e p="unityClientTest.cs" t="Include" />
+              <e p="unityEchoServer.cs" t="Include" />
+            </e>
             <e p="Server.cs" t="Include" />
             <e p="ServerLibrary.cs" t="Include" />
+            <e p="TCPClient.cs" t="Include" />
+            <e p="TCPServer.cs" t="Include" />
           </e>
           <e p="Player" t="Include">
             <e p="CameraFollow.cs" t="Include" />
