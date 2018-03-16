@@ -5,12 +5,19 @@ using UnityEngine;
 public class MovementSpell : Spell
 {
 
+    ParticleSystem ps;
+
     void Start()
     {
         Debug.Log("Spell started");
         this.NumUses = 1;
         this.duration = 10;
         this.startTime = -1;
+	GameObject obj = this.transform.parent.gameObject;
+	Debug.Log(obj);
+	ps = GetComponent<ParticleSystem>();
+	var em = ps.emission;
+	em.enabled = true;
     }
 
     void Update()
@@ -21,6 +28,7 @@ public class MovementSpell : Spell
             --this.NumUses;
             this.Owner.MovementSpeed += 50;
             this.startTime = Time.time;
+	    ps.Play();
         }
 
 
@@ -30,6 +38,7 @@ public class MovementSpell : Spell
             {
                 this.startTime = 0;
                 this.Owner.MovementSpeed -= 50;
+		ps.Stop();
             }
         }
 
