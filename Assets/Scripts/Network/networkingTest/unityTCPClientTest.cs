@@ -22,7 +22,7 @@ public class unityTCPClientTest : MonoBehaviour {
 	public static int SOCKET_NODATA 		= 0;
 	public static int SOCKET_DATA_WAITING 	= 1;
 	private static int MAX_BUFFER_SIZE 		= 8192;
-	private static string destIP 			= "142.232.18.12";
+	private static string destIP 			= "192.168.0.12";
 	private ushort portNo	 				= 42069;
 	private EndPoint ep;
 	private static bool running;
@@ -43,6 +43,7 @@ public class unityTCPClientTest : MonoBehaviour {
 
 		client = new TCPClient ();
 		ep = new EndPoint (destIP, portNo);
+		// Init initializes the socket and attempts to connect to the EndPoint (server)
 		result = client.Init (ep);
         Debug.Log("Init result: " + result);
         if (result == 0)
@@ -53,7 +54,7 @@ public class unityTCPClientTest : MonoBehaviour {
             recvThread = new Thread(recvThrdFunc);
             recvThread.Start();
         }
-
+		Debug.Log("Exit Start()");
 
 	} // End of Start()
 
@@ -86,15 +87,12 @@ public class unityTCPClientTest : MonoBehaviour {
 
 		Debug.Log ("recvThread started.");
 
-
-        Debug.Log("Entered loop.");
-
 		numRecv = client.Recv (recvBuffer, MAX_BUFFER_SIZE);
-        if (numRecv > 0)
-        {
-            string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
-            Debug.Log("Received: " + contents);
-        }
+		Debug.Log("Finished recv");
+
+        string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
+        Debug.Log("Received: " + contents);
+
 
 
 

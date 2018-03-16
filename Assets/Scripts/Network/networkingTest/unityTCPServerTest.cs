@@ -104,6 +104,11 @@ public unsafe class unityTCPServerTest : MonoBehaviour
             numSent = server.Send(clientArray[i], mapBuffer, MAX_MAP_SIZE);
         }
         Debug.Log("Finished Sending");
+        Debug.Log("Closing client sockets");
+        for (int i = 0; i < numClients; i++)
+        {
+            server.CloseClientSocket(clientArray[i]);
+        }
     }
 
     private void transmitThrdFunc(object clientSockID)

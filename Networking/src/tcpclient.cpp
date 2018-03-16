@@ -1,4 +1,5 @@
 #include "tcpclient.h"
+#include <cerrno>
 
 
 
@@ -6,8 +7,6 @@ TCPClient::TCPClient()
 {
 
 }
-
-
 
 /**
 	Initializes client TCP socket to receive initial game data.
@@ -48,7 +47,15 @@ int TCPClient::initializeSocket(EndPoint ep)
 
 int32_t TCPClient::closeConnection(int32_t sockfd)
 {
-	return close(sockfd);
+	int result = close(sockfd);
+	if (result == -1)
+	{
+		return errno;
+	}
+	else
+	{
+		return result;
+	}
 }
 
 /**
