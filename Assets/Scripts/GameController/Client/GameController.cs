@@ -19,6 +19,11 @@ public class GameController : MonoBehaviour {
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
+    // packet for terrain data
+    private byte[] terrainData;
+    // packet for item data
+    private byte[] itemData;
+
     void Start()
     {
         currentPlayerId = 0;
@@ -107,6 +112,25 @@ public class GameController : MonoBehaviour {
         float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4));
         
         this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
+    }
+
+    void initializeGame()
+    {
+
+        // Get the data for terrain
+        TerrainController tc = new TerrainController();
+        tc.LoadByteArray(terrainData);
+        // For testing purposes generates the map this should actually happen server side
+        //tc.GenerateEncoding();
+        tc.Instantiate();
+
+        // Get the data from the itemData packet
+        InitRandomGuns items = new InitRandomGuns();
+        items.fromByteArrayToList(itemData);
+        // items.SpawnedGuns is a list that has been populated with weaponspell object 
+        // which has ID, Type, Xcoord, and Zcoord
+        // code needs to be created in unison with asset team to put items on the map
+
     }
 
     List<byte> getPlayerIDs(byte[] data)

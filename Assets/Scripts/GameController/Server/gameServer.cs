@@ -32,11 +32,20 @@ public unsafe class gameServer : MonoBehaviour
     void Start()
     {
         server = new Server();
+        server.Init(R.Net.PORT);
+
+        // Listen for new players with tcp for a set time period or until max players have joined
+        players = new List<connection>();
+
+        // Create the terrain packet with format 1B header + 4B size as int + data
         terrainController = new TerrainController();
         while (!terrainController.GenerateEncoding()) ;
-        TerrainController.Encoding encoded = terrainController.Data;
 
-        server.Init(R.Net.PORT);
+        int terrainDataLength = terrainController.CompressedData.Length;
+        byte[] terrainPacket = new byte[5 + terrainDataLength];
+        terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
+        Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
+        Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
 
         endpoints = new List<connectionData>();
         recvThread = new Thread(recvThrdFunc);
@@ -48,19 +57,18 @@ public unsafe class gameServer : MonoBehaviour
         // Make a terrain packet (byte array) with encoded
         byte[] terrainPacket = new byte[1200];endpoints[i]
 
-        // Set header and amount of packet taken up
-        terrainPacket[0] = 15;
-        int packetSize = 1;
+        getitems(player.Count, terrainController.occupiedPositions);
+        itemData = getitems.pcktarray;
 
-        long tileWidth = this.terrainController.Width;
-        long tileLength = this.terrainController.Length;
+        // Send terrain data and item spawn data to all clients
 
-        // Wait for all IDs to be echoed back as ACK, retransit ID on timeout
-        */
+        recvThread = new Thread(recvThrdFunc);
+        running = true;
+        recvThread.Start();
 
         // Set the game timer
         // Start the game timer
-
+        */
     }
 
     void Update()
@@ -80,7 +88,7 @@ public unsafe class gameServer : MonoBehaviour
         int offset = R.Net.Offset.PLAYER_IDS;
         clientData[0] = R.Net.Header.TICK;
 
-        for (int i = 0; i < endpoints.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
             connectionData conn = endpoints[i];
 
@@ -99,7 +107,7 @@ public unsafe class gameServer : MonoBehaviour
                 conn.buffer = null;
             }
 
-            endpoints[i] = conn;
+            players[i] = conn;
 
             // Add player id to clientdata
             clientData[offset] = conn.id;
@@ -110,11 +118,11 @@ public unsafe class gameServer : MonoBehaviour
     private static void sendPacketToClients()
     {
         Debug.Log("send | " + byteArrayToString(clientData));
-        for (int i = 0; i < endpoints.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            if (endpoints[i].id != 0)
+            if (players[i].id != 0)
             {
-                server.Send(endpoints[i].ep, clientData, R.Net.Size.SERVER_TICK);
+                server.Send(players[i].ep, clientData, R.Net.Size.SERVER_TICK);
             }
         }
     }
@@ -130,9 +138,9 @@ public unsafe class gameServer : MonoBehaviour
         {
             // If poll returns 1 (SOCKET_DATA_WAITING), there is data waiting to be read
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
-            if (server.Poll())
+            if (server.Poll() == 1)
             {
-                numRead = server.Recv(ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
+                numRead = server.Recv(&ep, recvBuffer, R.Net.Size.CLIENT_TICK);
 
                 if (numRead != R.Net.Size.CLIENT_TICK)
                 {
@@ -168,22 +176,22 @@ public unsafe class gameServer : MonoBehaviour
             newPlayer.ep = ep;
             newPlayer.id = 0;
 
-            endpoints.Add(newPlayer);
+            players.Add(newPlayer);
         }
     }
 
     private static void saveBuffer(EndPoint ep, byte[] buffer)
     {
-        for (int i = 0; i < endpoints.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            if (endpoints[i].id == buffer[1])
+            if (players[i].id == buffer[1])
             {
-                if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
-                    && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
+                if (ep.addr.Byte0 == players[i].ep.addr.Byte0 && ep.addr.Byte1 == players[i].ep.addr.Byte1
+                    && ep.addr.Byte2 == players[i].ep.addr.Byte2 && ep.addr.Byte3 == players[i].ep.addr.Byte3)
                 {
                     connectionData tmp = endpoints[i];
                     tmp.buffer = buffer;
-                    endpoints[i] = tmp;
+                    players[i] = tmp;
                 }
             }
         }

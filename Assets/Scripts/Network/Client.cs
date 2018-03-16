@@ -24,7 +24,7 @@ namespace Networking
 			return err;
 		}
 
-		public bool Poll()
+		public Int32 Poll()
 		{
 			Int32 p = ServerLibrary.Client_PollSocket(connection);
 			return Convert.ToBoolean (p);
@@ -35,9 +35,12 @@ namespace Networking
 		{
 			fixed(byte* tmpBuf = buffer) 
 			{
-				UInt32 bufLen = Convert.ToUInt32 (len);
-				Int32 length = ServerLibrary.Client_recvBytes(connection, new IntPtr(tmpBuf), bufLen);
-				return length;
+				fixed(EndPoint* p = &rcvEndPoint)
+				{
+					UInt32 bufLen = Convert.ToUInt32 (len);
+					Int32 length = ServerLibrary.Server_recvBytes(connection, p, new IntPtr(tmpBuf), bufLen);
+					return length;
+				}
 			}
 		}
 
@@ -47,7 +50,7 @@ namespace Networking
 
 			fixed( byte* tmpBuf = buffer) 
 			{
-				Int32 ret = ServerLibrary.Client_sendBytes (connection, new IntPtr (tmpBuf), bufLen);
+				Int32 ret = ServerLibrary.Server_sendBytes (connection, server, new IntPtr (tmpBuf), bufLen);
 				return ret;
 			}
 

@@ -21,10 +21,9 @@ namespace Networking
 			return err;
 		}
 
-		public bool Poll()
+		public Int32 Poll()
 		{
-			Int32 p = ServerLibrary.Server_PollSocket(server);
-			return Convert.ToBoolean (p);
+			return ServerLibrary.Server_PollSocket(server);
 		}
 
 
@@ -33,16 +32,13 @@ namespace Networking
 		 * - EndPoint * ep: a pointer to an an
 		 * 
 		*/
-		public Int32 Recv(ref EndPoint ep, byte[] buffer, Int32 len)
+		public Int32 Recv(EndPoint * ep, byte[] buffer, Int32 len)
 		{
-			Int32 length;
-			fixed (byte* tmpBuf = buffer)
+			fixed(byte* tmpBuf = buffer) 
 			{
-				fixed(EndPoint * p = &ep) 
-				{
-					UInt32 bufLen = Convert.ToUInt32(len);
-					length = ServerLibrary.Server_recvBytes(server, p, new IntPtr(tmpBuf), bufLen);
-				}
+				UInt32 bufLen = Convert.ToUInt32 (len);
+				Int32 length = ServerLibrary.Server_recvBytes(server, ep, new IntPtr(tmpBuf), bufLen);
+
 				return length;
 			}
 		}

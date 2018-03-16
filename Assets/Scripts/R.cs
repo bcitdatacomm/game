@@ -12,6 +12,7 @@
             public const byte TICK = 85;
             public const byte NEW_CLIENT = 69;
             public const byte ACK = 170;
+            public const byte TERRAIN_DATA = 15;
         }
 
         // Contains constants associated with the packet offset or distance into the packet
