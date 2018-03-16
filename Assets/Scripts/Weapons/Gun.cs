@@ -21,7 +21,7 @@ public class Gun : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetButton("Fire1") && Time.time > this.nextShotTime)
+        if (Input.GetAxis("Fire1") == 1.0f && Time.time > this.nextShotTime)
         {
             Debug.Log("Shot Fired");
             this.nextShotTime = Time.time + this.FireRate;
