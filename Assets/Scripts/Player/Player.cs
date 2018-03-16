@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +7,18 @@ public class Player : MonoBehaviour
     public int Health;
     public int Armor;
     public float MovementSpeed;
+    public Item currentItem;
+    public Inventory inventory;
     public Spell[] Spells;
+
+    byte[] checkInventory;
+
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
-    int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+    int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-    public Vector3 net;
+	  public Vector3 net;
     private Spell_Test spell1;
     private Spell_Test spell2;
     private Spell_Test spell3;
@@ -29,6 +34,7 @@ public class Player : MonoBehaviour
         spell1 = this.transform.GetChild(3).GetComponent<Spell_Test>();
         spell2 = this.transform.GetChild(4).GetComponent<Spell_Test>();
         spell3 = this.transform.GetChild(5).GetComponent<Spell_Test>();
+
     }
 
     void Awake()
@@ -41,50 +47,54 @@ public class Player : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        move();
-        turn();
-        switch_spell();
+		  move();
+      turn();
+      switch_spell();
     }
 
     void move()
     {
-        if (Input.GetKey("w"))
-        {
-            this.transform.position = this.transform.position + new Vector3(0, 0, MovementSpeed);
-            net = net + new Vector3(0, 0, MovementSpeed);
-        }
-        if (Input.GetKey("s"))
-        {
-            this.transform.position = this.transform.position + new Vector3(0, 0, -MovementSpeed);
-            net = net + new Vector3(0, 0, -MovementSpeed);
-        }
-        if (Input.GetKey("a"))
-        {
-            this.transform.position = this.transform.position + new Vector3(-MovementSpeed, 0, 0);
-            net = net + new Vector3(-MovementSpeed, 0, 0);
-        }
-        if (Input.GetKey("d"))
-        {
-            this.transform.position = this.transform.position + new Vector3(MovementSpeed, 0, 0);
-            net = net + new Vector3(MovementSpeed, 0, 0);
-        }
+		if (Input.GetKey("w"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, MovementSpeed);
+			net = net + new Vector3 (0, 0, MovementSpeed);
+		}
+		if (Input.GetKey("s"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, -MovementSpeed);
+			net = net + new Vector3 (0, 0, -MovementSpeed);
+		}
+		if (Input.GetKey("a"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (-MovementSpeed, 0, 0);
+			net = net + new Vector3 (-MovementSpeed, 0, 0);
+		}
+		if (Input.GetKey("d"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (MovementSpeed, 0, 0);
+			net = net + new Vector3 (MovementSpeed, 0, 0);
+		}
+		if (Input.GetKey("r"))
+		{
+			transform.GetChild(2).GetComponent<Gun>().Reload();
+		}
     }
 
     void turn()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        Plane plane = new Plane(Vector3.up, Vector3.zero);
-        float distance;
-        if (plane.Raycast(ray, out distance))
-        {
-            Vector3 target = ray.GetPoint(distance) + net;
-            Vector3 direction = target - transform.position;
-            float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, rotation, 0);
-        }
+		Plane plane=new Plane(Vector3.up, Vector3.zero);
+		float distance;
+		if(plane.Raycast(ray, out distance))
+		{
+			Vector3 target=ray.GetPoint(distance) + net;
+			Vector3 direction=target-transform.position;
+			float rotation=Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
+			transform.rotation=Quaternion.Euler(0, rotation, 0);
+		}
     }
 
     void switch_spell()
@@ -111,4 +121,24 @@ public class Player : MonoBehaviour
             spell3.enabled = true;
         }
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        IInventoryItem item = other.GetComponent<IInventoryItem>();
+
+        if(item != null)
+        {
+            Debug.Log("Pick up item");
+            inventory.AddItem(item);
+        }
+        Debug.Log("item added to inventory");
+    }
+    
+    //public byte[] getByteInventory()
+    //{
+    //    checkInventory = {inventory };
+
+    //    return checkInventory;
+    //}
+
 }
