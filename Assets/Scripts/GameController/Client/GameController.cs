@@ -52,13 +52,16 @@ public class GameController : MonoBehaviour {
 
         if (client.Poll())
         {
+
+            if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+            {
+                return;
+            }
+            
             return;
         }
 
-        if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
-        {
-            return;
-        }
+        
 
         List<byte> playerIDs = this.getPlayerIDs(buffer);
         List<Vector3> positions = this.getPlayerPositions(buffer);
@@ -82,11 +85,11 @@ public class GameController : MonoBehaviour {
 
     void syncWithServer()
     {
-        if (this.client.Poll())
-        {
+        if (!this.client.Poll())
+        {          
             return;
         }
-
+      
         if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
@@ -96,7 +99,7 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
-
+ 
         this.currentPlayerId = buffer[R.Net.Offset.PID];
 
         float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8));

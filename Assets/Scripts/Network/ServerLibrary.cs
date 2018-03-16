@@ -19,13 +19,10 @@ namespace Networking {
         public static extern Int32 Server_PollSocket (IntPtr serverPtr);
 
         [DllImport ("Network")]
-        public static extern Int32 Server_SelectSocket (IntPtr serverPtr);
-
-        [DllImport ("Network")]
         public static extern Int32 Server_initServer (IntPtr serverPtr, ushort port);
 
         [DllImport ("Network")]
-        public static extern IntPtr Client_CreateClient ();
+        public static extern IntPtr Client_CreateClient();
 
         [DllImport ("Network")]
         public static extern Int32 Client_sendBytes (IntPtr clientPtr, IntPtr buffer, UInt32 len);
@@ -35,9 +32,6 @@ namespace Networking {
 
         [DllImport ("Network")]
         public static extern Int32 Client_PollSocket (IntPtr clientPtr);
-
-        [DllImport("Network")]
-        public static extern Int32 Client_SelectSocket(IntPtr clientPtr);
 
         [DllImport ("Network")]
         public static extern Int32 Client_initClient (IntPtr clientPtr, EndPoint ep);
