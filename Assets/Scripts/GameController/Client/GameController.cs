@@ -52,13 +52,16 @@ public class GameController : MonoBehaviour {
 
         if (client.Poll())
         {
+
+            if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+            {
+                return;
+            }
+            
             return;
         }
 
-        if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
-        {
-            return;
-        }
+        
 
         List<byte> playerIDs = this.getPlayerIDs(buffer);
         List<Vector3> positions = this.getPlayerPositions(buffer);
@@ -84,20 +87,22 @@ public class GameController : MonoBehaviour {
     {
         if (this.client.Poll())
         {
+             if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+            {
+                return;
+            }
+
+            if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
+            {
+                return;
+            }
+            
+            this.currentPlayerId = buffer[R.Net.Offset.PID];
+            this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
             return;
         }
 
-        if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
-        {
-            return;
-        }
-
-        if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
-        {
-            return;
-        }
-        this.currentPlayerId = buffer[R.Net.Offset.PID];
-        this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
+       
     }
 
     List<byte> getPlayerIDs(byte[] data)

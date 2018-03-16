@@ -123,7 +123,7 @@ public class unityClientTest : MonoBehaviour {
 
 		while (running)
 		{
-			if (client.Select())
+			if (client.Poll())
 			{
 				Debug.Log ("Poll success.");
 				numRead = client.Recv(recvBuffer, MAX_BUFFER_SIZE);

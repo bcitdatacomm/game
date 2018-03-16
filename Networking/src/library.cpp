@@ -36,7 +36,7 @@ extern "C" int32_t Server_recvBytes(void *serverPtr, EndPoint *addr, char *buffe
 
 
 //UDP CLIENT
-extern "C" Client *Client_CreateClient()
+extern "C" Client * Client_CreateClient()
 {
     return new Client();
 }
@@ -93,27 +93,4 @@ extern "C" int32_t TCPServer_recvBytes(void * serverPtr, int32_t clientSocket, c
 
 
 //TCP CLIENT
-extern "C" TCPClient *TCPClient_CreateClient()
-{
-    return new TCPClient();
-}
 
-extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
-{
-    return ((TCPClient *)clientPtr)->initializeSocket(ep);
-}
-
-extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len)
-{
-    return ((TCPClient *)clientPtr)->sendBytes(buffer, len);
-}
-
-extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len)
-{
-    return ((TCPClient *)clientPtr)->receiveBytes(buffer, len);
-}
-
-extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
-{
-    return ((TCPClient *)clientPtr)->closeConnection();
-}
