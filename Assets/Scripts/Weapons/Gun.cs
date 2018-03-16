@@ -27,7 +27,7 @@ public class Gun : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Gun start");
+     Debug.Log("Gun start");
         nextShotTime = 0;
         this.FiredShots = new Stack<Bullet>();
 		this.FireRate = 0; //0 is fastest, higher becomes slower

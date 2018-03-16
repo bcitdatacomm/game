@@ -11,12 +11,4 @@ public class Item : MonoBehaviour
         /* Rotates all item subclasses, looks pretty */
         transform.Rotate(new Vector3(15, 30, 45) * Time.deltaTime);
     }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            this.gameObject.SetActive(false);
-        }
-    }
 }

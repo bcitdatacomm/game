@@ -5,28 +5,29 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public int Health;
-
     public int Armor;
-
     public float MovementSpeed;
-
+    public Item currentItem;
+    public Inventory inventory;
     public Spell[] Spells;
+
+    byte[] checkInventory;
 
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
-    int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+    int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-	public Vector3 net;
+	  public Vector3 net;
 
     void Start()
     {
         Debug.Log("Player start");
         this.Health = 100;
         this.Armor = 0;
-        this.Spells = new Spell[3];
-		net = Vector3.zero;
-		MovementSpeed = .1f;
+        this.Spells = new Spell[3]; // Maybe unneeded...
+		    net = Vector3.zero;
+		    MovementSpeed = .1f;
     }
 
     void Awake()
@@ -39,10 +40,10 @@ public class Player : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-		move();
-        turn();
+		  move();
+      turn();
     }
 
     void move()
@@ -87,4 +88,24 @@ public class Player : MonoBehaviour
 			transform.rotation=Quaternion.Euler(0, rotation, 0);
 		}
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        IInventoryItem item = other.GetComponent<IInventoryItem>();
+
+        if(item != null)
+        {
+            Debug.Log("Pick up item");
+            inventory.AddItem(item);
+        }
+        Debug.Log("item added to inventory");
+    }
+    
+    //public byte[] getByteInventory()
+    //{
+    //    checkInventory = {inventory };
+
+    //    return checkInventory;
+    //}
+
 }
