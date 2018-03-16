@@ -40,16 +40,16 @@ public unsafe class unityTCPServerTest : MonoBehaviour
             listenThread.Start();
 
             // Fills mapBuffer
-            byte j = 65;
-            for (byte i = 0; i < MAX_MAP_SIZE; i++)
-            {
-                if (j >= 123)
-                {
-                    j = 65;
-                }
-                mapBuffer[i] = j;
-                j++;
-            }
+            //byte j = 65;
+            //for (byte i = 0; i < MAX_MAP_SIZE; i++)
+            //{
+            //    if (j >= 123)
+            //    {
+            //        j = 65;
+            //    }
+            //    mapBuffer[i] = j;
+            //    j++;
+            //}
         }
     }
 
@@ -71,8 +71,9 @@ public unsafe class unityTCPServerTest : MonoBehaviour
         Thread[] transmitThrdArray = new Thread[MAX_NUM_CLIENTS];
 
 
-        while (listening || numClients < MAX_NUM_CLIENTS)
+        while (listening && numClients < MAX_NUM_CLIENTS)
         {
+            Debug.Log("Listening for connections");
             clientSockFD = server.AcceptConnection(ref ep);
             // accept fails
             if (clientSockFD == -1)
@@ -82,6 +83,7 @@ public unsafe class unityTCPServerTest : MonoBehaviour
             // accept succeeds
             else
             {
+                Debug.Log("I got a client!");
                 clientArray[numClients] = clientSockFD;
                 numClients++;
             }

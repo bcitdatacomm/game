@@ -22,7 +22,7 @@ public class unityTCPClientTest : MonoBehaviour {
 	public static int SOCKET_NODATA 		= 0;
 	public static int SOCKET_DATA_WAITING 	= 1;
 	private static int MAX_BUFFER_SIZE 		= 8192;
-	private static string destIP 			= "142.232.18.94";
+	private static string destIP 			= "142.232.18.12";
 	private ushort portNo	 				= 42069;
 	private EndPoint ep;
 	private static bool running;
