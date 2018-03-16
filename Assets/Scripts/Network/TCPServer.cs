@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Networking
 {
@@ -6,22 +7,24 @@ namespace Networking
     {
 
 		private IntPtr tcpServer;
+        private Int32 serverSocket;
 
 		public TCPServer()
 		{
 			tcpServer = ServerLibrary.TCPServer_CreateServer();
-
 		}
 
 		public Int32 Init(ushort port)
 		{
-			Int32 err = ServerLibrary.TCPServer_initServer(tcpServer, port);
-			return err;
+			serverSocket = ServerLibrary.TCPServer_initServer(tcpServer, port);
+
+			return serverSocket;
 		}
 
 
 		public Int32 AcceptConnection(ref EndPoint ep)
         {
+			Debug.Log ("Entered Accept");
 			fixed(EndPoint* p = &ep)
 			{
 				return ServerLibrary.TCPServer_acceptConnection(tcpServer, p);
@@ -31,12 +34,13 @@ namespace Networking
 
 		public Int32 Recv(Int32 socket, byte[] buffer, Int32 len)
 		{
+			Debug.Log ("Entered recv");
 			Int32 length;
 			fixed (byte* tmpBuf = buffer)
 			{
 				UInt32 bufLen = Convert.ToUInt32(len);
 				length = ServerLibrary.TCPServer_recvBytes(tcpServer, socket, new IntPtr(tmpBuf), bufLen);
-				
+
 				return length;
 			}
 		}
@@ -50,6 +54,18 @@ namespace Networking
 				return ret;
 			}
 		}
+
+		public Int32 CloseClientSocket(Int32 clientSocket)
+		{
+				return ServerLibrary.TCPServer_closeClientSocket(clientSocket);
+		}
+
+		public Int32 CloseListenSocket(Int32 sockfd)
+		{
+            Int32 result = ServerLibrary.TCPServer_closeListenSocket(serverSocket);
+            Debug.Log("Close op result: " + result);
+            return result;
+		}
+
 	}
 }
-

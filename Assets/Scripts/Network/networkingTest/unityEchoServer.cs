@@ -7,10 +7,10 @@ using Networking;
 
 /**
  * Simple echo server implementation using our Networking library.
- * This class is used as a Unity script which can be attached to a prefab for 
+ * This class is used as a Unity script which can be attached to a prefab for
  * testing. (I used Server)
- * 
- * Throughput seems to be limited by Client's Update rate, ~200 updates sent/received per second 
+ *
+ * Throughput seems to be limited by Client's Update rate, ~200 updates sent/received per second
  */
 public unsafe class unityEchoServer : MonoBehaviour {
 
@@ -26,7 +26,7 @@ public unsafe class unityEchoServer : MonoBehaviour {
 
 	/*
 	 * Creates and initializes the Server object and recv thread.
-	 */ 
+	 */
 	void Start ()
 	{
         Debug.Log("Starting Server-Echo test");
@@ -43,6 +43,19 @@ public unsafe class unityEchoServer : MonoBehaviour {
         {
             Debug.Log("Failed to initialize socket");
         }
+        if (result == -5)
+        {
+            Debug.Log("ERR-5");
+        }
+        if (result == -4)
+        {
+            Debug.Log("ERR-4");
+        }
+        if (result == -3)
+        {
+            Debug.Log("ERR-3");
+        }
+
 
         recvThread = new Thread(recvThrdFunc);
         running = true;
@@ -60,10 +73,10 @@ public unsafe class unityEchoServer : MonoBehaviour {
 
 	/*
      * Thread function to read incoming packets.
-     * 
+     *
      * Currently works when tested using lab computers.
-     * Initially, the server would recv only the first packet. 
-     * 
+     * Initially, the server would recv only the first packet.
+     *
      * Sleep call was removed, with successful recv on the server side.
      *
      */
@@ -118,7 +131,7 @@ public unsafe class unityEchoServer : MonoBehaviour {
                 {
                     Debug.Log("Poll Fail.");
 
-					/*Collapsable debug logs*/ 
+					/*Collapsable debug logs*/
                     //Debug.Log("Num Poll Fails: " + numPollFail);
                     //Debug.Log("Num Recv Success: " + numRecvPass);
                 }

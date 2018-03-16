@@ -1,4 +1,5 @@
 #include "tcpclient.h"
+#include <cerrno>
 
 
 
@@ -6,9 +7,6 @@ TCPClient::TCPClient()
 {
 
 }
-
-
-
 
 /**
 	Initializes client TCP socket to receive initial game data.
@@ -41,14 +39,15 @@ int TCPClient::initializeSocket(EndPoint ep)
 		perror("failure");
 		return -1;
 	}
-	return 0;
+	return clientSocket;
 
 }
 
 
 
-void TCPClient::closeConnection() {
-	close(clientSocket);
+int32_t TCPClient::closeConnection(int32_t sockfd)
+{
+	return close(sockfd);
 }
 
 /**
@@ -81,41 +80,3 @@ int32_t TCPClient::receiveBytes(char * buffer, uint32_t len)
 	}
 	return (len - bytesToRead);
 }
-
-/*
-int main()
-{
-	int result;
-	TCPClient client;
-	EndPoint ep;
-
-	char * addr = reinterpret_cast<char *>(&(ep.addr));
-
-	addr[0] = (char) 1;
-	addr[1] = (char) 0;
-	addr[2] = (char) 0;
-	addr[3] = (char) 127;
-	ep.port = 9999;
-
-
-	result = client.initializeSocket(ep);
-	printf("result is %d\n", result);
-	char temp[] = "Hello\n";
-	char buffer[2048];
-	char rBuffer[2048];
-	sprintf(buffer, "hello wilson");
-	client.sendBytes(buffer, sizeof(buffer));
-	printf("got past send\n");
-	int count  = 0;
-	while (true) {
-		result = client.receiveBytes(rBuffer, sizeof(rBuffer));
-
-		if(result == 0)
-			printf("%s\n", rBuffer);
-		break;
-			//printf("%s\n", buffer);
-		//int y = client.UdpPollSocket();
-	}
-	return 1;
-}
-*/

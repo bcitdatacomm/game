@@ -1,10 +1,12 @@
 using System;
+using UnityEngine;
 
 namespace Networking
 {
 	public unsafe class TCPClient
 	{
 		private IntPtr tcpClient;
+        private Int32 clientSocket;
 
 		public TCPClient()
 		{
@@ -27,6 +29,7 @@ namespace Networking
 			fixed (byte* tmpBuf = buffer)
 			{
 				UInt32 bufLen = Convert.ToUInt32(len);
+				Debug.Log("Converted length: " + len);
 				length = ServerLibrary.TCPClient_recvBytes(tcpClient, new IntPtr(tmpBuf), bufLen);
 
 				return length;
@@ -36,9 +39,14 @@ namespace Networking
 
 		public Int32 Init(EndPoint ep)
 		{
-			Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
+			clientSocket = ServerLibrary.TCPClient_initClient(tcpClient, ep);
+			return clientSocket;
+		}
+
+		public Int32 CloseConnection(Int32 sockfd)
+		{
+			Int32 err = ServerLibrary.TCPClient_closeConnection(sockfd);
 			return err;
 		}
 	}
 }
-
