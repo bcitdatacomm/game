@@ -14,6 +14,8 @@ public class Bullet : MonoBehaviour {
     void Start()
     {
         this.ID = GetInstanceID();
+
+        // TODO: Destroy object after LifeTime is up
     }
 
     void FixedUpdate()
