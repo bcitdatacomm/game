@@ -9,8 +9,7 @@ public class Item : MonoBehaviour
     public int Category { get; set; }
     public byte Type;
     public float FireRate;
-    public float Reload;
-    public float ClipSize;
-    public string name;
-    public Sprite Image { get; }
+    public int ClipSize;
+	public float reloadTime; //reload time in seconds.
+
 }
