@@ -29,6 +29,7 @@ public class unityTCPClientTest : MonoBehaviour {
 	byte i									= 65;
 
 	private TCPClient client;
+	private Int32 clientsockfd;
 
 	/*
     * Start initializes the Client object and recvThread.
@@ -47,11 +48,12 @@ public class unityTCPClientTest : MonoBehaviour {
         if (result == 0)
         {
             // Starts the recv thread (listens for the echo)
+			clientsockfd = result;
             running = true;
             recvThread = new Thread(recvThrdFunc);
             recvThread.Start();
         }
-		
+
 
 	} // End of Start()
 
@@ -66,7 +68,7 @@ public class unityTCPClientTest : MonoBehaviour {
 		Debug.Log ("DISABLED");
         running = false;
         int closeresult;
-        closeresult = client.CloseConnection();
+        closeresult = client.CloseConnection(clientsockfd);
         Debug.Log("Close result: " + closeresult);
 	}
 
@@ -79,7 +81,7 @@ public class unityTCPClientTest : MonoBehaviour {
 		byte[] recvBuffer = new byte[MAX_BUFFER_SIZE];
 		Int32 numRecv;
 		UInt64 totalRead = 0;
-       
+
         int numSent;
 
 		Debug.Log ("recvThread started.");
@@ -93,7 +95,7 @@ public class unityTCPClientTest : MonoBehaviour {
             string contents = System.Text.Encoding.UTF8.GetString(recvBuffer);
             Debug.Log("Received: " + contents);
         }
-	
+
 
 
 	}
