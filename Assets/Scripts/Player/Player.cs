@@ -60,14 +60,30 @@ public class Player : MonoBehaviour
 
     void move(float h, float v)
     {
-        // Set the movement vector based on the axis input.
-        movement.Set(h, 0f, v);
-
-        // Normalise the movement vector and make it proportional to the speed per second.
-        movement = movement.normalized * MovementSpeed * Time.deltaTime;
-
-        // Move the player to it's current position plus the movement.
-        playerRigidbody.MovePosition(transform.position + movement);
+		if (Input.GetKey("w"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, MovementSpeed);
+			net = net + new Vector3 (0, 0, MovementSpeed);
+		}
+		if (Input.GetKey("s"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (0, 0, -MovementSpeed);
+			net = net + new Vector3 (0, 0, -MovementSpeed);
+		}
+		if (Input.GetKey("a"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (-MovementSpeed, 0, 0);
+			net = net + new Vector3 (-MovementSpeed, 0, 0);
+		}
+		if (Input.GetKey("d"))
+		{
+			this.transform.position = this.transform.position + new Vector3 (MovementSpeed, 0, 0);
+			net = net + new Vector3 (MovementSpeed, 0, 0);
+		}
+		if (Input.GetKey("r"))
+		{
+			transform.GetChild(2).GetComponent<Gun>().Reload();
+		}
     }
 
     void turn()

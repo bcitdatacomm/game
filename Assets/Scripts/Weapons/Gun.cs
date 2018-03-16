@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
 	private int currAmmo;
 
 	private float reloadTime;
-
+	private float timeBeforeReload;
 
 
     void Start()
@@ -30,19 +30,19 @@ public class Gun : MonoBehaviour
         Debug.Log("Gun start");
         nextShotTime = 0;
         this.FiredShots = new Stack<Bullet>();
-		this.FireRate = 0;
-		this.bulletSpeed = .25f;
-		this.bulletLifeTime = 1;
-		this.maxAmmo = 10;
-		this.reloadTime = 1;
+		this.FireRate = 0; //0 is fastest, higher becomes slower
+		this.bulletSpeed = .25f; //higher is faster
+		this.bulletLifeTime = 1; //lifetime of bullet in seconds
+		this.maxAmmo = 10; //max ammo of gun
+		this.reloadTime = 2; //reload time in seconds.
 		reloading = false;
 
 		currAmmo = maxAmmo;
+		transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
     }
 
     void FixedUpdate()
     {
-
 		if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
         {
 			Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -70,6 +70,32 @@ public class Gun : MonoBehaviour
             {
                 this.FiredShots.Push(firedShot);
             }
+
+			currAmmo--;
+			transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
+			if (currAmmo <= 0)
+			{
+				Reload ();
+			}
         }
+			
+		if (reloading == true)
+		{	
+			if (Time.time >= timeBeforeReload)
+			{
+				Debug.Log ("reloading done");
+				currAmmo = maxAmmo;
+				transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
+				reloading = false;
+			}
+		}
     }
+
+	public void Reload()
+	{
+		timeBeforeReload = Time.time + reloadTime;
+		reloading = true;
+		Debug.Log ("reloading");
+	}
+
 }

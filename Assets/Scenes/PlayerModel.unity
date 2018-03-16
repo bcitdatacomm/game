@@ -430,7 +430,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!81 &377251691
 AudioListener:
@@ -582,8 +582,8 @@ RectTransform:
   - {fileID: 1484061266}
   - {fileID: 1709813529}
   - {fileID: 1245756315}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 1779731639}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -839,6 +839,25 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1097013655}
+--- !u!1 &1213048229 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 174028, guid: 98f376fc451c1d447acb422f08bba2ed, type: 2}
+  m_PrefabInternal: {fileID: 1832299787}
+--- !u!114 &1213048231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1213048229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e58c4fe1460da1e448a9788b256ad44c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletPrefab: {fileID: 114172334501035874, guid: 8ea0e64966c3b9340a8c839d111410d8,
+    type: 2}
+  FireRate: 0.5
+  reloading: 0
 --- !u!1 &1245756314
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,6 +1794,7 @@ MonoBehaviour:
   Armor: 0
   MovementSpeed: 7
   Spells: []
+  net: {x: 0, y: 0, z: 0}
 --- !u!54 &1779731635
 Rigidbody:
   m_ObjectHideFlags: 0
