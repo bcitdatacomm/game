@@ -85,24 +85,28 @@ public class GameController : MonoBehaviour {
 
     void syncWithServer()
     {
-        if (this.client.Poll())
+        if (!this.client.Poll())
+        {          
+            return;
+        }
+      
+        if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
-             if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
-            {
-                return;
-            }
-
-            if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
-            {
-                return;
-            }
-            
-            this.currentPlayerId = buffer[R.Net.Offset.PID];
-            this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
             return;
         }
 
-       
+        if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
+        {
+            return;
+        }
+ 
+        this.currentPlayerId = buffer[R.Net.Offset.PID];
+
+        float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8));
+        float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) + 4);
+        float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4));
+        
+        this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
     }
 
     List<byte> getPlayerIDs(byte[] data)
