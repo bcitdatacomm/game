@@ -26,6 +26,7 @@ class Server
 	int initializeSocket(short port);
 	int32_t sendBytes(EndPoint ep, char *data, unsigned len);
 	int32_t UdpPollSocket();
+	int32_t UdpSelectSocket();
 	int32_t UdpRecvFrom(char *buffer, uint32_t size, EndPoint *addr);
 	sockaddr_in getServerAddr();
 
@@ -35,6 +36,7 @@ class Server
 	int udpSocket;
 	sockaddr_in serverAddr;
 	struct pollfd *poll_events;
+	fd_set rset, allset;
 };
 
 #endif

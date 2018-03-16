@@ -3,6 +3,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/udp.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -22,20 +23,22 @@
 
 
 
-class Client 
-{
+class Client {
 
 public:
 	Client();
-	int32_t initializeSocket(EndPoint ep);
+	int initializeSocket(EndPoint ep);
 	int32_t sendBytes(char * data, uint32_t len);
 	int32_t receiveBytes(char * buffer, uint32_t size);
 	int32_t UdpPollSocket();
+	int32_t UdpSelectSocket();
+	void closeConnection();
 
 private:
 	int clientSocket;
 	sockaddr_in serverAddr;
 
+	fd_set rset, allset;
 };
 
 #endif

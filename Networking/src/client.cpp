@@ -1,19 +1,24 @@
+#ifndef CLIENT_DEF
 #include "client.h"
-
+#define CLIENT_DEF
+#endif
 
 
 Client::Client()
 {
+	FD_ZERO(&allset);			// select socket-set reset
+	FD_SET(clientSocket, &allset); // select socket-set set
 }
 
 
 /**
 	Initializes client socket
 **/
-int32_t Client::initializeSocket(EndPoint ep)
+int Client::initializeSocket(EndPoint ep)
 {
 	if ((clientSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
 	{
+		perror("failed to initialize socket");
 		return -1;
 	}
 
@@ -21,6 +26,7 @@ int32_t Client::initializeSocket(EndPoint ep)
 
 	if(setsockopt(clientSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
 	{
+		perror("set opts failed");
 		return -1;
 	}
 
@@ -35,6 +41,7 @@ int32_t Client::initializeSocket(EndPoint ep)
     if ((error = connect(clientSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1))
 
     {
+        perror("connect error: ");
         return error;
     }
 
@@ -50,6 +57,7 @@ int32_t Client::sendBytes(char * data, unsigned len)
 {
 	int32_t retVal;
 	if ((retVal = send(clientSocket, data, len , 0)) == -1) {
+		perror("client send error");
 	}
 
 	return retVal;
@@ -85,4 +93,21 @@ int32_t Client::UdpPollSocket()
 	return SOCKET_NODATA;
 }
 
+
+int32_t Client::UdpSelectSocket()
+{
+	rset = allset; // structure assignment
+	select(MAX_FD, &rset, NULL, NULL, NULL);
+
+	if (FD_ISSET(clientSocket, &rset)) // a upd msg is ready to be read
+	{
+		return SOCKET_DATA_WAITING;
+	}
+
+	return SOCKET_NODATA;
+}
+
+void Client::closeConnection() {
+	close(clientSocket);
+}
 
