@@ -23,11 +23,11 @@ public class Inventory : MonoBehaviour
                 mItems.Add(item);
 
                 item.OnPickup();
-
             }
 
             if(ItemAdded != null)
             {
+                //Use this to notify the HUD to update
                 ItemAdded(this, new InventoryEventArgs(item));
             }
         }
