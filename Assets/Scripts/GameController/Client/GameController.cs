@@ -96,11 +96,14 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
+
         this.currentPlayerId = buffer[R.Net.Offset.PID];
-        float x = BitConverter.ToSingle(buffer, POSITION_OFFSET * this.currentPlayerId);
-        float z = BitConverter.ToSingle(buffer, (POSITION_OFFSET * this.currentPlayerId) + 4);
+
+        float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8));
+        float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) + 4);
+        float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4));
         
-        this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, 0, 0)));
+        this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
     }
 
     List<byte> getPlayerIDs(byte[] data)
