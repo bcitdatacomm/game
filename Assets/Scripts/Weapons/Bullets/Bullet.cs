@@ -22,6 +22,4 @@ public class Bullet : MonoBehaviour {
     {
 		this.transform.position = this.transform.position + direction * Speed;
     }
-
-
 }

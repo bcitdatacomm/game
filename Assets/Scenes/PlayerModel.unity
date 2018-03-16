@@ -1222,6 +1222,10 @@ Prefab:
       propertyPath: m_Name
       value: PlayerPrefabV2
       objectReference: {fileID: 0}
+    - target: {fileID: 400060, guid: 5434fa1e3e820364d8e3cb4c9fd7dab2, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5434fa1e3e820364d8e3cb4c9fd7dab2, type: 3}
   m_IsPrefabParent: 0
@@ -1819,31 +1823,6 @@ CapsuleCollider:
   m_Height: 2.3
   m_Direction: 1
   m_Center: {x: 0, y: 1.2, z: 0}
---- !u!114 &1779731637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1779731632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad159c285c6e6ae4caa1641e7eff37c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 1779731632}
-  targetDashDirection: {x: 0, y: 0, z: 0}
-  sceneCamera: {fileID: 944179319}
-  useNavMesh: 0
-  gravity: -9.8
-  canMove: 1
-  walkSpeed: 1.35
-  runSpeed: 6
-  weapon: 0
-  isRelax: 0
-  canAction: 1
-  isStrafing: 0
-  isDead: 0
-  knockbackMultiplier: 1
 --- !u!195 &1779731638
 NavMeshAgent:
   m_ObjectHideFlags: 0

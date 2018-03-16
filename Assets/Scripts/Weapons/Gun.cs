@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+
+public class Gun : Item
 {
     public Bullet BulletPrefab;
 
     public Stack<Bullet> FiredShots;
 
-    public float FireRate;
+    //public float FireRate;
 
 	public bool reloading;
 
@@ -78,7 +79,7 @@ public class Gun : MonoBehaviour
 				Reload ();
 			}
         }
-			
+
 		if (reloading == true)
 		{	
 			if (Time.time >= timeBeforeReload)
