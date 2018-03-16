@@ -8,7 +8,7 @@ public class Item : MonoBehaviour
     public int ID { get; set; }
     public byte Type;
     public float FireRate;
-    public float Reload;
-    public float ClipSize;
+    public int ClipSize;
+	public float reloadTime; //reload time in seconds.
 
 }
