@@ -24,19 +24,7 @@ public unsafe class gameServer : MonoBehaviour
     private TerrainController terrainController;
     private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
-    private static List<connection> endpoints;
-    public struct connection
-    {
-        public EndPoint ep;
-        public byte[] buffer;
-        public byte id;
-
-        public float x;
-        public float z;
-        public float r;
-
-        public int h;
-    }
+    private static List<connectionData> endpoints;
     static byte playerID = 1;
     static float spawnPoint = 2.0f;
 
@@ -50,7 +38,7 @@ public unsafe class gameServer : MonoBehaviour
 
         server.Init(R.Net.PORT);
 
-        endpoints = new List<connection>();
+        endpoints = new List<connectionData>();
         recvThread = new Thread(recvThrdFunc);
         running = true;
         recvThread.Start();
@@ -94,20 +82,20 @@ public unsafe class gameServer : MonoBehaviour
 
         for (int i = 0; i < endpoints.Count; i++)
         {
-            connection conn = endpoints[i];
+            connectionData conn = endpoints[i];
 
             // New connection
             if (conn.id == 0 && playerID < 30)
             {
                 conn.id = playerID;
                 playerID++;
-                sendInitData(ref conn);
+                sendInitData(conn);
             }
 
             // Update clientdata with new coordinates
             if (conn.buffer != null)
             {
-                updateCoord(ref conn);
+                updateCoord(conn);
                 conn.buffer = null;
             }
 
@@ -173,7 +161,7 @@ public unsafe class gameServer : MonoBehaviour
 
     private static void addNewClient(EndPoint ep)
     {
-        connection newPlayer = new connection();
+        connectionData newPlayer = new connectionData();
         
         if (playerID < 31)
         {
@@ -193,7 +181,7 @@ public unsafe class gameServer : MonoBehaviour
                 if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
                     && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
                 {
-                    connection tmp = endpoints[i];
+                    connectionData tmp = endpoints[i];
                     tmp.buffer = buffer;
                     endpoints[i] = tmp;
                 }
@@ -202,7 +190,7 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     //Creates a new player's information
-    private static void sendInitData(ref connection conn)
+    private static void sendInitData(connectionData conn)
     {
         clientData[0] = 0;
         clientData[R.Net.Offset.PLAYER_IDS] = conn.id;
@@ -224,7 +212,7 @@ public unsafe class gameServer : MonoBehaviour
     }
 
     // Takes the recieved coords and updates client data
-    private static void updateCoord(ref connection conn)
+    private static void updateCoord(connectionData conn)
     {
         if (!conn.buffer[0].Equals(85))
         {
