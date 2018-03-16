@@ -109,7 +109,6 @@ public unsafe class gameServer : MonoBehaviour
 
     private static void sendPacketToClients()
     {
-        Debug.Log("send | " + byteArrayToString(clientData));
         for (int i = 0; i < endpoints.Count; i++)
         {
             if (endpoints[i].id != 0)
@@ -140,7 +139,6 @@ public unsafe class gameServer : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("recv | " + byteArrayToString(recvBuffer));
                     switch (recvBuffer[0])
                     {
                         case R.Net.Header.NEW_CLIENT:
@@ -181,9 +179,10 @@ public unsafe class gameServer : MonoBehaviour
                 if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
                     && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
                 {
-                    connectionData tmp = endpoints[i];
-                    tmp.buffer = buffer;
-                    endpoints[i] = tmp;
+//                    connectionData tmp = endpoints[i];
+//                    tmp.buffer = buffer;
+//                    endpoints[i] = tmp;
+                    endpoints[i].buffer = buffer;
                 }
             }
         }
