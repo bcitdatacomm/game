@@ -7,7 +7,7 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.20";
+    public const string SERVER_ADDRESS = "192.168.0.19";
 
     private byte currentPlayerId;
 
@@ -50,18 +50,15 @@ public class GameController : MonoBehaviour {
     {
         this.sendPlayerDataToServer();
 
-        if (client.Poll())
+        if (!client.Poll())
         {
-
-            if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
-            {
-                return;
-            }
-            
             return;
         }
-
         
+        if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+        {
+            return;
+        }
 
         List<byte> playerIDs = this.getPlayerIDs(buffer);
         List<Vector3> positions = this.getPlayerPositions(buffer);
@@ -76,7 +73,10 @@ public class GameController : MonoBehaviour {
                 {
                     continue;
                 }
-                this.addPlayer(playerIDs[i], positions[i], rotations[i]);
+                else
+                {
+                    this.addPlayer(playerIDs[i], positions[i], rotations[i]);
+                }
             }
         }
 
@@ -100,7 +100,7 @@ public class GameController : MonoBehaviour {
             return;
         }
  
-        this.currentPlayerId = buffer[R.Net.Offset.PID];
+        this.currentPlayerId = buffer[R.Net.Offset.PLAYER_IDS];
 
         float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8));
         float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) + 4);
@@ -111,16 +111,19 @@ public class GameController : MonoBehaviour {
 
     List<byte> getPlayerIDs(byte[] data)
     {
+        Debug.Log("Incoming packet from server is " + data.Length + " long");
         List<byte> playerIDs = new List<byte>();
         for (int i = 0; i < 30; i++)
         {
-            byte id = data[R.Net.Offset.PID + i];
+            byte id = data[R.Net.Offset.PLAYER_IDS + i];
 
             if (id == 0)
             {
+                Debug.Log("Found ID 0 Exiting...");
                 return playerIDs;
             }
 
+            Debug.Log("Extracting id " + id);
             playerIDs.Add(id);
         }
         return playerIDs;
@@ -224,6 +227,6 @@ public class GameController : MonoBehaviour {
         }
         */
 
-        Debug.Log(this.client.Send(packet, R.Net.Size.CLIENT_TICK));
+        this.client.Send(packet, R.Net.Size.CLIENT_TICK);
     }
 }
