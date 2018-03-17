@@ -13,6 +13,10 @@ using UnityEditor;
 --	FUNCTIONS:		public TerrainController()
 --                  public bool GenerateEncoding()
 --                  public bool Instantiate()
+--                  public byte[] compressByteArray()
+--                  public byte[] decompressByteArray()
+--                  public void compressData()
+--                  public void LoadByteArray()
 --
 --	DATE:			Feb 16th, 2018
 --
@@ -38,7 +42,8 @@ public class TerrainController
     {
         GROUND,
         CACTUS,
-        BUSH
+        BUSH,
+        BUILDINGS
     };
 
     /*
@@ -49,7 +54,6 @@ public class TerrainController
     public struct Encoding
     {
         public byte[,] tiles;
-        public Building[] buildings;
     };
     public Encoding Data { get; set; }
     public byte[] CompressedData { get; set; }
@@ -69,23 +73,25 @@ public class TerrainController
     // Bush appearing percent
     public float BushPerc { get; set; }
 
-    // Building array of building objects
-    public Building[] Buildings { get; set; }
-
     // Cactus gameobject prefab
     public GameObject CactusPrefab { get; set; }
     // Bush gameobject prefab
     public GameObject BushPrefab { get; set; }
 
+    //Occupied positions on the map
+    public List<Vector2> occupiedPositions;
+
     // Define default constants
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
     public const long DEFAULT_TILE_SIZE = 20;
+    public const long DEFAULT_COLLIDER_SIZE = 20;
     // Changed to a percentage - ALam
-    public const float DEFAULT_CACTUS_PERC = 0.9998f;
-    public const float DEFAULT_BUSH_PERC = 0.9997f;
+    public const float DEFAULT_CACTUS_PERC = 0.9997f;
+    public const float DEFAULT_BUSH_PERC = 0.9995f;
     public const string DEFAULT_NAME = "Terrain";
 
+    public const float DEFAULT_BUILDING_PERC = 0.9999f;
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: TerrainController()
     --
@@ -112,6 +118,7 @@ public class TerrainController
         this.TileSize = DEFAULT_TILE_SIZE;
         this.CactusPerc = DEFAULT_CACTUS_PERC;
         this.BushPerc = DEFAULT_BUSH_PERC;
+        this.occupiedPositions = new List<Vector2>();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -154,13 +161,20 @@ public class TerrainController
                     float randomValue = Random.value;
 
                     // Changed the comparison signs around
-                    if (randomValue > this.CactusPerc)
+                    if (randomValue > DEFAULT_BUILDING_PERC)
+                    {
+                        map[i, j] = (byte)TileTypes.BUILDINGS;
+                        //this.occupiedPositions.Add(new Vector2(i, j));
+                    }
+                    else if (randomValue > this.CactusPerc)
                     {
                         map[i, j] = (byte)TileTypes.CACTUS;
+                        //this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.BushPerc)
                     {
                         map[i, j] = (byte)TileTypes.BUSH;
+                        //this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else
                     {
@@ -251,7 +265,7 @@ public class TerrainController
     }
 
     /*-------------------------------------------------------------------------------------------------
-    -- FUNCTION: compressByteArray()
+    -- FUNCTION: decompressByteArray()
     --
     -- DATE: Feb 28, 2018
     --
@@ -325,19 +339,19 @@ public class TerrainController
             }
         }
 
-        this.Data = new Encoding() { tiles = map, buildings = { } };
+        this.Data = new Encoding() { tiles = map };
     }
 
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: Instantiate()
     --
-    -- DATE: Jan 23, 2018
+    -- DATE: March 16, 2018
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Angus Lam
+    -- DESIGNER: Angus Lam & Roger Zhang
     --
-    -- PROGRAMMER: Angus Lam
+    -- PROGRAMMER: Angus Lam & Roger Zhang
     --
     -- INTERFACE: Instantiate()
     --
@@ -349,107 +363,133 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public bool Instantiate()
     {
+        float offsetX = this.Width / 2;
+        float offsetZ = this.Length / 2;
+
         TerrainData tData = new TerrainData
         {
             size = new Vector3(Width, 0, Length),
             name = DEFAULT_NAME
         };
 
+        ///////////////////////////////////////////////////
+
         // Gets the number of tile types
         int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
-        // Create a new treeprototype array with length corresponding to number of items in TileTypes
-        TreePrototype[] newTreePrototypes = new TreePrototype[numTileTypes];
 
         // Grab the rock prefabs
         GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
-        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
+        //GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/Cactus1.prefab", typeof(GameObject));
+        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/CityBuilding1.prefab", typeof(GameObject));
+        GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/Town1.prefab", typeof(GameObject));
 
-        // Create new tree prototype objects
-        for (int i = 0; i < newTreePrototypes.Length; i++)
-        {
-            newTreePrototypes[i] = new TreePrototype();
-        }
+        float rockColliderX = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
+        float rockColliderY = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.y;
+        float rockColliderZ = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
+        float ROCK_COLLIDER_SIZE = rockColliderX > rockColliderZ ? rockColliderX : rockColliderZ;
 
-        // Assign the prefab to the prototypes
-        newTreePrototypes[1].prefab = rockPrefab;
-        newTreePrototypes[2].prefab = cactusPrefab;
+        float cactusColliderX = cactusPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
+        float cactusColliderY = cactusPrefab.gameObject.GetComponent<Renderer>().bounds.size.y;
+        float cactusColliderZ = cactusPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
+        float CACTUS_COLLIDER_SIZE = cactusColliderX > cactusColliderZ ? cactusColliderX : cactusColliderZ;
 
-        // Assign the new tree prototype array to tData
-        tData.treePrototypes = newTreePrototypes;
-        // Refresh because you have to
-        tData.RefreshPrototypes();
+        float buildingColliderX = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
+        float buildingColliderY = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.y;
+        float buildingColliderZ = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
+        float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
 
-        // Use list because of dynamic sizing
-        List<TreeInstance> treeInstances = new List<TreeInstance>();
+        // Spawning the town at the center with collider 300X300
+        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
+        // Roger
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < Data.tiles.GetLength(1); j++)
             {
                 if (Data.tiles[i, j] == (byte)TileTypes.BUSH)
                 {
-                    TreeInstance newInstance = new TreeInstance();
-                    // This uses ratios for position rather than coordinates...
-                    // ex. if you pass in 0.5f for x, you place object at half the width of the map
-                    newInstance.position = new Vector3((float)i / this.Width, 0, (float)j / this.Length);
-                    // This changes the scaling of the instance relative to the prototype/prefab
-                    newInstance.heightScale = 1f;
-                    newInstance.widthScale = 1f;
-                    // This selects the prototype/prefab
-                    newInstance.prototypeIndex = 1;
-                    // Assign the instance to the list
-                    treeInstances.Add(newInstance);
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), ROCK_COLLIDER_SIZE);
+                    if (hitColliders.Length <= 0)
+                    {
+                        if ((i + rockColliderX / 2) < Width && (j + rockColliderZ / 2) < Length && (i - rockColliderX / 2) > 0 && (j - rockColliderZ / 2) > 0)
+                        {
+                            GameObject newObject = (GameObject)Object.Instantiate(rockPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
+                            for (long ii = i - (long)rockColliderX / 2 - 1; ii <= i + (long)rockColliderX / 2 + 1; ii++)
+                            {
+                                for (long jj = j - (long)rockColliderZ / 2 - 1; jj <= j + (long)rockColliderZ / 2 + 1; jj++)
+                                {
+                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                }
+                            }
+                        }
+                    }
+
                 }
 
                 if (Data.tiles[i, j] == (byte)TileTypes.CACTUS)
                 {
-                    TreeInstance newInstance = new TreeInstance();
-                    newInstance.position = new Vector3((float)i / this.Width, 0, (float)j / this.Length);
-                    newInstance.heightScale = 1f;
-                    newInstance.widthScale = 1f;
-                    newInstance.prototypeIndex = 2;
-                    treeInstances.Add(newInstance);
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), CACTUS_COLLIDER_SIZE);
+                    if (hitColliders.Length <= 0)
+                    {
+                        if ((i + cactusColliderX / 2) < Width && (j + cactusColliderZ / 2) < Length && (i - cactusColliderX / 2) > 0 && (j - cactusColliderZ / 2) > 0)
+                        {
+                            GameObject newObject = (GameObject)Object.Instantiate(cactusPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
+                            for (long ii = i - (long)cactusColliderX / 2 - 1; ii <= i + (long)cactusColliderX / 2 + 1; ii++)
+                            {
+                                for (long jj = j - (long)cactusColliderZ / 2 - 1; jj <= j + (long)cactusColliderZ / 2 + 1; jj++)
+                                {
+                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (Data.tiles[i, j] == (byte)TileTypes.BUILDINGS)
+                {
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), BUILDING_COLLIDER_SIZE);
+                    if (hitColliders.Length <= 0)
+                    {
+                        // Checks for border
+                        if ((i + buildingColliderX / 2) < Width && (j + buildingColliderZ / 2) < Length && (i - buildingColliderX / 2) > 0 && (j - buildingColliderZ / 2) > 0)
+                        {
+                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
+                            for (long ii = i - (long)buildingColliderX / 2 - 1; ii <= i + (long)buildingColliderX / 2 + 1; ii++)
+                            {
+                                for (long jj = j - (long)buildingColliderZ / 2 - 1; jj <= j + (long)buildingColliderZ / 2 + 1; jj++)
+                                {
+                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        if (tData.treePrototypes.Length > 0)
-        {
-            // Convert the list to an array and assign to tData
-            tData.treeInstances = treeInstances.ToArray();
-        }
+
+        ///////////////////////////////////////////////////
+
+        // Create a new splat prototype array
+        SplatPrototype[] newSplatPrototypes = new SplatPrototype[1];
+
+        //Create a new splat prototype object
+        newSplatPrototypes[0] = new SplatPrototype();
+
+        // Grab the texture and set it
+        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/GrassyRocks.jpg", typeof(Texture2D));
+
+        // Assign the new splat prototype array to tData
+        tData.splatPrototypes = newSplatPrototypes;
+
+        ///////////////////////////////////////////////////
 
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
         terrain.name = DEFAULT_NAME;
-        terrain.transform.position = new Vector3(-Width / 2, 0, -Length / 2);
+        terrain.transform.Translate(-offsetX, 0, -offsetZ);
+        //Debug.Log("Occupied position: " + occupiedPositions.Count);
 
         return true;
-    }
-}
-
-/*------------------------------------------------------------------------------------------------------------------
--- SOURCE FILE: TerrainController.cs
---
--- PROGRAM: Building
---
--- FUNCTIONS: public class Building
---
--- DATE: Feb 24th, 2018
---
--- REVISIONS: N/A
---
--- DESIGNER: 
---
--- PROGRAMMER: 
---
--- NOTES:
--- This is the building initializer to create the buildings and returns an array
--- of building objects.
-----------------------------------------------------------------------------------------------------------------------*/
-public class Building
-{
-    Building()
-    {
-
     }
 }
