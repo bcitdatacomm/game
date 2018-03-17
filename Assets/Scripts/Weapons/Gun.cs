@@ -39,7 +39,7 @@ public class Gun : Item
 		reloading = false;
 
 		currAmmo = maxAmmo;
-		transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
+		// transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
     }
 
     void FixedUpdate()
@@ -81,7 +81,7 @@ public class Gun : Item
         }
 
 		if (reloading == true)
-		{	
+		{
 			if (Time.time >= timeBeforeReload)
 			{
 				Debug.Log ("reloading done");

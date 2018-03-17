@@ -8,33 +8,35 @@ public class Player : MonoBehaviour
     public int Armor;
     public float MovementSpeed;
     public Item currentItem;
-    public Inventory inventory;
-    public Spell[] Spells;
-
     byte[] checkInventory;
-
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
     int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-	  public Vector3 net;
-    private Spell_Test spell1;
-    private Spell_Test spell2;
-    private Spell_Test spell3;
+	public Vector3 net;
+    private Inventory inventory;
+    private Spell[] spells;             // Spell list
 
     void Start()
     {
         Debug.Log("Player start");
         this.Health = 100;
         this.Armor = 0;
-        this.Spells = new Spell[3];
         net = Vector3.zero;
         MovementSpeed = .1f;
-        spell1 = this.transform.GetChild(3).GetComponent<Spell_Test>();
-        spell2 = this.transform.GetChild(4).GetComponent<Spell_Test>();
-        spell3 = this.transform.GetChild(5).GetComponent<Spell_Test>();
 
+        GameObject inventGameObj = GameObject.Find("Inventory"); // Inventory game object
+        inventory = inventGameObj.transform.GetComponent<Inventory>();
+        // Init spell list
+        spells = new Spell[3];
+        for (int i = 0; i < 3; i++)
+        {
+            // spells[i] = this.transform.GetChild(IDX_PREFAB_PLYR + 1 + i).GetComponent<Spell>();
+            spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
+            spells[i].enabled = false; // initially disable spell use
+        }
+        // Init spell list
     }
 
     void Awake()
@@ -49,9 +51,9 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-		  move();
-      turn();
-      switch_spell();
+        move();
+        turn();
+        switch_spell();
     }
 
     void move()
@@ -99,41 +101,45 @@ public class Player : MonoBehaviour
 
     void switch_spell()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        // Spell switching
+        int slotCurrentSpell = -1;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) // "1"
         {
-            Debug.Log("switch_spell 1");
-            spell1.enabled = true;
-            spell2.enabled = false;
-            spell3.enabled = false;
+            slotCurrentSpell = 0;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) // "2"
         {
-            Debug.Log("switch_spell 2");
-            spell1.enabled = false;
-            spell2.enabled = true;
-            spell3.enabled = false;
+            slotCurrentSpell = 1;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3)) // "3"
         {
-            Debug.Log("switch_spell 3");
-            spell1.enabled = false;
-            spell2.enabled = false;
-            spell3.enabled = true;
+            slotCurrentSpell = 2;
         }
+
+        if (slotCurrentSpell >= 0)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                spells[i].enabled = (i == slotCurrentSpell) ? true : false;
+            }
+            Debug.Log("Switch to spell #" + (slotCurrentSpell + 1));
+            this.inventory.CurrentSpell = slotCurrentSpell + 1; // value: 1 to 3
+        }
+        // Spell switching
     }
 
     void OnTriggerEnter(Collider other)
     {
-        IInventoryItem item = other.GetComponent<IInventoryItem>();
+        Item item = other.GetComponent<Item>();
 
         if(item != null)
         {
-            Debug.Log("Pick up item");
+            Debug.Log("Item picked up: " + item.name);
             inventory.AddItem(item);
         }
-        Debug.Log("item added to inventory");
     }
-    
+
     //public byte[] getByteInventory()
     //{
     //    checkInventory = {inventory };
