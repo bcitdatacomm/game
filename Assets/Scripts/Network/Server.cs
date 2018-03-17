@@ -21,24 +21,33 @@ namespace Networking
 			return err;
 		}
 
-		public Int32 Poll()
+		public bool Poll()
 		{
-			return ServerLibrary.Server_PollSocket(server);
+			Int32 p = ServerLibrary.Server_PollSocket(server);
+			return Convert.ToBoolean (p);
 		}
 
+        public bool Select()
+        {
+            Int32 s = ServerLibrary.Server_SelectSocket(server);
+            return Convert.ToBoolean (s);
+        }
 
 		/**
 		 * Parameters: 
 		 * - EndPoint * ep: a pointer to an an
 		 * 
 		*/
-		public Int32 Recv(EndPoint * ep, byte[] buffer, Int32 len)
+		public Int32 Recv(ref EndPoint ep, byte[] buffer, Int32 len)
 		{
-			fixed(byte* tmpBuf = buffer) 
+			Int32 length;
+			fixed (byte* tmpBuf = buffer)
 			{
-				UInt32 bufLen = Convert.ToUInt32 (len);
-				Int32 length = ServerLibrary.Server_recvBytes(server, ep, new IntPtr(tmpBuf), bufLen);
-
+				fixed(EndPoint * p = &ep) 
+				{
+					UInt32 bufLen = Convert.ToUInt32(len);
+					length = ServerLibrary.Server_recvBytes(server, p, new IntPtr(tmpBuf), bufLen);
+				}
 				return length;
 			}
 		}

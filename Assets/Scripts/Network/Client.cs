@@ -15,7 +15,7 @@ namespace Networking
 
 		public Client()
 		{
-			connection = ServerLibrary.Server_CreateServer();
+			connection = ServerLibrary.Client_CreateClient();
 
 		}
 
@@ -24,25 +24,29 @@ namespace Networking
 			CAddr addr = new CAddr (ipaddr);
 			server = new EndPoint (ipaddr, port);
 			rcvEndPoint = new EndPoint ();
-			Int32 err = ServerLibrary.Server_initServer(connection, port);
+			Int32 err = ServerLibrary.Client_initClient(connection, server);
 			return err;
 		}
 
-		public Int32 Poll()
+		public bool Poll()
 		{
-			return ServerLibrary.Server_PollSocket (connection);
+			Int32 p = ServerLibrary.Client_PollSocket (connection);
+			return Convert.ToBoolean (p);
 		}
+
+        public bool Select()
+        {
+            Int32 s = ServerLibrary.Client_SelectSocket(connection);
+            return Convert.ToBoolean(s);
+        }
 
 		public Int32 Recv(byte[] buffer, Int32 len)
 		{
 			fixed(byte* tmpBuf = buffer) 
 			{
-				fixed(EndPoint* p = &rcvEndPoint)
-				{
-					UInt32 bufLen = Convert.ToUInt32 (len);
-					Int32 length = ServerLibrary.Server_recvBytes(connection, p, new IntPtr(tmpBuf), bufLen);
-					return length;
-				}
+				UInt32 bufLen = Convert.ToUInt32 (len);
+				Int32 length = ServerLibrary.Client_recvBytes(connection, new IntPtr(tmpBuf), bufLen);
+				return length;
 			}
 		}
 
@@ -52,7 +56,7 @@ namespace Networking
 
 			fixed( byte* tmpBuf = buffer) 
 			{
-				Int32 ret = ServerLibrary.Server_sendBytes (connection, server, new IntPtr (tmpBuf), bufLen);
+				Int32 ret = ServerLibrary.Client_sendBytes (connection, new IntPtr (tmpBuf), bufLen);
 				return ret;
 			}
 
