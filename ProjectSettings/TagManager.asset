@@ -6,6 +6,7 @@ TagManager:
   tags:
   - otherPlayer
   - Item
+  - currentWeapon
   layers:
   - Default
   - TransparentFX

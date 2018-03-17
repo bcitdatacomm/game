@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4159242799204034}
   - component: {fileID: 33028746973293334}
   - component: {fileID: 23886612491050790}
-  - component: {fileID: 114543147440575696}
   - component: {fileID: 114767017825345300}
   - component: {fileID: 65840452046828994}
   m_Layer: 0
@@ -57,6 +56,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 9a4fe654b3075bf4f997386111c1d7ed, type: 2}
   m_StaticBatchInfo:
@@ -97,21 +97,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.17861784, y: 0.37809625, z: 1.401158}
   m_Center: {x: 0.00000017881393, y: 0.090965584, z: 0.57636756}
---- !u!114 &114543147440575696
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1953733366482368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3d61dcce6f49b441939f6c2dce11b21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 3
-  FireRate: 0
-  Reload: 0
-  ClipSize: 0
 --- !u!114 &114767017825345300
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,6 +111,8 @@ MonoBehaviour:
   Type: 3
   FireRate: 0
   Reload: 0
+  reloadTime: 0
   ClipSize: 0
+  name: 
   BulletPrefab: {fileID: 114432951417404888, guid: 1bab905ea1f22594896b49bf6591e622,
     type: 2}

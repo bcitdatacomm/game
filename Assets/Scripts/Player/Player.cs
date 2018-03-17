@@ -17,9 +17,12 @@ public class Player : MonoBehaviour
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
     int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-	public Vector3 net;
-    private Inventory inventory;
+    public Vector3 net;                 
+    private Inventory inventory;        
     private Spell[] spells;             // Spell list
+
+    // TODO ADD CURRENT GUN
+    public Gun currentGun;
 
     void Start()
     {
@@ -28,6 +31,10 @@ public class Player : MonoBehaviour
         this.Armor = 0;
         net = Vector3.zero;
         MovementSpeed = .1f;
+
+        // TEST CODE
+        //GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
+        //currentGun = Pistol.GetComponent("Gun") as Gun;
 
         GameObject inventGameObj = GameObject.Find("Inventory"); // Inventory game object
         inventory = inventGameObj.transform.GetComponent<Inventory>();
@@ -59,7 +66,47 @@ public class Player : MonoBehaviour
         switch_spell();
     }
 
+    void move()
+    {
+        if (Input.GetKey("w"))
+        {
+            this.transform.position = this.transform.position + new Vector3(0, 0, MovementSpeed);
+            net = net + new Vector3(0, 0, MovementSpeed);
+        }
+        if (Input.GetKey("s"))
+        {
+            this.transform.position = this.transform.position + new Vector3(0, 0, -MovementSpeed);
+            net = net + new Vector3(0, 0, -MovementSpeed);
+        }
+        if (Input.GetKey("a"))
+        {
+            this.transform.position = this.transform.position + new Vector3(-MovementSpeed, 0, 0);
+            net = net + new Vector3(-MovementSpeed, 0, 0);
+        }
+        if (Input.GetKey("d"))
+        {
+            this.transform.position = this.transform.position + new Vector3(MovementSpeed, 0, 0);
+            net = net + new Vector3(MovementSpeed, 0, 0);
+        }
+        if (Input.GetKey("r"))
+        {
+            transform.GetChild(2).GetComponent<Gun>().Reload();
+        }
+    }
 
+    void turn()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+        float distance;
+        if (plane.Raycast(ray, out distance))
+        {
+            Vector3 target = ray.GetPoint(distance) + net;
+            Vector3 direction = target - transform.position;
+            float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, rotation, 0);
+        }
     }
 
     void move(float h, float v)
@@ -67,15 +114,15 @@ public class Player : MonoBehaviour
         // Spell switching
         int slotCurrentSpell = -1;
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // "1"
+        if (Input.GetKeyDown(KeyCode.Alpha1)) // Press Key "1"
         {
             slotCurrentSpell = 0;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) // "2"
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) // Press Key "2"
         {
             slotCurrentSpell = 1;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3)) // "3"
+        else if (Input.GetKeyDown(KeyCode.Alpha3)) // Press Key"3"
         {
             slotCurrentSpell = 2;
         }
@@ -95,18 +142,26 @@ public class Player : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Item item = other.GetComponent<Item>();
+        GameObject itemObject = other.gameObject;
 
-        if(item != null)
+        if (item != null)
         {
             Debug.Log("Item picked up: " + item.name);
             inventory.AddItem(item);
+            string name = item.name;
+
+            Instantiate(itemObject, transform.parent);
+
+            //prefab = Instantiate(Resources.Load(name) as GameObject, transform.parent);
+            //Gun newGun;
+            // GameObject getWeapon = Instantiate(Resources.Load("Assets/Prefabs/Weapons/Pistol.prefab")) as GameObject;
+            //getWeapon.transform.parent.Find("Inventory").Find("Weapon");
+            //transform.parent.Find("Inventory").Find("Weapon")
+            //newGun = Instantiate(item, transform.parent) as Gun;
+
+            item.OnPickup();
+
         }
     }
 
-    //public byte[] getByteInventory()
-    //{
-    //    checkInventory = {inventory };
-
-    //    return checkInventory;
-    //}
 }
