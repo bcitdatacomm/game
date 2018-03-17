@@ -115,14 +115,14 @@ public class GameController : MonoBehaviour {
         this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
     }
 
+    // This method will get the terrain and weapons and put them on the map 
+    // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
     void initializeGame()
     {
 
         // Get the data for terrain
         TerrainController tc = new TerrainController();
         tc.LoadByteArray(terrainData);
-        // For testing purposes generates the map this should actually happen server side
-        //tc.GenerateEncoding();
         tc.Instantiate();
 
         // Get the data from the itemData packet

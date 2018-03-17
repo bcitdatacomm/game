@@ -26,9 +26,11 @@ public unsafe class gameServer : MonoBehaviour
     private static bool running;
     private static Thread recvThread;
 
+    // Terrain Object and packet byte
     private TerrainController terrainController;
     private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
+    // Random Weapon/Spell object and packet byte
     private InitRandomGuns getitems;
     private static byte[] itemData;
 
@@ -47,7 +49,7 @@ public unsafe class gameServer : MonoBehaviour
 
         // Create the terrain packet with format 1B header + 4B size as int + data
         terrainController = new TerrainController();
-        while (!terrainController.GenerateEncoding()) ;
+        while (!terrainController.GenerateEncoding());
 
         int terrainDataLength = terrainController.CompressedData.Length;
         byte[] terrainPacket = new byte[5 + terrainDataLength];
@@ -55,16 +57,19 @@ public unsafe class gameServer : MonoBehaviour
         Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
         Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
 
-        getitems = new InitRandomGuns(endpoints.Count, terrainController.occupiedPositions);
-        itemData = getitems.pcktarray;
-
         endpoints = new List<connectionData>();
         recvThread = new Thread(recvThrdFunc);
         running = true;
         recvThread.Start();
 
-        getitems(player.Count, terrainController.occupiedPositions);
+        // INITIALIZE WEAPONS AND SPELLS SECTION
+        // NOTE this must happen: 
+        // -after terrain data has been generated
+        // -after you have total number of players/endpoints
+        // -before itemData is sent via TCP 
+        getitems = new InitRandomGuns(endpoints.Count, terrainController.occupiedPositions);
         itemData = getitems.pcktarray;
+        // ENDSECTION
 
         // TODO: Implement this in TCP
         // Make a terrain packet (byte array) with encoded
