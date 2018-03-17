@@ -26,7 +26,7 @@ public class Gun : Item
 		reloading = false;
 
 		currAmmo = ClipSize;
-		transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
+		//transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
     }
 
     void FixedUpdate()
