@@ -379,7 +379,8 @@ public class TerrainController
 
         // Grab the rock prefabs
         GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
-        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
+        //GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/Cactus1.prefab", typeof(GameObject));
         GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/CityBuilding1.prefab", typeof(GameObject));
         GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/Town1.prefab", typeof(GameObject));
 
@@ -398,6 +399,7 @@ public class TerrainController
         float buildingColliderZ = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
         float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
 
+        // Spawning the town at the center with collider 300X300
         GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width/2, 0, Length/2), Quaternion.identity);
 
         // Roger
