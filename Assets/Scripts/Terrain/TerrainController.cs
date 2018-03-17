@@ -118,6 +118,7 @@ public class TerrainController
         this.TileSize = DEFAULT_TILE_SIZE;
         this.CactusPerc = DEFAULT_CACTUS_PERC;
         this.BushPerc = DEFAULT_BUSH_PERC;
+        this.occupiedPositions = new List<Vector2>();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -264,7 +265,7 @@ public class TerrainController
     }
 
     /*-------------------------------------------------------------------------------------------------
-    -- FUNCTION: compressByteArray()
+    -- FUNCTION: decompressByteArray()
     --
     -- DATE: Feb 28, 2018
     --
@@ -399,7 +400,7 @@ public class TerrainController
         float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
 
         // Spawning the town at the center with collider 300X300
-        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width/2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
+        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
         // Roger
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
