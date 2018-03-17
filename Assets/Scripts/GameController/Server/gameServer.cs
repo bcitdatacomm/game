@@ -22,7 +22,7 @@ public unsafe class gameServer : MonoBehaviour
     // Global client sockdescriptor array
     Int32[] clientArr = new Int32[MAX_NUM_CLIENTS];
 
-    
+
 
     // Member Data
     private static float nextTickTime = 0.0f;
@@ -34,7 +34,7 @@ public unsafe class gameServer : MonoBehaviour
     private static TCPServer tcpServer;     // global TCP server added for TCP transmission
     private static IntPtr serverInstance;
     private static bool running;
-    // GLOBAL LISTENING BOOLEAN, used for listening for client connections 
+    // GLOBAL LISTENING BOOLEAN, used for listening for client connections
     private bool listening = false;
     private static Thread recvThread;
 
@@ -53,6 +53,9 @@ public unsafe class gameServer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+
+
         server = new Server();
         server.Init(R.Net.PORT);
 
@@ -76,11 +79,22 @@ public unsafe class gameServer : MonoBehaviour
         running = true;
         recvThread.Start();
 
+        // Create the terrain packet with format 1B header + 4B size as int + data
+        terrainController = new TerrainController();
+        while (!terrainController.GenerateEncoding()) ;
+
+        int terrainDataLength = terrainController.CompressedData.Length;
+        byte[] terrainPacket = new byte[5 + terrainDataLength];
+        terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
+        Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
+        Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
+
+
         // INITIALIZE WEAPONS AND SPELLS SECTION
-        // NOTE this must happen: 
+        // NOTE this must happen:
         // -after terrain data has been generated
         // -after you have total number of players/endpoints
-        // -before itemData is sent via TCP 
+        // -before itemData is sent via TCP
         getitems = new InitRandomGuns(endpoints.Count, terrainController.occupiedPositions);
         itemData = getitems.pcktarray;
         // ENDSECTION
@@ -112,7 +126,7 @@ public unsafe class gameServer : MonoBehaviour
         }
 
 
-        // TODO: CLOSE THE SERVER SOCKET AFTER TCP TRANSMISSION. 
+        // TODO: CLOSE THE SERVER SOCKET AFTER TCP TRANSMISSION.
         // result = tcpServer.CloseListenSocket(serversockfd);
         //if (result != 0)
         //{
