@@ -75,16 +75,14 @@ public unsafe class gameServer : MonoBehaviour
         Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
 
         endpoints = new List<connectionData>();
-        recvThread = new Thread(recvThrdFunc);
-        running = true;
-        recvThread.Start();
+        // recvThread = new Thread(recvThrdFunc);
+        // running = true;
+        // recvThread.Start();
 
         // Create the terrain packet with format 1B header + 4B size as int + data
         terrainController = new TerrainController();
         while (!terrainController.GenerateEncoding()) ;
 
-        int terrainDataLength = terrainController.CompressedData.Length;
-        byte[] terrainPacket = new byte[5 + terrainDataLength];
         terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
         Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
         Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);

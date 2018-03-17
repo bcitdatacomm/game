@@ -15,6 +15,9 @@ using System;
             public const byte TICK = 85;
             public const byte NEW_CLIENT = 69;
             public const byte ACK = 170;
+
+			public const byte TERRAIN_DATA = 55;
+			public const byte SPAWN_DATA = 56;
         }
 
         // Contains constants associated with the packet offset or distance into the packet
@@ -56,7 +59,7 @@ using System;
         // Terrain Constants
         public static class Terrain
         {
-
+			
         }
 
         // Player Constants

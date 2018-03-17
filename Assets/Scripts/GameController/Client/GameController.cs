@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Networking;
+using InitGuns;
 
 public class GameController : MonoBehaviour {
 
@@ -58,16 +59,18 @@ public class GameController : MonoBehaviour {
             clientsockfd = result;
             recvThread = new Thread(recvThrdFunc);
             recvThread.Start();
+
+            // We have to close the client TCP socket at some point. Move this code as needed.
+            recvThread.Join();
+            result = tcpClient.CloseConnection(clientsockfd);
+            if (result != 0)
+            {
+                Debug.Log("Error closing TCP client socket.");
+            }
+
         }
 
-        // We have to close the client TCP socket at some point. Move this code as needed.
-        recvThread.Join();
-        result = tcpClient.CloseConnection(clientsockfd);
-        if (result != 0)
-        {
-            Debug.Log("Error closing TCP client socket.");
-        }
-        
+
     }
 
     void FixedUpdate()
@@ -90,7 +93,7 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
-        
+
         if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
@@ -119,7 +122,7 @@ public class GameController : MonoBehaviour {
         this.movePlayers(playerIDs, positions, rotations);
     }
 
-    // This method will get the terrain and weapons and put them on the map 
+    // This method will get the terrain and weapons and put them on the map
     // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
     void initializeGame()
     {
@@ -142,10 +145,10 @@ public class GameController : MonoBehaviour {
     void syncWithServer()
     {
         if (!this.client.Poll())
-        {          
+        {
             return;
         }
-      
+
         if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
@@ -155,13 +158,13 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
- 
+
         this.currentPlayerId = buffer[R.Net.Offset.PLAYER_IDS];
-         
+
         float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) - 8);
         float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) - 4);
         float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4) - 4);
-        
+
         this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
     }
 
@@ -288,12 +291,12 @@ public class GameController : MonoBehaviour {
         Int32 numRecvMap;
         Int32 numRecvItem;
 
-        numRecvMap = tcpServer.Recv(mapBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
+        numRecvMap = tcpClient.Recv(mapBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
         if (numRecvMap <= 0)
         {
             Debug.Log("This shouldn't happen.");
         }
-        numRecvItem = tcpServer.Recv(itemBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
+        numRecvItem = tcpClient.Recv(itemBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
         if (numRecvItem <= 0)
         {
             Debug.Log("This REALLY shouldn't happen.");
