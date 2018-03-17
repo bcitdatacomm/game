@@ -5,11 +5,16 @@ using System.Text;
 using UnityEngine;
 using Networking;
 using System.Threading;
+using InitGuns;
 
 // This is the core script for the server.
 
 public unsafe class gameServer : MonoBehaviour
 {
+    // Constant max packet size for terrain & spawn data
+    private const Int32 MAX_INIT_BUFFER_SIZE = 8192;
+    private const Int32 MAX_NUM_CLIENTS = 30;
+
     // Member Data
     private static float nextTickTime = 0.0f;
     private static int ticksPerSecond = 64;
@@ -24,6 +29,9 @@ public unsafe class gameServer : MonoBehaviour
     private TerrainController terrainController;
     private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
+    private InitRandomGuns getitems;
+    private static byte[] itemData;
+
     private static List<connectionData> endpoints;
     static byte playerID = 1;
     static float spawnPoint = 2.0f;
@@ -35,7 +43,7 @@ public unsafe class gameServer : MonoBehaviour
         server.Init(R.Net.PORT);
 
         // Listen for new players with tcp for a set time period or until max players have joined
-        players = new List<connection>();
+        endpoints = new List<connectionData>();
 
         // Create the terrain packet with format 1B header + 4B size as int + data
         terrainController = new TerrainController();
@@ -47,28 +55,53 @@ public unsafe class gameServer : MonoBehaviour
         Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
         Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
 
+        getitems = new InitRandomGuns(endpoints.Count, terrainController.occupiedPositions);
+        itemData = getitems.pcktarray;
+
         endpoints = new List<connectionData>();
         recvThread = new Thread(recvThrdFunc);
         running = true;
         recvThread.Start();
 
-        /*
-         TODO: Implement this in TCP
-        // Make a terrain packet (byte array) with encoded
-        byte[] terrainPacket = new byte[1200];endpoints[i]
-
         getitems(player.Count, terrainController.occupiedPositions);
         itemData = getitems.pcktarray;
 
+        // TODO: Implement this in TCP
+        // Make a terrain packet (byte array) with encoded
+        byte[] terrainPacket = new byte[MAX_];endpoints[i]
+
+
+
+        // Move this to the top, should be initialized first.
+        Int32 servsockfd;
+        Int32[] clientArr = new Int32[MAX_NUM_CLIENTS];
+        Thread listenThread;
+        bool listening = false;
+
+        TCPServer tcpServer = new TCPServer();
+        servsockfd = tcpServer.Init(PORT_NO);
+        // Socket initialization fail, should probably abandon ship at this point.
+        if (servsockfd <= 0)
+        {
+            Debug.Log("Server failed to initialize socket.");
+        }
+        else
+        {
+            // Start the listen thread
+            listenThread = new Thread(listenThrdFunc);
+            listening = true;
+            listenThread.Start();
+        }
+
+
+
+
         // Send terrain data and item spawn data to all clients
 
-        recvThread = new Thread(recvThrdFunc);
-        running = true;
-        recvThread.Start();
 
         // Set the game timer
         // Start the game timer
-        */
+
     }
 
     void Update()
@@ -88,7 +121,7 @@ public unsafe class gameServer : MonoBehaviour
         int offset = R.Net.Offset.PLAYER_IDS;
         clientData[0] = R.Net.Header.TICK;
 
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < endpoints.Count; i++)
         {
             connectionData conn = endpoints[i];
 
@@ -107,7 +140,7 @@ public unsafe class gameServer : MonoBehaviour
                 conn.buffer = null;
             }
 
-            players[i] = conn;
+            endpoints[i] = conn;
 
             // Add player id to clientdata
             clientData[offset] = conn.id;
@@ -118,11 +151,11 @@ public unsafe class gameServer : MonoBehaviour
     private static void sendPacketToClients()
     {
         Debug.Log("send | " + byteArrayToString(clientData));
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < endpoints.Count; i++)
         {
-            if (players[i].id != 0)
+            if (endpoints[i].id != 0)
             {
-                server.Send(players[i].ep, clientData, R.Net.Size.SERVER_TICK);
+                server.Send(endpoints[i].ep, clientData, R.Net.Size.SERVER_TICK);
             }
         }
     }
@@ -138,9 +171,9 @@ public unsafe class gameServer : MonoBehaviour
         {
             // If poll returns 1 (SOCKET_DATA_WAITING), there is data waiting to be read
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
-            if (server.Poll() == 1)
+            if (server.Poll())
             {
-                numRead = server.Recv(&ep, recvBuffer, R.Net.Size.CLIENT_TICK);
+                numRead = server.Recv(ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
 
                 if (numRead != R.Net.Size.CLIENT_TICK)
                 {
@@ -154,7 +187,7 @@ public unsafe class gameServer : MonoBehaviour
                         case R.Net.Header.NEW_CLIENT:
                             addNewClient(ep);
                             break;
-                        
+
                         case R.Net.Header.TICK:
                             saveBuffer(ep, recvBuffer);
                             break;
@@ -170,28 +203,28 @@ public unsafe class gameServer : MonoBehaviour
     private static void addNewClient(EndPoint ep)
     {
         connectionData newPlayer = new connectionData();
-        
+
         if (playerID < 31)
         {
             newPlayer.ep = ep;
             newPlayer.id = 0;
 
-            players.Add(newPlayer);
+            endpoints.Add(newPlayer);
         }
     }
 
     private static void saveBuffer(EndPoint ep, byte[] buffer)
     {
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < endpoints.Count; i++)
         {
-            if (players[i].id == buffer[1])
+            if (endpoints[i].id == buffer[1])
             {
-                if (ep.addr.Byte0 == players[i].ep.addr.Byte0 && ep.addr.Byte1 == players[i].ep.addr.Byte1
-                    && ep.addr.Byte2 == players[i].ep.addr.Byte2 && ep.addr.Byte3 == players[i].ep.addr.Byte3)
+                if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
+                    && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
                 {
                     connectionData tmp = endpoints[i];
                     tmp.buffer = buffer;
-                    players[i] = tmp;
+                    endpoints[i] = tmp;
                 }
             }
         }
@@ -252,5 +285,62 @@ public unsafe class gameServer : MonoBehaviour
             sb.AppendFormat("{0:x2}", b);
         }
         return sb.ToString();
+    }
+
+    /*
+    *   Added listenThrdFunc
+    *   This thread function is used by the TCPServer object to listen for incoming
+    *   connection requests.
+    *   Once the server maxes out the number of clients (30) or is forced to continue,
+    *   it will create separate threads to write the terrainbuffer and spawnbuffer
+    *   to each client via TCP.
+    */
+    private void listenThrdFunc()
+    {
+        Endpoint ep = new EndPoint();
+        Int32 clientSockFD;
+        Thread[] transmitThrdArray = new Thread[MAX_NUM_CLIENTS];
+        Int32 numClients = 0;
+
+        while (listening && numClients < MAX_NUM_CLIENTS);
+        {
+            clientSockFD = server.AcceptConnection(ref ep);
+            // Accept fails
+            if (clientSockFD == -1)
+            {
+                //Iduno, probably continue and log the error.
+            }
+            // Accept passes
+            else
+            {
+                clientArray[numClients] = clientSockFD;
+                numClients++;
+            }
+        }
+        // Completed listening, either
+
+        for (int i = 0; i < numClients)
+        {
+            //Create new threads to send here
+            transmitThrdArray[i] = new Thread()
+        }
+    }
+
+    //TODO: Pass in clientsockfd (client socket descriptor) into thread function
+    /*
+    * This thread function is used to send the contents of the terrainbuffer and
+    * spawnbuffer to a client.
+    */
+    private void transmitThrdFunc()
+    {
+        Int32 numSent;
+        // 2 send calls
+
+        //Send terrain data
+        tcpServer.send(clientsockfd, clientData, MAX_INIT_BUFFER_SIZE);
+        if (numSent > 0)
+        {   //Send spawn data
+            tcpServer.send(clientsockfd, itemData, MAX_INIT_BUFFER_SIZE);
+        }
     }
 }

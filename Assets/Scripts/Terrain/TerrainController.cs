@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
@@ -13,6 +13,10 @@ using UnityEditor;
 --	FUNCTIONS:		public TerrainController()
 --                  public bool GenerateEncoding()
 --                  public bool Instantiate()
+--                  public byte[] compressByteArray()
+--                  public byte[] decompressByteArray()
+--                  public void compressData()
+--                  public void LoadByteArray()
 --
 --	DATE:			Feb 16th, 2018
 --
@@ -77,6 +81,9 @@ public class TerrainController
     // Bush gameobject prefab
     public GameObject BushPrefab { get; set; }
 
+    //Occupied positions on the map
+    public List<Vector2> occupiedPositions;
+
     // Define default constants
     public const long DEFAULT_WIDTH = 1000;
     public const long DEFAULT_LENGTH = 1000;
@@ -112,6 +119,7 @@ public class TerrainController
         this.TileSize = DEFAULT_TILE_SIZE;
         this.CactusPerc = DEFAULT_CACTUS_PERC;
         this.BushPerc = DEFAULT_BUSH_PERC;
+        this.occupiedPositions = new List<Vector2>();
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -157,10 +165,12 @@ public class TerrainController
                     if (randomValue > this.CactusPerc)
                     {
                         map[i, j] = (byte)TileTypes.CACTUS;
+                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.BushPerc)
                     {
                         map[i, j] = (byte)TileTypes.BUSH;
+                        this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else
                     {
@@ -185,7 +195,7 @@ public class TerrainController
     --
     -- DESIGNER: Benny Wang
     --
-    -- PROGRAMMER: Benny Wang 
+    -- PROGRAMMER: Benny Wang
     --
     -- INTERFACE: compressData()
     --
@@ -229,9 +239,9 @@ public class TerrainController
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Roger Zhang 
+    -- DESIGNER: Roger Zhang
     --
-    -- PROGRAMMER: Roger Zhang 
+    -- PROGRAMMER: Roger Zhang
     --
     -- INTERFACE: compressByteArray(byte[] input)
     --              byte[] input: They byte array to compress.
@@ -251,15 +261,15 @@ public class TerrainController
     }
 
     /*-------------------------------------------------------------------------------------------------
-    -- FUNCTION: compressByteArray()
+    -- FUNCTION: decompressByteArray()
     --
     -- DATE: Feb 28, 2018
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Roger Zhang 
+    -- DESIGNER: Roger Zhang
     --
-    -- PROGRAMMER: Roger Zhang 
+    -- PROGRAMMER: Roger Zhang
     --
     -- INTERFACE: decompressByteArray(byte[] compBA)
     --                          compBA - compressed data passed in
@@ -290,9 +300,9 @@ public class TerrainController
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Benny Wang 
+    -- DESIGNER: Benny Wang
     --
-    -- PROGRAMMER: Benny Wang 
+    -- PROGRAMMER: Benny Wang
     --
     -- INTERFACE: LoadByteArray(byte[] compressed)
     --                  byte[] compressed: A byte array containt the terrain data.
@@ -354,6 +364,8 @@ public class TerrainController
             size = new Vector3(Width, 0, Length),
             name = DEFAULT_NAME
         };
+
+        ///////////////////////////////////////////////////
 
         // Gets the number of tile types
         int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
@@ -418,6 +430,22 @@ public class TerrainController
             tData.treeInstances = treeInstances.ToArray();
         }
 
+        ///////////////////////////////////////////////////
+
+        // Create a new splat prototype array
+        SplatPrototype[] newSplatPrototypes = new SplatPrototype[1];
+
+        //Create a new splat prototype object
+        newSplatPrototypes[0] = new SplatPrototype();
+
+        // Grab the texture and set it
+        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/GrassyRocks.jpg", typeof(Texture2D));
+
+        // Assign the new splat prototype array to tData
+        tData.splatPrototypes = newSplatPrototypes;
+
+        ///////////////////////////////////////////////////
+
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
         terrain.name = DEFAULT_NAME;
@@ -438,9 +466,9 @@ public class TerrainController
 --
 -- REVISIONS: N/A
 --
--- DESIGNER: 
+-- DESIGNER:
 --
--- PROGRAMMER: 
+-- PROGRAMMER:
 --
 -- NOTES:
 -- This is the building initializer to create the buildings and returns an array

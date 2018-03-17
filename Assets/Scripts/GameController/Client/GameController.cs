@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Networking;
+using InitGuns;
 
 public class GameController : MonoBehaviour {
 
@@ -59,7 +60,7 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
-        
+
         if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
@@ -91,10 +92,10 @@ public class GameController : MonoBehaviour {
     void syncWithServer()
     {
         if (!this.client.Poll())
-        {          
+        {
             return;
         }
-      
+
         if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
@@ -104,13 +105,13 @@ public class GameController : MonoBehaviour {
         {
             return;
         }
- 
+
         this.currentPlayerId = buffer[R.Net.Offset.PLAYER_IDS];
 
         float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8));
         float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) + 4);
         float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4));
-        
+
         this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
     }
 
@@ -127,7 +128,7 @@ public class GameController : MonoBehaviour {
         // Get the data from the itemData packet
         InitRandomGuns items = new InitRandomGuns();
         items.fromByteArrayToList(itemData);
-        // items.SpawnedGuns is a list that has been populated with weaponspell object 
+        // items.SpawnedGuns is a list that has been populated with weaponspell object
         // which has ID, Type, Xcoord, and Zcoord
         // code needs to be created in unison with asset team to put items on the map
 

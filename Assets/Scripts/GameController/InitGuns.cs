@@ -8,7 +8,7 @@ namespace InitGuns
     {
         static int clustering = 50;
         static int towncluster = 150;
-        static Random rand = new Random();
+        static System.Random rand = new System.Random();
 
         // Spaces Occupied By other Objects
         List<WeaponSpell> OccupiedSpaces = new List<WeaponSpell>();
@@ -20,7 +20,7 @@ namespace InitGuns
         List<WeaponSpell> HotSpots = new List<WeaponSpell>();
 
         // An array of bytes to be initialized
-        byte[] pcktarray;
+        public byte[] pcktarray;
 
         // Constructor that creates an InitRandomGuns Object
 
@@ -34,10 +34,10 @@ namespace InitGuns
             // Add each of the Occupied Coordinates to the local OccupiedSpaces List
             if (OccupiedCoordinates != null)
             {
-                foreach (var w in OccupiedCoordinates)
-                {
-                    OccupiedSpaces.Add(WeaponSpell((int) w.X,(int) w.Y));
-                }
+                // foreach (var w in OccupiedCoordinates)
+                // {
+                //     OccupiedSpaces.Add(WeaponSpell((int) w.X,(int) w.Y));
+                // }
             }
 
             // Add some dummy hotspots NOTE MUST BE AT LEAST clustering AWAY FROM EDGE IN EACH DIRECTION
@@ -78,7 +78,7 @@ namespace InitGuns
                         Weapon = new WeaponSpell(a, b, true);
                     }
                 }
-                
+
                 // Check if the generated coordinate is already occupied
                 // if no add to coordinate array
                 if (!OccupiedCheck(Weapon, OccupiedSpaces))
@@ -127,7 +127,7 @@ namespace InitGuns
                 count += 13;
             }
         }
- 
+
         // Output the list of weapons as a bytearray
         public void getByteArray()
         {
@@ -150,12 +150,12 @@ namespace InitGuns
             public int Z { get; set; }
             public int ID { get; set; }
             public byte Type { get; set; }
-            
+
             // Empty Constructor
             public WeaponSpell()
             {
             }
-            
+
             // Plain Coordinate Constructor
             public WeaponSpell(int X, int Z)
             {
@@ -242,7 +242,7 @@ namespace InitGuns
                         return 7;
                     }
                     else if (seed2 > 0.5)
-                    { 
+                    {
                         return 8;
                     }
                     else if (seed2 > 0.4)
@@ -314,7 +314,7 @@ namespace InitGuns
             Weapon.Z = BitConverter.ToInt32(weaponinbytes, 9);
 
             return Weapon;
-        } 
+        }
 
         // Generates a number of guns depending on the number of players
         public static int numberOfWeapons(int players)
@@ -341,7 +341,7 @@ namespace InitGuns
             InitRandomGuns guns2 = new InitRandomGuns();
 
             // Grab and process a byte array and put into coordinate list
-            // in this case I am directly grabbing first objects packet array 
+            // in this case I am directly grabbing first objects packet array
             guns2.fromByteArrayToList(guns.pcktarray);
             guns2.printExpandedCoordinates();
 
@@ -349,6 +349,6 @@ namespace InitGuns
             Console.Write("");
         }
         */
-        
+
     }
 }
