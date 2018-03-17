@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Networking
 {
@@ -6,7 +7,8 @@ namespace Networking
 	{
 		private IntPtr connection;
 		private EndPoint server;
-		
+		private EndPoint rcvEndPoint;
+		EndPoint * ptr;
 
 		public static Int32 SOCKET_NO_DATA = 0;
 		public static Int32 SOCKET_DATA_WAITING = 1;
@@ -14,6 +16,7 @@ namespace Networking
 		public Client()
 		{
 			connection = ServerLibrary.Client_CreateClient();
+
 		}
 
 		public Int32 Init(string ipaddr, ushort port)

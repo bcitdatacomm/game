@@ -14,11 +14,13 @@ int32_t Server::initializeSocket(short port)
 	int optFlag = 1;
 	if ((udpSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
 	{
+		perror("failed to initialize socket");
 		return -1;
 	}
 
 	if (setsockopt(udpSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(int)) == -1)
 	{
+		perror("set opts failed");
 		return -1;
 	}
 
@@ -32,6 +34,7 @@ int32_t Server::initializeSocket(short port)
 	if ((error = bind(udpSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1))
 
 	{
+		perror("bind error: ");
 		return error;
 	}
 
@@ -91,6 +94,7 @@ int32_t Server::UdpPollSocket()
 	int retVal = poll(&pollfds, numfds, 0);
 	if (retVal == -1)
 	{
+		perror("poll failed with error: ");
 	}
 
 	if (pollfds.revents & POLLIN)
@@ -101,8 +105,4 @@ int32_t Server::UdpPollSocket()
 	return SOCKET_NODATA;
 }
 
-int32_t Server::UdpSelectSocket()
-{
-	rset = allset; // structure assignment
-	select(MAX_FD, &rset, NULL, NULL, NULL);
-}
+

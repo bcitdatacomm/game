@@ -28,7 +28,6 @@ class Server
 	int32_t UdpPollSocket();
 	int32_t UdpRecvFrom(char *buffer, uint32_t size, EndPoint *addr);
 	sockaddr_in getServerAddr();
-
 	void setEndPointIp(EndPoint *ep, char zero, char one, char two, char three);
 
   private:
