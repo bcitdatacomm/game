@@ -12,7 +12,7 @@ public unsafe class gameServer : MonoBehaviour
 {
     // Member Data
     private static float nextTickTime = 0.0f;
-    private static int ticksPerSecond = 126;
+    private static int ticksPerSecond = 64;
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
@@ -89,6 +89,7 @@ public unsafe class gameServer : MonoBehaviour
             {
                 conn.id = playerID;
                 playerID++;
+                
                 sendInitData(conn);
             }
 
@@ -166,6 +167,12 @@ public unsafe class gameServer : MonoBehaviour
             newPlayer.ep = ep;
             newPlayer.id = 0;
 
+            newPlayer.r = 0.0f;
+            newPlayer.h = 100;
+            newPlayer.x = spawnPoint * 5;
+            newPlayer.z = spawnPoint * 5;
+            spawnPoint++;
+
             endpoints.Add(newPlayer);
         }
     }
@@ -179,9 +186,6 @@ public unsafe class gameServer : MonoBehaviour
                 if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
                     && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
                 {
-//                    connectionData tmp = endpoints[i];
-//                    tmp.buffer = buffer;
-//                    endpoints[i] = tmp;
                     endpoints[i].buffer = buffer;
                 }
             }
@@ -197,11 +201,7 @@ public unsafe class gameServer : MonoBehaviour
         int positionOffset = (R.Net.Offset.PLAYER_POSITIONS + (conn.id * 8)) - 8;
         int rotationOffset = (R.Net.Offset.PLAYER_ROTATIONS + (conn.id * 4)) - 4;
 
-        conn.x = spawnPoint * 5;
-        conn.z = spawnPoint * 5;
-        spawnPoint *= spawnPoint;
-        conn.r = 0.0f;
-        conn.h = 100;
+        
 
         Array.Copy(BitConverter.GetBytes(conn.x), 0, clientData, positionOffset, 4);
         Array.Copy(BitConverter.GetBytes(conn.z), 0, clientData, positionOffset + 4, 4);
