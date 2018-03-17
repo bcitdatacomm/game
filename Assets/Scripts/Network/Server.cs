@@ -27,11 +27,6 @@ namespace Networking
 			return Convert.ToBoolean (p);
 		}
 
-        public bool Select()
-        {
-            Int32 s = ServerLibrary.Server_SelectSocket(server);
-            return Convert.ToBoolean (s);
-        }
 
 		/**
 		 * Parameters: 

@@ -2,14 +2,14 @@
 using System.Text;
 using System.Threading;
 
-namespace Client
+namespace Networking
 {
 	class MainClass
 	{
 		public static void Main (string[] args)
 		{
-			ClientWrapper client = new ClientWrapper();
-			int retVal = client.Init("127.0.0.1", 42000);
+			Client client = new Client();
+			int retVal = client.Init("142.232.18.93", 42069);
 			byte[] buffer = new byte[2048];
 			byte[] inbuffer = new byte[2048];
 			buffer[0] = (byte)'H';
@@ -22,10 +22,10 @@ namespace Client
 
 			for (int i = 0; i < 5; i++)
 			{
-				client.Send(buffer, 6);
+				client.Send(buffer, 2048);
 				for (;;) 
 				{
-					if (client.Poll () != ClientWrapper.SOCKET_DATA_WAITING) {
+					if (!client.Poll ()) {
 						Thread.Sleep(100);
 					} else {
 						client.Recv(inbuffer, 2048);

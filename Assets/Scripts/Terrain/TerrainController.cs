@@ -378,8 +378,8 @@ public class TerrainController
         // Grab the rock prefabs
         GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
         //GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
-        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/Cactus1.prefab", typeof(GameObject));
-        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/RPG Character Animation Pack/Pro_Western_Starter_Pack/Prefabs/CityBuilding1.prefab", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/Cactus1.prefab", typeof(GameObject));
+        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuilding1.prefab", typeof(GameObject));
         GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/Town1.prefab", typeof(GameObject));
 
         float rockColliderX = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;

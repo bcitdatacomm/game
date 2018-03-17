@@ -2,19 +2,19 @@ using System;
 
 namespace Networking
 {
-    public class TCPClient
-    {
-        private IntPtr tcpClient;
+	public class TCPClient
+	{
+		private IntPtr tcpClient;
 
-        public TCPClient()
-        {
-            tcpClient = ServerLibrary.TCPClient_CreateClient();
-        }
+		public TCPClient()
+		{
+			tcpClient = ServerLibrary.TCPClient_CreateClient();
+		}
 
         public Int32 Send(byte[] buffer, Int32 len)
         {
             unsafe
-            {
+            { 
                 fixed (byte* tmpBuf = buffer)
                 {
                     UInt32 bufLen = Convert.ToUInt32(len);
@@ -22,11 +22,11 @@ namespace Networking
                     return ret;
                 }
             }
-        }
+		}
 
-        public Int32 Recv(byte[] buffer, Int32 len)
-        {
-            Int32 length;
+		public Int32 Recv(byte[] buffer, Int32 len)
+		{
+			Int32 length;
             unsafe
             {
                 fixed (byte* tmpBuf = buffer)
@@ -37,13 +37,14 @@ namespace Networking
                     return length;
                 }
             }
-        }
 
-        public Int32 Init(EndPoint ep)
-        {
-            Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
-            return err;
-        }
-    }
+		}
+
+		public Int32 Init(EndPoint ep)
+		{
+			Int32 err = ServerLibrary.TCPClient_initClient(tcpClient, ep);
+			return err;
+		}
+	}
 }
 

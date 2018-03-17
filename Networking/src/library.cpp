@@ -1,7 +1,7 @@
 ﻿#include "tcpserver.h"
 #include "client.h"
 #include "server.h"
-
+#include "tcpclient.h"
 
 
 
@@ -21,10 +21,6 @@ extern "C" int32_t Server_PollSocket(void *serverPtr)
     return ((Server *)serverPtr)->UdpPollSocket();
 }
 
-extern "C" int32_t Server_SelectSocket(void *serverPtr)
-{
-    return ((Server *)serverPtr)->UdpSelectSocket();
-}
 
 extern "C" int32_t Server_sendBytes(void *serverPtr, EndPoint ep, char *data, uint32_t len)
 {
@@ -40,7 +36,7 @@ extern "C" int32_t Server_recvBytes(void *serverPtr, EndPoint *addr, char *buffe
 
 
 //UDP CLIENT
-extern "C" Client *Client_CreateClient()
+extern "C" Client * Client_CreateClient()
 {
     return new Client();
 }
@@ -61,10 +57,6 @@ extern "C" int32_t Client_PollSocket(void *clientPtr)
     return ((Client *)clientPtr)->UdpPollSocket();
 }
 
-extern "C" int32_t Client_SelectSocket(void *clientPtr)
-{
-    return ((Client *)clientPtr)->UdpSelectSocket();
-}
 
 extern "C" int32_t Client_initClient(void *clientPtr, EndPoint ep)
 {
@@ -101,27 +93,4 @@ extern "C" int32_t TCPServer_recvBytes(void * serverPtr, int32_t clientSocket, c
 
 
 //TCP CLIENT
-extern "C" TCPClient *TCPClient_CreateClient()
-{
-    return new TCPClient();
-}
 
-extern "C" int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
-{
-    return ((TCPClient *)serverPtr)->initializeSocket(ep);
-}
-
-extern "C" int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len)
-{
-    return ((TCPClient *)serverPtr)->sendBytes(buffer, len);
-}
-
-extern "C" int32_t TCPClient_recvBytes(void *clientPtr, char *buffer, uint32_t len)
-{
-    return ((TCPClient *)serverPtr)->receiveBytes(buffer, len);
-}
-
-extern "C" int32_t TCPClient_closeConnection(void *clientPtr)
-{
-    return ((TCPClient *)serverPtr)->closeConnection();
-}
