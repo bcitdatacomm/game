@@ -15,6 +15,7 @@ public unsafe class gameServer : MonoBehaviour
     private static int ticksPerSecond = 64;
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
+	private static int currClients = 0;
 
     private static Server server;
     private static IntPtr serverInstance;
@@ -24,7 +25,7 @@ public unsafe class gameServer : MonoBehaviour
     private TerrainController terrainController;
     private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
-    private static List<connectionData> endpoints;
+	private static connectionData[] endpoints;
     static byte playerID = 1;
     static float spawnPoint = 2.0f;
 
@@ -38,9 +39,10 @@ public unsafe class gameServer : MonoBehaviour
 
         server.Init(R.Net.PORT);
 
-        endpoints = new List<connectionData>();
+		endpoints = new connectionData[31];
         recvThread = new Thread(recvThrdFunc);
         running = true;
+		recvThread.IsBackground = true;
         recvThread.Start();
 
         /*
@@ -65,13 +67,13 @@ public unsafe class gameServer : MonoBehaviour
 
     void Update()
     {
-        if (Time.time > nextTickTime)
+		if (Time.time > nextTickTime && currClients > 0)
         {
             ticks++;
             nextTickTime += tickTime;
 
-            craftTickPacket();
-            sendPacketToClients();
+			craftTickPacket ();
+			sendPacketToClients ();
         }
     }
 
@@ -80,37 +82,28 @@ public unsafe class gameServer : MonoBehaviour
         int offset = R.Net.Offset.PLAYER_IDS;
         clientData[0] = R.Net.Header.TICK;
 
-        for (int i = 0; i < endpoints.Count; i++)
+        for (int i = 1; i <= currClients; i++)
         {
-            connectionData conn = endpoints[i];
-
-            // New connection
-            if (conn.id == 0 && playerID < 30)
-            {
-                conn.id = playerID;
-                playerID++;
-                sendInitData(conn);
-            }
+			byte id = endpoints [i].id;
 
             // Update clientdata with new coordinates
-            if (conn.buffer != null)
+			if (endpoints [i].buffer != null)
             {
-                updateCoord(conn);
-                conn.buffer = null;
+				updateCoord(endpoints [i]);
+				endpoints [i].buffer = null;
             }
 
-            endpoints[i] = conn;
 
             // Add player id to clientdata
-            clientData[offset] = conn.id;
+			clientData[offset] = id;
             offset++;
         }
     }
 
     private static void sendPacketToClients()
     {
-        Debug.Log("send | " + byteArrayToString(clientData));
-        for (int i = 0; i < endpoints.Count; i++)
+        //Debug.Log("send | " + byteArrayToString(clientData));
+        for (int i = 1; i <= currClients; i++)
         {
             if (endpoints[i].id != 0)
             {
@@ -119,45 +112,40 @@ public unsafe class gameServer : MonoBehaviour
         }
     }
 
-    public static void recvThrdFunc()
-    {
+	public static void recvThrdFunc ()
+	{
 
-        byte[] recvBuffer = new byte[R.Net.Size.CLIENT_TICK];
-        Int32 numRead;
-        EndPoint ep = new EndPoint();
+		byte[] recvBuffer = new byte[R.Net.Size.CLIENT_TICK];
+		Int32 numRead;
+		EndPoint ep = new EndPoint ();
 
-        while (running)
-        {
-            // If poll returns 1 (SOCKET_DATA_WAITING), there is data waiting to be read
-            // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
-            if (server.Poll())
-            {
-                numRead = server.Recv(ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
+		while (running) {
+			// If poll returns 1 (SOCKET_DATA_WAITING), there is data waiting to be read
+			// If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
+			//Debug.Log ("ey");
+			numRead = server.Recv (ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
 
-                if (numRead != R.Net.Size.CLIENT_TICK)
-                {
-                    Debug.Log("Failed to read from socket.");
-                }
-                else
-                {
-                    Debug.Log("recv | " + byteArrayToString(recvBuffer));
-                    switch (recvBuffer[0])
-                    {
-                        case R.Net.Header.NEW_CLIENT:
-                            addNewClient(ep);
-                            break;
-                        
-                        case R.Net.Header.TICK:
-                            saveBuffer(ep, recvBuffer);
-                            break;
+			if (numRead != R.Net.Size.CLIENT_TICK) {
+				//Debug.Log ("Failed to read from socket.");
+			} else {
+				//Debug.Log ("recv | " + byteArrayToString (recvBuffer));
+				switch (recvBuffer [0]) {
+				case R.Net.Header.NEW_CLIENT:
+					addNewClient (ep);
+					break;
+                    
+				case R.Net.Header.TICK:
+					saveBuffer (ep, recvBuffer);
+					break;
 
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-    }
+				default:
+					break;
+				}
+			}
+		}
+				
+        	
+	}
 
     private static void addNewClient(EndPoint ep)
     {
@@ -166,27 +154,19 @@ public unsafe class gameServer : MonoBehaviour
         if (playerID < 31)
         {
             newPlayer.ep = ep;
-            newPlayer.id = 0;
+			newPlayer.id = playerID;
 
-            endpoints.Add(newPlayer);
+			endpoints[playerID] = newPlayer;
+			sendInitData (endpoints[playerID]);
+
+			playerID++;
+			currClients++;
         }
     }
 
     private static void saveBuffer(EndPoint ep, byte[] buffer)
     {
-        for (int i = 0; i < endpoints.Count; i++)
-        {
-            if (endpoints[i].id == buffer[1])
-            {
-                if (ep.addr.Byte0 == endpoints[i].ep.addr.Byte0 && ep.addr.Byte1 == endpoints[i].ep.addr.Byte1
-                    && ep.addr.Byte2 == endpoints[i].ep.addr.Byte2 && ep.addr.Byte3 == endpoints[i].ep.addr.Byte3)
-                {
-                    connectionData tmp = endpoints[i];
-                    tmp.buffer = buffer;
-                    endpoints[i] = tmp;
-                }
-            }
-        }
+		endpoints [buffer [1]].buffer = buffer;
     }
 
     //Creates a new player's information
