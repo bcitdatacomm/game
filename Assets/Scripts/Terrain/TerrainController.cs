@@ -54,7 +54,6 @@ public class TerrainController
     public struct Encoding
     {
         public byte[,] tiles;
-        public Building[] buildings;
     };
     public Encoding Data { get; set; }
     public byte[] CompressedData { get; set; }
@@ -73,9 +72,6 @@ public class TerrainController
 
     // Bush appearing percent
     public float BushPerc { get; set; }
-
-    // Building array of building objects
-    public Building[] Buildings { get; set; }
 
     // Cactus gameobject prefab
     public GameObject CactusPrefab { get; set; }
@@ -342,7 +338,7 @@ public class TerrainController
             }
         }
 
-        this.Data = new Encoding() { tiles = map, buildings = { } };
+        this.Data = new Encoding() { tiles = map };
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -366,6 +362,9 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public bool Instantiate()
     {
+        float offsetX = this.Width / 2;
+        float offsetZ = this.Length / 2;
+
         TerrainData tData = new TerrainData
         {
             size = new Vector3(Width, 0, Length),
@@ -400,7 +399,7 @@ public class TerrainController
         float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
 
         // Spawning the town at the center with collider 300X300
-        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width/2, 0, Length/2), Quaternion.identity);
+        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width/2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
         // Roger
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
@@ -414,7 +413,7 @@ public class TerrainController
                     {
                         if ((i + rockColliderX / 2) < Width && (j + rockColliderZ / 2) < Length && (i - rockColliderX / 2) > 0 && (j - rockColliderZ / 2) > 0)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(rockPrefab, new Vector3(i, 0, j), Quaternion.identity);
+                            GameObject newObject = (GameObject)Object.Instantiate(rockPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
                             for (long ii = i - (long)rockColliderX / 2 - 1; ii <= i + (long)rockColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)rockColliderZ / 2 - 1; jj <= j + (long)rockColliderZ / 2 + 1; jj++)
@@ -434,7 +433,7 @@ public class TerrainController
                     {
                         if ((i + cactusColliderX / 2) < Width && (j + cactusColliderZ / 2) < Length && (i - cactusColliderX / 2) > 0 && (j - cactusColliderZ / 2) > 0)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(cactusPrefab, new Vector3(i, 0, j), Quaternion.identity);
+                            GameObject newObject = (GameObject)Object.Instantiate(cactusPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
                             for (long ii = i - (long)cactusColliderX / 2 - 1; ii <= i + (long)cactusColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)cactusColliderZ / 2 - 1; jj <= j + (long)cactusColliderZ / 2 + 1; jj++)
@@ -454,7 +453,7 @@ public class TerrainController
                         // Checks for border
                         if ((i + buildingColliderX / 2) < Width && (j + buildingColliderZ / 2) < Length && (i - buildingColliderX / 2) > 0 && (j - buildingColliderZ / 2) > 0)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i, 0, j), Quaternion.identity);
+                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
                             for (long ii = i - (long)buildingColliderX / 2 - 1; ii <= i + (long)buildingColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)buildingColliderZ / 2 - 1; jj <= j + (long)buildingColliderZ / 2 + 1; jj++)
@@ -487,35 +486,9 @@ public class TerrainController
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
         terrain.name = DEFAULT_NAME;
+        terrain.transform.Translate(-offsetX, 0, -offsetZ);
         //Debug.Log("Occupied position: " + occupiedPositions.Count);
 
         return true;
-    }
-}
-
-/*------------------------------------------------------------------------------------------------------------------
--- SOURCE FILE: TerrainController.cs
---
--- PROGRAM: Building
---
--- FUNCTIONS: public class Building
---
--- DATE: Feb 24th, 2018
---
--- REVISIONS: N/A
---
--- DESIGNER: 
---
--- PROGRAMMER: 
---
--- NOTES:
--- This is the building initializer to create the buildings and returns an array
--- of building objects.
-----------------------------------------------------------------------------------------------------------------------*/
-public class Building
-{
-    Building()
-    {
-
     }
 }
