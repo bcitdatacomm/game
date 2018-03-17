@@ -12,7 +12,7 @@ public unsafe class gameServer : MonoBehaviour
 {
     // Member Data
     private static float nextTickTime = 0.0f;
-    private static int ticksPerSecond = 64;
+    private static int ticksPerSecond = 126;
     private float tickTime = (1 / ticksPerSecond);
     private int ticks = 0;
 
