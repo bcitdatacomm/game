@@ -1,9 +1,12 @@
+using System;
+
 ﻿namespace R
 {
     // Contains all the constants associated with networking and the packet
     public static class Net
     {
         public const ushort PORT = 42069;
+        public const Int32 MAX_INIT_BUFFER_SIZE = 8192;
 
         // Contains constants associated with the header type of the packet
         public static class Header

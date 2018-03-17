@@ -19,6 +19,13 @@ public class GameController : MonoBehaviour {
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
+    // ADDED: Game initialization variables
+    private TCPClient tcpClient;
+    private Int32 clientsockfd;
+    private byte[] mapBuffer;
+    private byte[] itemBuffer;
+    private EndPoint epServer;
+
     void Start()
     {
         currentPlayerId = 0;
@@ -32,6 +39,30 @@ public class GameController : MonoBehaviour {
         initPacket[0] = R.Net.Header.NEW_CLIENT;
 
         client.Send(initPacket, R.Net.Size.CLIENT_TICK);
+
+        // Adding TCP receive code here, move as needed
+        epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
+        Int32 result = tcpClient.Init(epServer);
+        Thread recvThread;
+        if (result <= 0)
+        {
+            Debug.Log("Error initializing TCP client socket");
+        }
+        else
+        {
+            clientsockfd = result;
+            recvThread = new Thread(recvThrdFunc);
+            recvThread.Start();
+        }
+
+        // We have to close the client TCP socket at some point. Move this code as needed.
+        recvThread.Join();
+        result = tcpClient.CloseConnection(clientsockfd);
+        if (result != 0)
+        {
+            Debug.Log("Error closing TCP client socket.");
+        }
+        
     }
 
     void FixedUpdate()
@@ -225,5 +256,22 @@ public class GameController : MonoBehaviour {
         */
 
         this.client.Send(packet, R.Net.Size.CLIENT_TICK);
+    }
+
+    void recvThrdFunc()
+    {
+        Int32 numRecvMap;
+        Int32 numRecvItem;
+
+        numRecvMap = tcpServer.Recv(mapBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
+        if (numRecvMap <= 0)
+        {
+            Debug.Log("This shouldn't happen.");
+        }
+        numRecvItem = tcpServer.Recv(itemBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
+        if (numRecvItem <= 0)
+        {
+            Debug.Log("This REALLY shouldn't happen.");
+        }
     }
 }
