@@ -16,6 +16,11 @@ public class GameController : MonoBehaviour {
     byte[] buffer;
     private Client client;
 
+    // packet for terrain data
+    private byte[] terrainData;
+    // packet for item data
+    private byte[] itemData;
+
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
@@ -82,6 +87,26 @@ public class GameController : MonoBehaviour {
 
         this.movePlayers(playerIDs, positions, rotations);
     }
+
+    // This method will get the terrain and weapons and put them on the map 
+    // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
+    void initializeGame()
+    {
+
+        // Get the data for terrain
+        TerrainController tc = new TerrainController();
+        tc.LoadByteArray(terrainData);
+        tc.Instantiate();
+
+        // Get the data from the itemData packet
+        InitRandomGuns items = new InitRandomGuns();
+        items.fromByteArrayToList(itemData);
+        // items.SpawnedGuns is a list that has been populated with weaponspell object
+        // which has ID, Type, Xcoord, and Zcoord
+        // code needs to be created in unison with asset team to put items on the map
+
+    }
+
 
     void syncWithServer()
     {
