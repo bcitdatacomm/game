@@ -372,8 +372,6 @@ public class TerrainController
             name = DEFAULT_NAME
         };
 
-        ///////////////////////////////////////////////////
-
         // Gets the number of tile types
         int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
 
@@ -398,27 +396,28 @@ public class TerrainController
         float buildingColliderY = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.y;
         float buildingColliderZ = buildingPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
         float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
+        int RandomRotationPerc = 0;
 
         // Spawning the town at the center with collider 300X300
         GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
-        // Roger
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < Data.tiles.GetLength(1); j++)
             {
                 if (Data.tiles[i, j] == (byte)TileTypes.BUSH)
                 {
-                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), ROCK_COLLIDER_SIZE);
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i - offsetX, 0, j - offsetZ), ROCK_COLLIDER_SIZE);
                     if (hitColliders.Length <= 0)
                     {
-                        if ((i + rockColliderX / 2) < Width && (j + rockColliderZ / 2) < Length && (i - rockColliderX / 2) > 0 && (j - rockColliderZ / 2) > 0)
+                        if ((i - offsetX + rockColliderX / 2) < Width / 2 && (j - offsetZ + rockColliderZ / 2) < Length / 2 && (i - offsetX - rockColliderX / 2) > -Width / 2 && (j - offsetZ - rockColliderZ / 2) > -Length / 2)
                         {
                             GameObject newObject = (GameObject)Object.Instantiate(rockPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
-                            for (long ii = i - (long)rockColliderX / 2 - 1; ii <= i + (long)rockColliderX / 2 + 1; ii++)
+                            for (long ii = i - (long)offsetX - (long)rockColliderX / 2 - 1; ii <= i - (long)offsetX + (long)rockColliderX / 2 + 1; ii++)
                             {
-                                for (long jj = j - (long)rockColliderZ / 2 - 1; jj <= j + (long)rockColliderZ / 2 + 1; jj++)
+                                for (long jj = j - (long)offsetZ - (long)rockColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)rockColliderZ / 2 + 1; jj++)
                                 {
+                                    // this list will return coordinates with 0,0 at center.
                                     this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
                             }
@@ -429,15 +428,15 @@ public class TerrainController
 
                 if (Data.tiles[i, j] == (byte)TileTypes.CACTUS)
                 {
-                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), CACTUS_COLLIDER_SIZE);
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i - offsetX, 0, j - offsetZ), CACTUS_COLLIDER_SIZE);
                     if (hitColliders.Length <= 0)
                     {
-                        if ((i + cactusColliderX / 2) < Width && (j + cactusColliderZ / 2) < Length && (i - cactusColliderX / 2) > 0 && (j - cactusColliderZ / 2) > 0)
+                        if ((i - offsetX + cactusColliderX / 2) < Width / 2 && (j - offsetZ + cactusColliderZ / 2) < Length / 2 && (i - offsetX - cactusColliderX / 2) > -Width / 2 && (j - offsetZ - cactusColliderZ / 2) > -Length / 2)
                         {
                             GameObject newObject = (GameObject)Object.Instantiate(cactusPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
-                            for (long ii = i - (long)cactusColliderX / 2 - 1; ii <= i + (long)cactusColliderX / 2 + 1; ii++)
+                            for (long ii = i - (long)offsetX - (long)cactusColliderX / 2 - 1; ii <= i - (long)offsetX + (long)cactusColliderX / 2 + 1; ii++)
                             {
-                                for (long jj = j - (long)cactusColliderZ / 2 - 1; jj <= j + (long)cactusColliderZ / 2 + 1; jj++)
+                                for (long jj = j - (long)offsetZ - (long)cactusColliderZ / 2 - 1; jj <= j - offsetZ + (long)cactusColliderZ / 2 + 1; jj++)
                                 {
                                     this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
@@ -448,16 +447,19 @@ public class TerrainController
 
                 if (Data.tiles[i, j] == (byte)TileTypes.BUILDINGS)
                 {
-                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), BUILDING_COLLIDER_SIZE);
+                    Collider[] hitColliders = Physics.OverlapSphere(new Vector3(i - offsetX, 0, j - offsetZ), BUILDING_COLLIDER_SIZE);
                     if (hitColliders.Length <= 0)
                     {
                         // Checks for border
-                        if ((i + buildingColliderX / 2) < Width && (j + buildingColliderZ / 2) < Length && (i - buildingColliderX / 2) > 0 && (j - buildingColliderZ / 2) > 0)
+                        if ((i - offsetX + buildingColliderX / 2) < Width / 2 && (j - offsetZ + buildingColliderZ / 2) < Length / 2 && (i - offsetX - buildingColliderX / 2) > -Width / 2 && (j - offsetZ - buildingColliderZ / 2) > -Length / 2)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
-                            for (long ii = i - (long)buildingColliderX / 2 - 1; ii <= i + (long)buildingColliderX / 2 + 1; ii++)
+                            RandomRotationPerc = i % 4 * 90 + 90;
+                            // Spawning buildings with a random rotation
+                            // !!!!!!REMEMBER TO CHANGE THE PREFAB OBJECT YOU MUST CHANGE THE BOX COLLIDER TO BE THE SAME FOR X AND Z
+                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.Euler(0, RandomRotationPerc, 0));
+                            for (long ii = i - (long)offsetX - (long)buildingColliderX / 2 - 1; ii <= i - (long)offsetX + (long)buildingColliderX / 2 + 1; ii++)
                             {
-                                for (long jj = j - (long)buildingColliderZ / 2 - 1; jj <= j + (long)buildingColliderZ / 2 + 1; jj++)
+                                for (long jj = j - (long)offsetZ - (long)buildingColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)buildingColliderZ / 2 + 1; jj++)
                                 {
                                     this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
@@ -467,8 +469,6 @@ public class TerrainController
                 }
             }
         }
-
-        ///////////////////////////////////////////////////
 
         // Create a new splat prototype array
         SplatPrototype[] newSplatPrototypes = new SplatPrototype[1];
@@ -481,8 +481,6 @@ public class TerrainController
 
         // Assign the new splat prototype array to tData
         tData.splatPrototypes = newSplatPrototypes;
-
-        ///////////////////////////////////////////////////
 
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
