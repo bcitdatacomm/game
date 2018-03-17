@@ -6,12 +6,16 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public int ID { get; set; }
-    public int Category { get; set; }
+    public int Category;
     public byte Type;
     public float FireRate;
-    public float Reload;
     public float reloadTime; //reload time in seconds.
     public int ClipSize;
-    public string name;
-    public Sprite Image { get; }
+    
+    public void OnPickup()
+    {
+        gameObject.SetActive(false);
+    }
+
+    
 }
