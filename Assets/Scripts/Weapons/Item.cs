@@ -6,14 +6,11 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public int ID { get; set; }
+    public int Category { get; set; }
     public byte Type;
     public float FireRate;
     public float Reload;
     public float ClipSize;
-
-    void Update()
-    {
-        /* Rotates all item subclasses, looks pretty */
-        transform.Rotate(new Vector3(15, 30, 45) * Time.deltaTime);
-    }
+    public string name;
+    public Sprite Image { get; }
 }

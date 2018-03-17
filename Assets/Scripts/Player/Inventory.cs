@@ -5,32 +5,75 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    private const int SLOTS = 4;
+    private const int ITEM_TYPE_WEAPON = 1;
+    private const int ITEM_TYPE_SPELL = 2;
+    private const int SLOT_ITEM_WEAPON = 0; // slot 1
+    private const int SLOT_ITEM_SPELL = 1; // slot 2, ...
+    private const int MAX_NUM_WEAPONS = 1;
+    private const int MAX_NUM_SPELLS = 3;
 
-    private List<IInventoryItem> mItems = new List<IInventoryItem>();
-
+    public int CurrentSpell { get; set; }
     public event EventHandler<InventoryEventArgs> ItemAdded;
+    private Item[] items;
 
-    public void AddItem(IInventoryItem item)
+    public void Start()
     {
-        if(mItems.Count < SLOTS)
+        items = new Item[4];
+        for (int i = 0; i < MAX_NUM_WEAPONS + MAX_NUM_SPELLS; i++)
         {
-            Collider collider = (item as MonoBehaviour).GetComponent<Collider>();
-            if(collider.enabled)
+            items[i] = null;
+        }
+        CurrentSpell = SLOT_ITEM_SPELL;
+    }
+
+    public void AddItem(Item item)
+    {
+        int slot = -1;
+
+        if (item.Category == ITEM_TYPE_WEAPON)
+        {
+            slot = SLOT_ITEM_WEAPON;
+        }
+        else if (item.Category == ITEM_TYPE_SPELL)
+        {
+            // To add a spell to an empty spell slot
+            for (int i = 0; i < MAX_NUM_SPELLS; i++)
             {
-                collider.enabled = false;
-
-                mItems.Add(item);
-
-                item.OnPickup();
+                if (items[i] == null)
+                {
+                    slot = SLOT_ITEM_WEAPON + i; // Spell slot starts after weapon
+                    break;
+                }
             }
+            // To replace the current spell with the picked-up spell
+            if (slot == -1)
+            {
+                slot = CurrentSpell;
+            }
+        }
 
+        Collider collider = (item as MonoBehaviour).GetComponent<Collider>();
+        if(collider.enabled)
+        {
+            collider.enabled = false;
+            items[slot] = item;
+            // item.OnPickup();
+        }
+
+        if (slot >= 0) // Item is added: this logic doesn't really make sense
+        {
             if(ItemAdded != null)
             {
-                //Use this to notify the HUD to update
+                // Use this to notify the HUD to update
                 ItemAdded(this, new InventoryEventArgs(item));
             }
         }
+
+        // if(ItemAdded != null)
+        // {
+        //     //Use this to notify the HUD to update
+        //     ItemAdded(this, new InventoryEventArgs(item));
+        // }
     }
 
     //public byte[] InventoryBytes()
@@ -41,4 +84,14 @@ public class Inventory : MonoBehaviour
 
     //    }
     //}
+}
+
+public class InventoryEventArgs : EventArgs
+{
+    public Item Item;
+
+    public InventoryEventArgs(Item item)
+    {
+        Item = item;
+    }
 }

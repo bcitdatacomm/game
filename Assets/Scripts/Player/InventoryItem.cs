@@ -10,12 +10,12 @@ public interface IInventoryItem
     void OnPickup();
 }
 
-public class InventoryEventArgs : EventArgs
-{
-    public InventoryEventArgs(IInventoryItem item)
-    {
-        Item = item;
-    }
-
-    public IInventoryItem Item;
-}
+// public class InventoryEventArgs : EventArgs
+// {
+//     public InventoryEventArgs(IInventoryItem item)
+//     {
+//         Item = item;
+//     }
+//
+//     public IInventoryItem Item;
+// }

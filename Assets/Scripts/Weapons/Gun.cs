@@ -38,7 +38,7 @@ public class Gun : MonoBehaviour
 		reloading = false;
 
 		currAmmo = maxAmmo;
-		transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
+		// transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
     }
 
     void FixedUpdate()
@@ -76,6 +76,17 @@ public class Gun : MonoBehaviour
 			if (currAmmo <= 0)
 			{
 				Reload ();
+			}
+        }
+
+		if (reloading == true)
+		{
+			if (Time.time >= timeBeforeReload)
+			{
+				Debug.Log ("reloading done");
+				currAmmo = maxAmmo;
+				transform.parent.GetChild (6).GetChild (1).GetChild (9).GetChild (0).GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, maxAmmo);
+				reloading = false;
 			}
         }
 			
