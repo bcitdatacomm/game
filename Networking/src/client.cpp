@@ -50,6 +50,7 @@ int32_t Client::sendBytes(char * data, unsigned len)
 {
 	int32_t retVal;
 	if ((retVal = send(clientSocket, data, len , 0)) == -1) {
+		perror("client send error");
 	}
 
 	return retVal;

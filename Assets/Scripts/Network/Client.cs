@@ -20,16 +20,22 @@ namespace Networking
 		{
 			CAddr addr = new CAddr (ipaddr);
 			server = new EndPoint (ipaddr, port);
+			rcvEndPoint = new EndPoint ();
 			Int32 err = ServerLibrary.Client_initClient(connection, server);
 			return err;
 		}
 
 		public bool Poll()
 		{
-			Int32 p = ServerLibrary.Client_PollSocket(connection);
+			Int32 p = ServerLibrary.Client_PollSocket (connection);
 			return Convert.ToBoolean (p);
 		}
 
+        public bool Select()
+        {
+            Int32 s = ServerLibrary.Client_SelectSocket(connection);
+            return Convert.ToBoolean(s);
+        }
 
 		public Int32 Recv(byte[] buffer, Int32 len)
 		{

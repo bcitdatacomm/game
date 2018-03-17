@@ -101,4 +101,8 @@ int32_t Server::UdpPollSocket()
 	return SOCKET_NODATA;
 }
 
-
+int32_t Server::UdpSelectSocket()
+{
+	rset = allset; // structure assignment
+	select(MAX_FD, &rset, NULL, NULL, NULL);
+}
