@@ -17,7 +17,8 @@ public class Player : MonoBehaviour
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
-    AudioSource backgroundMusic;
+    AudioSource sound;
+    public AudioClip reload;
     int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
     public Vector3 net;
@@ -35,8 +36,8 @@ public class Player : MonoBehaviour
         net = Vector3.zero;
         MovementSpeed = .1f;
 
-        backgroundMusic = GetComponent<AudioSource>();
-        backgroundMusic.Play();
+        sound = GetComponent<AudioSource>();
+        sound.Play();
         // TEST CODE
         // GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
         // currentGun = Pistol.GetComponent("Gun") as Gun;
@@ -96,7 +97,8 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey("r"))
         {
-            transform.Find("Inventory").Find("Weapon").GetChild(0).GetComponent<Gun>().Reload();
+            transform.GetChild(2).GetComponent<Gun>().Reload();
+            sound.PlayOneShot(reload);
         }
     }
 
