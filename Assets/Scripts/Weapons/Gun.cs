@@ -16,6 +16,8 @@ public class Gun : MonoBehaviour
     public int currAmmo;
     // Time in seconds for a Reload
     private float timeBeforeReload;
+    // weapon audio
+    public AudioSource weaponSound;
 
     void Start()
     {
@@ -23,6 +25,9 @@ public class Gun : MonoBehaviour
         nextShotTime = 0;
         this.FiredShots = new Stack<Bullet>();
         reloading = false;
+
+        // Get audio
+        weaponSound = GetComponent<AudioSource>();
 
         // Get from Prefab.
         currAmmo = ClipSize;
@@ -70,6 +75,7 @@ public class Gun : MonoBehaviour
         if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
         {
             Debug.Log("Shot Fired");
+            weaponSound.Play();
             this.nextShotTime = Time.time + this.FireRate;
 
             // Create Bullet at Parent position (player)
