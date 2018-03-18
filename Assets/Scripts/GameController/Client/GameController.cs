@@ -7,7 +7,7 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.22";
+    public const string SERVER_ADDRESS = "192.168.0.18";
 
     private byte currentPlayerId;
 
