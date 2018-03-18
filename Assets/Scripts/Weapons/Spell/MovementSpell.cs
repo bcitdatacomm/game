@@ -10,38 +10,36 @@ public class MovementSpell : Spell
     void Start()
     {
         Debug.Log("Spell started");
-        this.NumUses = 1;
-        this.duration = 10;
-        this.startTime = -1;
-	GameObject obj = this.transform.parent.gameObject;
-	Debug.Log(obj);
-	ps = GetComponent<ParticleSystem>();
-	var em = ps.emission;
-	em.enabled = true;
+        duration = 10;
+        startTime = -1;
+        GameObject obj = this.transform.parent.gameObject;
+        Debug.Log(obj);
+
+        // For Sparkly fun time.
+        ps = GetComponent<ParticleSystem>();
+        var em = ps.emission;
+        em.enabled = true;
     }
 
     void Update()
     {
-        if(Input.GetButton("Fire2") && this.NumUses > 0)
+        if (Input.GetButton("Fire2") && ClipSize > 0)
         {
             Debug.Log("Spell used");
-            --this.NumUses;
-            this.Owner.MovementSpeed += 50;
+            --ClipSize;
+            transform.parent.GetComponent<Player>().MovementSpeed += 1;
             this.startTime = Time.time;
-	    ps.Play();
+            ps.Play();
         }
 
-
-        if(this.startTime > 0)
+        if (this.startTime > 0)
         {
-            if(Time.time - this.startTime >= this.duration)
+            if (Time.time - this.startTime >= this.duration)
             {
                 this.startTime = 0;
-                this.Owner.MovementSpeed -= 50;
-		ps.Stop();
+                transform.parent.GetComponent<Player>().MovementSpeed -= 1;
+                ps.Stop();
             }
         }
-
-
     }
 }
