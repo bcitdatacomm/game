@@ -159,14 +159,14 @@ public class Player : MonoBehaviour
             inventory.AddItem(item);
             string name = item.name;
 
+            itemObject.transform.parent = weaponSlot.transform;
+
             item.isEquipped = true;
-            item.transform.position = new Vector3(0.2f, 1, 0);
+            item.transform.position = this.transform.position + new Vector3(0.2f, 1, 0);
             item.transform.rotation = Quaternion.Euler(Vector3.zero);
-            Instantiate(item, weaponSlot.transform);
+
             Debug.Log(this.transform.name);
 
-            // item.OnPickup();
-            Destroy(itemObject);
         }
     }
 }
