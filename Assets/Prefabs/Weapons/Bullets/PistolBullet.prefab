@@ -114,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   Damage: 10
-  Speed: 0.1
+  Speed: 0.4
   LifeTime: 1
   AoE: 1
   direction: {x: 0, y: 0, z: 0}

@@ -108,11 +108,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58c4fe1460da1e448a9788b256ad44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Category: 1
   Type: 4
-  FireRate: 0
-  Reload: 0
-  reloadTime: 0
-  ClipSize: 0
-  name: 
+  FireRate: 0.4
+  reloadTime: 1
+  ClipSize: 5
   BulletPrefab: {fileID: 114677840877822054, guid: 61d07456a9c2744449eca62c44f73009,
     type: 2}
