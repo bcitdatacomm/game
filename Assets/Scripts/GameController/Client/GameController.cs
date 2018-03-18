@@ -8,7 +8,8 @@ using InitGuns;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.22";
+    public const string SERVER_ADDRESS = "192.168.0.12";
+    public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
 
@@ -34,6 +35,57 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
+
+        mapBuffer = new byte[MAX_INIT_BUFFER_SIZE];
+        itemBuffer = new byte[MAX_INIT_BUFFER_SIZE];
+        // Adding TCP receive code here, move as needed
+        epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
+        tcpClient = new TCPClient();
+        Int32 result = tcpClient.Init(epServer);
+        Thread recvThread;
+        if (result <= 0)
+        {
+            Debug.Log("Error initializing TCP client socket: " + result);
+        }
+        if (result > 0)
+        {
+            // clientsockfd = result;
+            // recvThread = new Thread(recvThrdFunc);
+            // recvThread.Start();
+
+
+            int numRecvMap;
+            int numRecvItem;
+
+            Debug.Log("entering receive thread");
+
+            numRecvMap = tcpClient.Recv(mapBuffer, MAX_INIT_BUFFER_SIZE);
+            if (numRecvMap <= 0)
+            {
+                Debug.Log(System.Text.Encoding.Default.GetString(mapBuffer));
+                Debug.Log("This shouldn't happen.");
+            }
+            Debug.Log("Received: " + numRecvMap);
+
+            numRecvItem = tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
+            if (numRecvItem <= 0)
+            {
+                Debug.Log(System.Text.Encoding.Default.GetString(itemBuffer));
+                Debug.Log("This REALLY shouldn't happen.");
+            }
+            Debug.Log("Received: " + numRecvItem);
+
+            // We have to close the client TCP socket at some point. Move this code as needed.
+            // recvThread.Join();
+            // result = tcpClient.CloseConnection(clientsockfd);
+            // if (result != 0)
+            // {
+            //     Debug.Log("Error closing TCP client socket.");
+            // }
+
+        }
+
+
         currentPlayerId = 0;
         players = new Dictionary<byte, GameObject>();
 
@@ -46,29 +98,9 @@ public class GameController : MonoBehaviour {
 
         client.Send(initPacket, R.Net.Size.CLIENT_TICK);
 
-        // Adding TCP receive code here, move as needed
-        epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
-        Int32 result = tcpClient.Init(epServer);
-        Thread recvThread;
-        if (result <= 0)
-        {
-            Debug.Log("Error initializing TCP client socket");
-        }
-        else
-        {
-            clientsockfd = result;
-            recvThread = new Thread(recvThrdFunc);
-            recvThread.Start();
 
-            // We have to close the client TCP socket at some point. Move this code as needed.
-            recvThread.Join();
-            result = tcpClient.CloseConnection(clientsockfd);
-            if (result != 0)
-            {
-                Debug.Log("Error closing TCP client socket.");
-            }
 
-        }
+
 
 
     }
@@ -288,18 +320,25 @@ public class GameController : MonoBehaviour {
 
     void recvThrdFunc()
     {
-        Int32 numRecvMap;
-        Int32 numRecvItem;
-
-        numRecvMap = tcpClient.Recv(mapBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
-        if (numRecvMap <= 0)
-        {
-            Debug.Log("This shouldn't happen.");
-        }
-        numRecvItem = tcpClient.Recv(itemBuffer, R.Net.MAX_INIT_BUFFER_SIZE);
-        if (numRecvItem <= 0)
-        {
-            Debug.Log("This REALLY shouldn't happen.");
-        }
+        // int numRecvMap;
+        // int numRecvItem;
+        //
+        // Debug.Log("entering receive thread");
+        //
+        // numRecvMap = tcpClient.Recv(mapBuffer, 8192);
+        // if (numRecvMap <= 0)
+        // {
+        //     //Debug.Log(System.Text.Encoding.Default.GetString(mapBuffer));
+        //     Debug.Log("This shouldn't happen.");
+        // }
+        // Debug.Log("Received: " + numRecvMap);
+        //
+        // numRecvItem = tcpClient.Recv(itemBuffer, 8192);
+        // if (numRecvItem <= 0)
+        // {
+        //     //Debug.Log(System.Text.Encoding.Default.GetString(itemBuffer));
+        //     Debug.Log("This REALLY shouldn't happen.");
+        // }
+        // Debug.Log("Received: " + numRecvItem);
     }
 }
