@@ -78,5 +78,5 @@ int32_t TCPClient::receiveBytes(char * buffer, uint32_t len)
 		buffer += n;
 		bytesToRead -= n;
 	}
-	return (len - bytesToRead);
+	return (bytesToRead);
 }
