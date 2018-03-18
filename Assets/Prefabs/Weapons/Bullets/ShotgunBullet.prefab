@@ -115,8 +115,9 @@ MonoBehaviour:
   Type: 3
   Damage: 13
   Speed: 0.3
-  LifeTime: 0.2
+  LifeTime: 0.4
   AoE: 3
+  initPos: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 0}
 --- !u!135 &135354898450886936
 SphereCollider:
@@ -126,7 +127,7 @@ SphereCollider:
   m_GameObject: {fileID: 1336287640837398}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
