@@ -9,11 +9,11 @@ public class Gun : MonoBehaviour
     // Keep Track of Bullets
     public Stack<Bullet> FiredShots;
     // Check if can reload
-    private bool reloading;
+    public bool reloading;
     // Time in seconds between shots
     private float nextShotTime;
     // Available bullets
-    private int currAmmo;
+    public int currAmmo;
     // Time in seconds for a Reload
     private float timeBeforeReload;
 

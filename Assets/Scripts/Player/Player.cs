@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey("r"))
         {
-            transform.GetChild(2).GetComponent<Gun>().Reload();
+            transform.Find("Inventory").Find("Weapon").GetChild(0).GetComponent<Gun>().Reload();
         }
     }
 
