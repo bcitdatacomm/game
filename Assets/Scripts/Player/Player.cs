@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: IMPLEMENT Weapon drop as delete.  Do a check for pick up.
+
 public class Player : MonoBehaviour
 {
     public int Health;
@@ -17,8 +19,8 @@ public class Player : MonoBehaviour
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
     int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-    public Vector3 net;                 
-    private Inventory inventory;        
+    public Vector3 net;
+    private Inventory inventory;
     private Spell[] spells;             // Spell list
 
     // TODO ADD CURRENT GUN
@@ -33,11 +35,12 @@ public class Player : MonoBehaviour
         MovementSpeed = .1f;
 
         // TEST CODE
-        //GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
-        //currentGun = Pistol.GetComponent("Gun") as Gun;
+        // GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
+        // currentGun = Pistol.GetComponent("Gun") as Gun;
 
         GameObject inventGameObj = GameObject.Find("Inventory"); // Inventory game object
         inventory = inventGameObj.transform.GetComponent<Inventory>();
+
         // Init spell list
         spells = new Spell[3];
         for (int i = 0; i < 3; i++)
@@ -144,24 +147,24 @@ public class Player : MonoBehaviour
         Item item = other.GetComponent<Item>();
         GameObject itemObject = other.gameObject;
 
+        GameObject weaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
+
+        Debug.Log(weaponSlot.transform.name);
+
         if (item != null)
         {
             Debug.Log("Item picked up: " + item.name);
             inventory.AddItem(item);
             string name = item.name;
 
-            Instantiate(itemObject, transform.parent);
+            item.isEquipped = true;
+            item.transform.position = new Vector3(0.2f, 1, 0);
+            item.transform.rotation = Quaternion.Euler(Vector3.zero);
+            Instantiate(item, weaponSlot.transform);
+            Debug.Log(this.transform.name);
 
-            //prefab = Instantiate(Resources.Load(name) as GameObject, transform.parent);
-            //Gun newGun;
-            // GameObject getWeapon = Instantiate(Resources.Load("Assets/Prefabs/Weapons/Pistol.prefab")) as GameObject;
-            //getWeapon.transform.parent.Find("Inventory").Find("Weapon");
-            //transform.parent.Find("Inventory").Find("Weapon")
-            //newGun = Instantiate(item, transform.parent) as Gun;
-
-            item.OnPickup();
-
+            // item.OnPickup();
+            Destroy(itemObject);
         }
     }
-
 }

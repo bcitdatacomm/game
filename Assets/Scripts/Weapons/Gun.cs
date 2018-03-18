@@ -4,92 +4,92 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
+    // Link Via unity
     public Bullet BulletPrefab;
-
+    // Keep Track of Bullets
     public Stack<Bullet> FiredShots;
-
-	private bool reloading;
-
+    // Check if can reload
+    private bool reloading;
+    // Time in seconds between shots
     private float nextShotTime;
-
-	private int currAmmo;
-
-	private float timeBeforeReload; 
-
+    // Available bullets
+    private int currAmmo;
+    // Time in seconds for a Reload
+    private float timeBeforeReload;
 
     void Start()
     {
         Debug.Log("Gun start");
         nextShotTime = 0;
         this.FiredShots = new Stack<Bullet>();
-		reloading = false;
+        reloading = false;
 
-		currAmmo = ClipSize;
-		transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
+        // Get from Prefab.
+        currAmmo = ClipSize;
     }
 
     void FixedUpdate()
     {
-		Shoot ();
-		ReloadCheck();
+        // Only allow Equipped guns to shoot; If this check is gone all guns shoot!
+        if (this.isEquipped)
+        {
+            Shoot();
+            ReloadCheck();
+            // TODO: Need to move this to HUD
+            //this.transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
+        }
     }
 
-	public void Reload()
-	{
-		timeBeforeReload = Time.time + reloadTime;
-		reloading = true;
-		Debug.Log ("reloading");
-	}
+    /*
+     * Called on Cooldown and manual player reload
+     */
+    public void Reload()
+    {
+        timeBeforeReload = Time.time + reloadTime;
+        reloading = true;
+        Debug.Log("reloading");
+    }
 
-	void ReloadCheck()
-	{
-		if (reloading == true)
-		{	
-			if (Time.time >= timeBeforeReload)
-			{
-				Debug.Log ("reloading done");
-				currAmmo = ClipSize;
-				transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
-				reloading = false;
-			}
-		}
-	}
+    void ReloadCheck()
+    {
+        if (reloading == true)
+        {
+            if (Time.time >= timeBeforeReload)
+            {
+                Debug.Log("reloading done");
+                currAmmo = ClipSize;
+                // TODO: MOVE TO HUD
+                //transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
+                reloading = false;
+            }
+        }
+    }
 
-	void Shoot()
-	{
-		if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
-		{
-			Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
-			Plane plane=new Plane(Vector3.up, Vector3.zero);
-			float distance;
-			Vector3 direction = new Vector3(0,0,0);
-			if(plane.Raycast(ray, out distance))
-			{
-				Vector3 target=ray.GetPoint(distance) + transform.parent.GetComponent<Player>().net;
-				direction=target-transform.position;
-				direction.y = 0;
-				direction = direction.normalized;
-			}
+    void Shoot()
+    {
+        if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
+        {
+            Debug.Log("Shot Fired");
+            this.nextShotTime = Time.time + this.FireRate;
 
-			Debug.Log("Shot Fired");
-			this.nextShotTime = Time.time + this.FireRate;
+            // Create Bullet at Parent position (player)
+            Bullet firedShot = (Bullet)Object.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
+            // Rotate bullet and multiply by parent forward direction
+            firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
 
-			Bullet firedShot = (Bullet)Object.Instantiate(BulletPrefab, this.transform.position + direction, this.transform.rotation);
+            if (firedShot != null)
+            {
+                this.FiredShots.Push(firedShot);
+            }
 
-			firedShot.direction = direction;
-		
+            currAmmo--;
 
-			if (firedShot != null)
-			{
-				this.FiredShots.Push(firedShot);
-			}
-
-			currAmmo--;
-			transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
-			if (currAmmo <= 0)
-			{
-				Reload ();
-			}
-		}
-	}
+            // TODO: MOVE TO HUD
+            // transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
+            if (currAmmo <= 0)
+            {
+                Reload();
+            }
+        }
+    }
 }
