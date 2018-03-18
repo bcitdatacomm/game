@@ -14,7 +14,7 @@ public class InvisibilitySpell : Spell
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire2") && ClipSize > 0)
         {
             this.transform.parent.Find("char02").GetComponent<Renderer>().enabled = false;
         }
