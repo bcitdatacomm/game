@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,9 +25,12 @@ public class Player : MonoBehaviour
     public Vector3 net;
     private Inventory inventory;
     private Spell[] spells;             // Spell list
+    DateTime lastPickUp;
 
     // TODO ADD CURRENT GUN
     public Gun currentGun;
+
+    private bool pressed;
 
     void Start()
     {
@@ -35,6 +39,7 @@ public class Player : MonoBehaviour
         this.Armor = 0;
         net = Vector3.zero;
         MovementSpeed = .1f;
+        pressed = false;
 
         sound = GetComponent<AudioSource>();
         sound.Play();
@@ -54,6 +59,8 @@ public class Player : MonoBehaviour
             spells[i].enabled = false; // initially disable spell use
         }
         // Init spell list
+
+        lastPickUp = DateTime.Now;
     }
 
     void Awake()
@@ -147,29 +154,39 @@ public class Player : MonoBehaviour
         // Spell switching
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        Item item = other.GetComponent<Item>();
-        GameObject itemObject = other.gameObject;
+        if (Input.GetKeyDown("e") && ((int) (DateTime.Now - lastPickUp).TotalMilliseconds > 10)) {
+            lastPickUp = DateTime.Now;
 
-        GameObject weaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
+            Debug.Log("E type detected");
+            Item item = other.GetComponent<Item>();
+            GameObject itemObject = other.gameObject;
 
-        Debug.Log(weaponSlot.transform.name);
+            GameObject weaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
 
-        if (item != null)
-        {
-            Debug.Log("Item picked up: " + item.name);
-            inventory.AddItem(item);
-            string name = item.name;
+            Debug.Log("Item collided: " + item.name);
+            if (item != null)
+            {
+                Debug.Log("Item picked up: " + item.name);
+                inventory.AddItem(item);
+                string name = item.name;
 
-            itemObject.transform.parent = weaponSlot.transform;
+                if (weaponSlot.transform.childCount > 0) {
+                    var temp = weaponSlot.transform.GetChild(0);
+                    temp.transform.position = new Vector3(this.transform.position.x, 0, this.transform.position.z);
+                    Collider collider = temp.transform.GetComponent<Collider>();
+                    collider.enabled = true;
+                    temp.transform.parent = null;
+                }
+                itemObject.transform.parent = weaponSlot.transform;
 
-            item.isEquipped = true;
-            item.transform.position = this.transform.position + new Vector3(0.2f, 1, 0);
-            item.transform.rotation = Quaternion.Euler(Vector3.zero);
+                //item.isEquipped = true;
+                item.transform.position = this.transform.position + new Vector3(0.2f, 1, 0);
+                item.transform.rotation = this.transform.rotation;
 
-            Debug.Log(this.transform.name);
-
+                // Debug.Log(this.transform.name);
+            }
         }
     }
 }
