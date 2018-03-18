@@ -28,7 +28,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4231217127477412
 Transform:
@@ -113,5 +113,6 @@ MonoBehaviour:
   FireRate: 0.4
   reloadTime: 1
   ClipSize: 5
+  isEquipped: 0
   BulletPrefab: {fileID: 114677840877822054, guid: 61d07456a9c2744449eca62c44f73009,
     type: 2}
