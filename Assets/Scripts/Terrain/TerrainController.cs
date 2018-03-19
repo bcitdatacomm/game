@@ -199,7 +199,7 @@ public class TerrainController
     --
     -- DESIGNER: Benny Wang
     --
-    -- PROGRAMMER: Benny Wang 
+    -- PROGRAMMER: Benny Wang
     --
     -- INTERFACE: compressData()
     --
@@ -243,9 +243,9 @@ public class TerrainController
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Roger Zhang 
+    -- DESIGNER: Roger Zhang
     --
-    -- PROGRAMMER: Roger Zhang 
+    -- PROGRAMMER: Roger Zhang
     --
     -- INTERFACE: compressByteArray(byte[] input)
     --              byte[] input: They byte array to compress.
@@ -255,47 +255,37 @@ public class TerrainController
     -- NOTES:
     -- Compress the byteArrayData to a smaller size using system I/O.
     -------------------------------------------------------------------------------------------------*/
-    private byte[] compressByteArray(byte[] input)
+
+    
+    public byte[] compressByteArray(byte[] data)
     {
-        MemoryStream compressedBA = new MemoryStream();
-        DeflateStream cstream = new DeflateStream(compressedBA, CompressionMode.Compress, true);
-        cstream.Write(input, 0, input.Length);
-        cstream.Close();
-        return compressedBA.ToArray();
+        using (var compressedStream = new MemoryStream())
+        using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+        {
+            zipStream.Write(data, 0, data.Length);
+            zipStream.Close();
+            return compressedStream.ToArray();
+        }
     }
 
-    /*-------------------------------------------------------------------------------------------------
-    -- FUNCTION: decompressByteArray()
-    --
-    -- DATE: Feb 28, 2018
-    --
-    -- REVISIONS: N/A
-    --
-    -- DESIGNER: Roger Zhang 
-    --
-    -- PROGRAMMER: Roger Zhang 
-    --
-    -- INTERFACE: decompressByteArray(byte[] compBA)
-    --                          compBA - compressed data passed in
-    --
-    -- RETURNS: byte array of decompressed data
-    --
-    -- NOTES:
-    -- Decompress the byteArray to the normal byteArray size using system I/O.
-    -------------------------------------------------------------------------------------------------*/
-    private byte[] decompressByteArray(byte[] compBA)
+    public byte[] decompressByteArray(byte[] data)
     {
-        MemoryStream decompressedBA = new MemoryStream(compBA);
-        DeflateStream dstream = new DeflateStream(decompressedBA, CompressionMode.Decompress, true);
-        int size = compBA.Length;
-        byte[] decompressedEncoding = new byte[size];
-        for (int i = 0; i < size; i++)
+        int size = data.Length;
+
+        using (var compressedStream = new MemoryStream(data))
+        using (var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
+        using (var resultStream = new MemoryStream())
         {
-            decompressedBA.Write(decompressedEncoding, 0, size);
+            byte[] decompressedEncoding = new byte[size];
+            int bytesRead;
+
+            while ((bytesRead = zipStream.Read(decompressedEncoding, 0, decompressedEncoding.Length)) > 0)
+            {
+                resultStream.Write(decompressedEncoding, 0, bytesRead);
+            }
+            return resultStream.ToArray();
         }
-        dstream.Close();
-        return decompressedBA.ToArray();
-    }
+}
 
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: LoadByteArray()
@@ -304,9 +294,9 @@ public class TerrainController
     --
     -- REVISIONS: N/A
     --
-    -- DESIGNER: Benny Wang 
+    -- DESIGNER: Benny Wang
     --
-    -- PROGRAMMER: Benny Wang 
+    -- PROGRAMMER: Benny Wang
     --
     -- INTERFACE: LoadByteArray(byte[] compressed)
     --                  byte[] compressed: A byte array containt the terrain data.

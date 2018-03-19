@@ -72,11 +72,12 @@ public unsafe class gameServer : MonoBehaviour
         // **MODIFIED** Use a constant buffer size of 8192 bytes now.
         terrainPacket = new byte[MAX_INIT_BUFFER_SIZE];
 
-        terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
-        Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
-        Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
+        //terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
+        //Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
+        Array.Copy(terrainController.CompressedData, 0, terrainPacket, 0, terrainDataLength);
 
         Debug.Log(System.Text.Encoding.UTF8.GetString(terrainPacket));
+        Debug.Log("Terrain header: " + terrainPacket[0] + " :: " + BitConverter.ToInt32(terrainPacket, 1));
 
 
         // TCP initialization and transmission occurs BEFORE UDP!
@@ -84,7 +85,7 @@ public unsafe class gameServer : MonoBehaviour
         serverSockFd = tcpServer.Init(R.Net.PORT);
         connectionEp = new EndPoint();
 
-        
+
         int clientsd = tcpServer.AcceptConnection(ref connectionEp);
         // while (listening && numClients < MAX_NUM_CLIENTS)
         // {
@@ -97,6 +98,7 @@ public unsafe class gameServer : MonoBehaviour
         tcpServer.Send(clientsd, terrainPacket, MAX_INIT_BUFFER_SIZE);
         Debug.Log("Sent.");
 
+        tcpServer.CloseClientSocket(clientsd);
 
         // for (int i = 0; i < numClients; i++)
         // {
