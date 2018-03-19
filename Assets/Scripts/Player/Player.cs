@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public float MovementSpeed;
 
     public Item currentItem;
-    byte[] checkInventory;
+
     Vector3 movement;                   // The vector to store the direction of the player's movement.
     Animator anim;                      // Reference to the animator component.
     Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             // spells[i] = this.transform.GetChild(IDX_PREFAB_PLYR + 1 + i).GetComponent<Spell>();
+            //            spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
             spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
             spells[i].enabled = false; // initially disable spell use
         }
@@ -78,6 +79,8 @@ public class Player : MonoBehaviour
         move();
         turn();
         switch_spell();
+
+
     }
 
     void move()
@@ -106,6 +109,15 @@ public class Player : MonoBehaviour
         {
             transform.GetChild(2).GetComponent<Gun>().Reload();
             sound.PlayOneShot(reload);
+
+            // For Testing Inventory byte array.
+            // byte[] invent;
+            // invent = getInventory();
+
+            // Debug.Log(invent[0]);
+            // Debug.Log(invent[1]);
+            // Debug.Log(invent[2]);
+            // Debug.Log(invent[3]);
         }
     }
 
@@ -156,30 +168,37 @@ public class Player : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (Input.GetKeyDown("e") && ((int) (DateTime.Now - lastPickUp).TotalMilliseconds > 10)) {
+        if (Input.GetKeyDown("e") && ((int)(DateTime.Now - lastPickUp).TotalMilliseconds > 10))
+        {
             lastPickUp = DateTime.Now;
 
             Debug.Log("E type detected");
             Item item = other.GetComponent<Item>();
             GameObject itemObject = other.gameObject;
 
-            GameObject weaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
+            GameObject WeaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
+
+            // TODO: Create GameObjects in Player inventory with Tags for Spells
+            //GameObject SpellSlot1 = GameObject.FindGameObjectWithTag("SpellSlot1");
+            //GameObject SpellSlot2 = GameObject.FindGameObjectWithTag("SpellSlot2");
+            //GameObject SpellSlot3 = GameObject.FindGameObjectWithTag("SpellSlot3");
 
             Debug.Log("Item collided: " + item.name);
-            if (item != null)
+            if (item != null && item.Category == 1) // Add a Weapon
             {
-                Debug.Log("Item picked up: " + item.name);
+                Debug.Log("Weapon picked up: " + item.name);
                 inventory.AddItem(item);
                 string name = item.name;
 
-                if (weaponSlot.transform.childCount > 0) {
-                    var temp = weaponSlot.transform.GetChild(0);
+                if (WeaponSlot.transform.childCount > 0) // Add Weapon GameObject to Player GameObject
+                {
+                    var temp = WeaponSlot.transform.GetChild(0);
                     temp.transform.position = new Vector3(this.transform.position.x, 0, this.transform.position.z);
                     Collider collider = temp.transform.GetComponent<Collider>();
                     collider.enabled = true;
                     temp.transform.parent = null;
                 }
-                itemObject.transform.parent = weaponSlot.transform;
+                itemObject.transform.parent = WeaponSlot.transform;
 
                 //item.isEquipped = true;
                 item.transform.position = this.transform.position + new Vector3(0.2f, 1, 0);
@@ -187,6 +206,20 @@ public class Player : MonoBehaviour
 
                 // Debug.Log(this.transform.name);
             }
+            else if (item != null && item.Category == 2) // Add Spell
+            {
+                Debug.Log("picked up: " + item.name);
+                inventory.AddItem(item);
+                string name = item.name;
+
+                // TODO: Logic to instantiate spell game object required.
+            }
         }
+    }
+
+    byte[] getInventory()
+    {
+        byte[] checkInventory = new byte[5] { inventory.getWeapon(), inventory.getSpell1(), inventory.getSpell2(), inventory.getSpell3(), inventory.getCurrentSpell() };
+        return checkInventory;
     }
 }

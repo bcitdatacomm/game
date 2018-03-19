@@ -76,14 +76,77 @@ public class Inventory : MonoBehaviour
         // }
     }
 
-    //public byte[] InventoryBytes()
-    //{
-    //    byte[] inventory;
-    //    for(IInventoryItem item : mItems)
-    //    {
+    public byte getWeapon()
+    {
+        byte weapon;
+        if (items[0] != null)
+        {
+            weapon = items[0].Type;
+        }
+        else
+        {
+            weapon = (byte)255;
+        }
+        return weapon;
+    }
 
-    //    }
-    //}
+    public byte getSpell1()
+    {
+        byte spell1;
+
+        if (items[1] != null)
+        {
+            spell1 = items[1].Type;
+        } else
+        {
+            spell1 = (byte)255;
+        }
+        return spell1;
+    }
+
+    public byte getSpell2()
+    {
+        byte spell2;
+
+        if (items[2] != null)
+        {
+            spell2 = items[2].Type;
+        }
+        else
+        {
+            spell2 = (byte)255;
+        }
+        return spell2;
+    }
+
+    public byte getSpell3()
+    {
+        byte spell3;
+        if (items[3] != null)
+        {
+            spell3 = items[3].Type;
+        }
+        else
+        {
+            spell3 = (byte)255;
+        }
+        return spell3;
+    }
+
+    public byte getCurrentSpell()
+    {
+        byte currentSpell;
+        if (items[CurrentSpell] != null)
+        {
+            currentSpell = items[CurrentSpell].Type;
+        }
+        else
+        {
+            currentSpell = (byte)255;
+        }
+        return currentSpell;
+    }
+
 }
 
 public class InventoryEventArgs : EventArgs
