@@ -37,13 +37,13 @@ public class Gun : Item
     void FixedUpdate()
     {
         // Only allow Equipped guns to shoot; If this check is gone all guns shoot!
-        if (this.isEquipped)
-        {
+        //if (this.isEquipped)
+        //{
             Shoot();
             ReloadCheck();
             // TODO: Need to move this to HUD
             //this.transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
-        }
+        //}
     }
 
     /*
@@ -80,7 +80,7 @@ public class Gun : Item
             this.nextShotTime = Time.time + this.FireRate;
 
             // Create Bullet at Parent position (player)
-            Bullet firedShot = (Bullet)Object.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
+            Bullet firedShot = (Bullet)GameObject.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
             // Rotate bullet and multiply by parent forward direction
             firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
 
