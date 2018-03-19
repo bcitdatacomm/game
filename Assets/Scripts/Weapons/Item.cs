@@ -11,5 +11,5 @@ public class Item : MonoBehaviour
     public float FireRate;
     public float reloadTime; //reload time in seconds.
     public int ClipSize;
-    public bool isEquipped;    
+    public bool isEquipped;
 }
