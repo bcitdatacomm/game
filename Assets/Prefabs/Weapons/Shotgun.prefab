@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4159242799204034}
   - component: {fileID: 33028746973293334}
   - component: {fileID: 23886612491050790}
-  - component: {fileID: 114767017825345300}
   - component: {fileID: 65840452046828994}
   - component: {fileID: 82442390398108332}
   m_Layer: 0
@@ -177,23 +176,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114767017825345300
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1953733366482368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e58c4fe1460da1e448a9788b256ad44c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Category: 1
-  Type: 3
-  FireRate: 0.3
-  reloadTime: 1
-  ClipSize: 2
-  isEquipped: 0
-  BulletPrefab: {fileID: 114432951417404888, guid: 1bab905ea1f22594896b49bf6591e622,
-    type: 2}
-  weaponSound: {fileID: 0}

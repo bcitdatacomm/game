@@ -78,9 +78,7 @@ public class Player : MonoBehaviour
     {
         move();
         turn();
-        switch_spell();
-
-
+        switchSpell();
     }
 
     void move()
@@ -136,7 +134,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void move(float h, float v)
+    void switchSpell()
     {
         // Spell switching
         int slotCurrentSpell = -1;
@@ -172,7 +170,7 @@ public class Player : MonoBehaviour
         {
             lastPickUp = DateTime.Now;
 
-            Debug.Log("E type detected");
+            Debug.Log("E pressed");
             Item item = other.GetComponent<Item>();
             GameObject itemObject = other.gameObject;
 

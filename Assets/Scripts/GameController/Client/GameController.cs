@@ -58,7 +58,7 @@ public class GameController : MonoBehaviour {
     {
         this.sendPlayerDataToServer();
 
-        if (client.Poll() == Client.SOCKET_NO_DATA)
+        if (client.Poll())
         {
             return;
         }
@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour {
 
     void syncWithServer()
     {
-        if (this.client.Poll() == Client.SOCKET_NO_DATA)
+        if (this.client.Poll())
         {
             return;
         }

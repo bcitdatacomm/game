@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4688727801034172}
   - component: {fileID: 33745058120620060}
   - component: {fileID: 23296229939994328}
-  - component: {fileID: 114435444096014662}
   - component: {fileID: 65436569740054274}
   m_Layer: 0
   m_Name: Knife
@@ -96,23 +95,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.043421417, y: 0.11423478, z: 0.6323415}
   m_Center: {x: 0.0000000018626451, y: 0.000000007450581, z: 0.1993103}
---- !u!114 &114435444096014662
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1390288947979066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e58c4fe1460da1e448a9788b256ad44c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Category: 1
-  Type: 1
-  FireRate: 0.5
-  reloadTime: 0.5
-  ClipSize: 2147483647
-  isEquipped: 0
-  BulletPrefab: {fileID: 114733449328346020, guid: 49bc26419b707a24fa27e3565b20284a,
-    type: 2}
-  weaponSound: {fileID: 0}

@@ -114,9 +114,9 @@ public unsafe class gameServer : MonoBehaviour
         {
             // If poll returns 1 (SOCKET_DATA_WAITING), there is data waiting to be read
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
-            if (server.Poll() == SOCKET_DATA_WAITING)
+            if (server.Poll())
             {
-                numRead = server.Recv(&ep, recvBuffer, MAX_BUFFER_SIZE);
+                numRead = server.Recv(ref ep, recvBuffer, MAX_BUFFER_SIZE);
                 if (numRead <= 0)
                 {
                     Debug.Log("Failed to read from socket.");

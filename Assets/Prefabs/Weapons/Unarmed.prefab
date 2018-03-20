@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4219473887052404}
   - component: {fileID: 65676520416879282}
-  - component: {fileID: 114725585194119344}
   - component: {fileID: 114402680522524070}
   m_Layer: 0
   m_Name: Unarmed
@@ -65,24 +64,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d61dcce6f49b441939f6c2dce11b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Category: 0
   Type: 1
   FireRate: 0
-  Reload: 0
+  reloadTime: 0
   ClipSize: 0
---- !u!114 &114725585194119344
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1046439563314482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e58c4fe1460da1e448a9788b256ad44c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 1
-  FireRate: 0
-  Reload: 0
-  ClipSize: 0
-  BulletPrefab: {fileID: 114733449328346020, guid: 49bc26419b707a24fa27e3565b20284a,
-    type: 2}
+  isEquipped: 0
