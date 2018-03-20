@@ -7,7 +7,15 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.18";
+    public const string SERVER_ADDRESS = "142.232.18.98";
+    public const ushort SERVER_PORT = 42069;
+    public const int PACKET_SIZE = 1200;
+    public const byte INIT_HEADER = 0;
+    public const byte TICK_HEADER = 85;
+    public const byte ACK_HEADER = 170;
+    public const int ID_OFFSET = 373;
+    public const int POSITION_OFFSET = 13;
+    public const int ROTATION_OFFSET = 253;
 
     private byte currentPlayerId;
 
@@ -24,17 +32,17 @@ public class GameController : MonoBehaviour {
         currentPlayerId = 0;
         players = new Dictionary<byte, GameObject>();
 
-        buffer = new byte[R.Net.Size.SERVER_TICK];
+        buffer = new byte[PACKET_SIZE];
         client = new Client();
-        client.Init(SERVER_ADDRESS, R.Net.PORT);
+        client.Init(SERVER_ADDRESS, SERVER_PORT);
 
-        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
-        initPacket[0] = R.Net.Header.NEW_CLIENT;
+        byte[] initPacket = new byte[PACKET_SIZE];
+        initPacket[0] = 69;
 
-        client.Send(initPacket, R.Net.Size.CLIENT_TICK);
+        client.Send(initPacket, PACKET_SIZE);
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (this.currentPlayerId != 0)
         {
@@ -50,12 +58,12 @@ public class GameController : MonoBehaviour {
     {
         this.sendPlayerDataToServer();
 
-        if (!client.Poll())
+        if (client.Poll())
         {
             return;
         }
-        
-        if (client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+
+        if (client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
         {
             return;
         }
@@ -73,40 +81,33 @@ public class GameController : MonoBehaviour {
                 {
                     continue;
                 }
-                else
-                {
-                    this.addPlayer(playerIDs[i], positions[i], rotations[i]);
-                }
+                this.addPlayer(playerIDs[i], positions[i], rotations[i]);
             }
         }
 
         this.movePlayers(playerIDs, positions, rotations);
+
+        // 
     }
 
     void syncWithServer()
     {
-        if (!this.client.Poll())
-        {          
-            return;
-        }
-      
-        if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
+        if (this.client.Poll())
         {
             return;
         }
 
-        if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
+        if (this.client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
         {
             return;
         }
- 
-        this.currentPlayerId = buffer[R.Net.Offset.PLAYER_IDS];
-         
-        float x = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) - 8);
-        float z = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_POSITIONS + (this.currentPlayerId * 8) - 4);
-        float r = BitConverter.ToSingle(buffer, R.Net.Offset.PLAYER_ROTATIONS + (this.currentPlayerId * 4) - 4);
-        
-        this.addPlayer(this.currentPlayerId, new Vector3(x, 0, z), Quaternion.Euler(new Vector3(0, r, 0)));
+
+        if (this.buffer[0] != INIT_HEADER)
+        {
+            return;
+        }
+        this.currentPlayerId = buffer[ID_OFFSET];
+        this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
     }
 
     List<byte> getPlayerIDs(byte[] data)
@@ -114,7 +115,7 @@ public class GameController : MonoBehaviour {
         List<byte> playerIDs = new List<byte>();
         for (int i = 0; i < 30; i++)
         {
-            byte id = data[R.Net.Offset.PLAYER_IDS + i];
+            byte id = data[ID_OFFSET + i];
 
             if (id == 0)
             {
@@ -131,8 +132,8 @@ public class GameController : MonoBehaviour {
         List<Vector3> positions = new List<Vector3>();
         for (int i = 0; i < 30; i++)
         {
-            float x = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_POSITIONS + (i * 8));
-            float z = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_POSITIONS + (i * 8) + 4);
+            float x = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8));
+            float z = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8) + 4);
             Vector3 position = new Vector3(x, 0, z);
             positions.Add(position);
         }
@@ -144,7 +145,7 @@ public class GameController : MonoBehaviour {
         List<Quaternion> rotations = new List<Quaternion>();
         for (int i = 0; i < 30; i++)
         {
-            float pheta = BitConverter.ToSingle(data, R.Net.Offset.PLAYER_ROTATIONS + (i * 4));
+            float pheta = BitConverter.ToSingle(data, ROTATION_OFFSET + (i * 4));
             Quaternion rotation = Quaternion.Euler(new Vector3(0, pheta, 0));
             rotations.Add(rotation);
         }
@@ -167,19 +168,14 @@ public class GameController : MonoBehaviour {
         this.players.Add(id, player);
     }
 
-    void movePlayers(List<byte> playerIDs, List<Vector3> positions, List<Quaternion> rotations)
+    void movePlayers(List<byte> playerIds, List<Vector3> positions, List<Quaternion> rotations)
     {
         try
         {
-            for (int i = 0; i < playerIDs.Count; i++)
+            for (int i = 0; i < playerIds.Count; i++)
             {
-                if (playerIDs[i] == this.currentPlayerId)
-                {
-                    continue;
-                }
-                Debug.Log("Applying position : " + positions[i] + " and rotation : " + rotations[i] + " to id : " + playerIDs[i]);
-                this.players[playerIDs[i]].transform.position = positions[i];
-                this.players[playerIDs[i]].transform.rotation = rotations[i];
+                this.players[playerIds[i]].transform.position = positions[i];
+                this.players[playerIds[i]].transform.rotation = rotations[i];
             }
         }
         catch (Exception e)
@@ -195,21 +191,18 @@ public class GameController : MonoBehaviour {
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
-        byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
 
         // Put position data into the packet
-        packet[0] = R.Net.Header.TICK;
-        packet[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, packet, index,  4);
+        this.buffer[0] = TICK_HEADER;
+        this.buffer[1] = this.currentPlayerId;
+        Array.Copy(x    , 0, this.buffer, index,  4);
         index += 4;
-        Array.Copy(z    , 0, packet, index,  4);
+        Array.Copy(z    , 0, this.buffer, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, packet, index, 4);
+        Array.Copy(pheta, 0, this.buffer, index, 4);
         index += 4;
 
-        /*
-        // The reference to the stack of fired bullets does not work
-
+        // Let the server know that a shot has been fired
         Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
 
         while (playerBullets.Count > 0)
@@ -217,13 +210,12 @@ public class GameController : MonoBehaviour {
             Bullet bullet = playerBullets.Pop();
             byte[] bulletID = BitConverter.GetBytes(bullet.ID);
 
-            Array.Copy(bulletID, 0, packet, index, 4);
+            Array.Copy(bulletID, 0, this.buffer, index, 4);
             index += 4;
 
-            packet[index] = bullet.Type;
+            this.buffer[index] = bullet.Type;
         }
-        */
 
-        this.client.Send(packet, R.Net.Size.CLIENT_TICK);
+        this.client.Send(this.buffer, PACKET_SIZE);
     }
 }
