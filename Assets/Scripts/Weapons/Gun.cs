@@ -35,7 +35,7 @@ public class Gun : Item
 
     void FixedUpdate()
     {
-        // Only allow Equipped guns to shoot; If this check is gone all guns shoot!
+        // Only allow Equipped guns to shoot; If this check is gone all guns shoot! Logic fix required...
         //if (this.isEquipped)
         //{
             Shoot();
