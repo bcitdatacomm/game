@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
@@ -43,7 +44,8 @@ public class TerrainController
         GROUND,
         CACTUS,
         BUSH,
-        BUILDINGS
+        BUILDINGS,
+        HOTSPOTS
     };
 
     /*
@@ -92,6 +94,8 @@ public class TerrainController
     public const string DEFAULT_NAME = "Terrain";
 
     public const float DEFAULT_BUILDING_PERC = 0.9999f;
+
+    List<WeaponSpell> gunsList = new List<WeaponSpell>();
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: TerrainController()
     --
@@ -140,7 +144,7 @@ public class TerrainController
     -- Generates an encoded 2D array with given width and height.
     -- Populates the map array with tile types based on given coefficients.
     -------------------------------------------------------------------------------------------------*/
-    public bool GenerateEncoding()
+    public bool GenerateEncoding()//(List<Vector2> Hotspots)
     {
         byte[,] map = new byte[this.Width, this.Length];
 
@@ -158,7 +162,7 @@ public class TerrainController
                     // Changed by Alam
 
                     // Changed back to just being 0.0 to 1.0
-                    float randomValue = Random.value;
+                    float randomValue = UnityEngine.Random.value;
 
                     // Changed the comparison signs around
                     if (randomValue > DEFAULT_BUILDING_PERC)
@@ -256,8 +260,8 @@ public class TerrainController
     -- Compress the byteArrayData to a smaller size using system I/O.
     -------------------------------------------------------------------------------------------------*/
 
-    
-    public byte[] compressByteArray(byte[] data)
+
+    public static byte[] compressByteArray(byte[] data)
     {
         using (var compressedStream = new MemoryStream())
         using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))
@@ -268,7 +272,26 @@ public class TerrainController
         }
     }
 
-    public byte[] decompressByteArray(byte[] data)
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: decompressByteArray()
+    --
+    -- DATE: Feb 28, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Roger Zhang
+    --
+    -- PROGRAMMER: Roger Zhang
+    --
+    -- INTERFACE: decompressByteArray(byte[] output)
+    --              byte[] output: They byte array to decompress.
+    --
+    -- RETURNS: byte array of decompressed data
+    --
+    -- NOTES:
+    -- Compress the byteArrayData to a smaller size using system I/O.
+    -------------------------------------------------------------------------------------------------*/
+    public static byte[] decompressByteArray(byte[] data)
     {
         int size = data.Length;
 
@@ -285,7 +308,7 @@ public class TerrainController
             }
             return resultStream.ToArray();
         }
-}
+    }
 
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: LoadByteArray()
@@ -330,6 +353,145 @@ public class TerrainController
         }
 
         this.Data = new Encoding() { tiles = map };
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: LoadGuns(byte[] guns)
+    --
+    -- DATE: March 21, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Alfred Swinton & Roger Zhang
+    --
+    -- PROGRAMMER: Alfred Swinton & Roger Zhang
+    --
+    -- INTERFACE: LoadGuns(byte[] guns)
+    --                  byte[] guns: A byte array contains the gun data.
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Takes in a byte array representation of the guns data that was send over by the server and
+    -- loads it.
+    -------------------------------------------------------------------------------------------------*/
+    public void LoadGuns(byte[] compressedGuns)
+    {
+        //decompress the guns bytearray
+        byte[] guns = decompressByteArray(compressedGuns);
+
+        float offsetX = this.Width / 2;
+        float offsetZ = this.Length / 2;
+        int size = guns.Length / 13;
+        int count = 0;
+        byte[] tempw = new byte[13];
+        gunsList.Clear();
+
+        for (int i = 0; i < size; i++)
+        {
+            Buffer.BlockCopy(guns, count, tempw, 0, 13);
+            WeaponSpell tempwpn = GetWeaponFromBytes(tempw);
+            gunsList.Add(tempwpn);
+            count += 13;
+        }
+
+        GameObject gun1 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
+        GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
+        GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
+        GameObject gun4 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Shotgun.prefab", typeof(GameObject));
+        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Axe.prefab", typeof(GameObject));
+        GameObject gun6 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
+        GameObject gun7 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
+        GameObject gun8 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
+        GameObject gun9 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Shotgun.prefab", typeof(GameObject));
+        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Axe.prefab", typeof(GameObject));
+        GameObject gun11 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
+        GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
+        GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
+
+        foreach (var w in gunsList)
+        {
+            switch (w.Type)
+            {
+                case 1:
+                    GameObject Ob1 = (GameObject)UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 2:
+                    GameObject Ob2 = (GameObject)UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 3:
+                    GameObject Ob3 = (GameObject)UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 4:
+                    GameObject Ob4 = (GameObject)UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 5:
+                    GameObject Ob5 = (GameObject)UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 6:
+                    GameObject Ob6 = (GameObject)UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 7:
+                    GameObject Ob7 = (GameObject)UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 8:
+                    GameObject Ob8 = (GameObject)UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 9:
+                    GameObject Ob9 = (GameObject)UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 10:
+                    GameObject Ob10 = (GameObject)UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 11:
+                    GameObject Ob11 = (GameObject)UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 12:
+                    GameObject Ob12 = (GameObject)UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                case 13:
+                    GameObject Ob13 = (GameObject)UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    //Alfred
+    //Modified by Roger
+    public WeaponSpell GetWeaponFromBytes(byte[] weaponinbytes)
+    {
+        WeaponSpell Weapon = new WeaponSpell();
+
+        Weapon.Type = weaponinbytes[0];
+
+        byte[] ID = new byte[4];
+        Weapon.ID = BitConverter.ToInt32(weaponinbytes, 1);
+
+        byte[] X = new byte[4];
+        Weapon.X = BitConverter.ToInt32(weaponinbytes, 5);
+
+        byte[] Z = new byte[4];
+        Weapon.Z = BitConverter.ToInt32(weaponinbytes, 9);
+
+        return Weapon;
+    }
+
+    //Alfred
+    //Modified by Roger
+    public class WeaponSpell
+    {
+        public static int inc = 0;
+        public int X { get; set; }
+        public int Z { get; set; }
+        public int ID { get; set; }
+        public byte Type { get; set; }
+
+        // Empty Constructor
+        public WeaponSpell()
+        {
+        }
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -389,7 +551,7 @@ public class TerrainController
         int RandomRotationPerc = 0;
 
         // Spawning the town at the center with collider 300X300
-        GameObject TownObject = (GameObject)Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
+        GameObject TownObject = (GameObject)UnityEngine.Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
         {
@@ -402,7 +564,7 @@ public class TerrainController
                     {
                         if ((i - offsetX + rockColliderX / 2) < Width / 2 && (j - offsetZ + rockColliderZ / 2) < Length / 2 && (i - offsetX - rockColliderX / 2) > -Width / 2 && (j - offsetZ - rockColliderZ / 2) > -Length / 2)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(rockPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
+                            GameObject newObject = (GameObject)UnityEngine.Object.Instantiate(rockPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
                             for (long ii = i - (long)offsetX - (long)rockColliderX / 2 - 1; ii <= i - (long)offsetX + (long)rockColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)offsetZ - (long)rockColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)rockColliderZ / 2 + 1; jj++)
@@ -423,7 +585,7 @@ public class TerrainController
                     {
                         if ((i - offsetX + cactusColliderX / 2) < Width / 2 && (j - offsetZ + cactusColliderZ / 2) < Length / 2 && (i - offsetX - cactusColliderX / 2) > -Width / 2 && (j - offsetZ - cactusColliderZ / 2) > -Length / 2)
                         {
-                            GameObject newObject = (GameObject)Object.Instantiate(cactusPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
+                            GameObject newObject = (GameObject)UnityEngine.Object.Instantiate(cactusPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.identity);
                             for (long ii = i - (long)offsetX - (long)cactusColliderX / 2 - 1; ii <= i - (long)offsetX + (long)cactusColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)offsetZ - (long)cactusColliderZ / 2 - 1; jj <= j - offsetZ + (long)cactusColliderZ / 2 + 1; jj++)
@@ -445,8 +607,8 @@ public class TerrainController
                         {
                             RandomRotationPerc = i % 4 * 90 + 90;
                             // Spawning buildings with a random rotation
-                            // !!!!!!REMEMBER TO CHANGE THE PREFAB OBJECT YOU MUST CHANGE THE BOX COLLIDER TO BE THE SAME FOR X AND Z
-                            GameObject newObject = (GameObject)Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.Euler(0, RandomRotationPerc, 0));
+                            // !!!!!!REMEMBER TO CHANGE THE PREFAB OBJECT YOU MUST CHANGE THE BOX COLLIDER TO BE THE SAME FOR X AND Z otherwise they might overlap after rotation
+                            GameObject newObject = (GameObject)UnityEngine.Object.Instantiate(buildingPrefab, new Vector3(i - offsetX, 0, j - offsetZ), Quaternion.Euler(0, RandomRotationPerc, 0));
                             for (long ii = i - (long)offsetX - (long)buildingColliderX / 2 - 1; ii <= i - (long)offsetX + (long)buildingColliderX / 2 + 1; ii++)
                             {
                                 for (long jj = j - (long)offsetZ - (long)buildingColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)buildingColliderZ / 2 + 1; jj++)
@@ -467,7 +629,7 @@ public class TerrainController
         newSplatPrototypes[0] = new SplatPrototype();
 
         // Grab the texture and set it
-        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/GrassyRocks.jpg", typeof(Texture2D));
+        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/Ground/Ground_Path.png", typeof(Texture2D));
 
         // Assign the new splat prototype array to tData
         tData.splatPrototypes = newSplatPrototypes;
