@@ -8,7 +8,7 @@ using InitGuns;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.12";
+    public const string SERVER_ADDRESS = "192.168.0.2";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour {
             int numRecvMap;
             int numRecvItem;
 
-            Debug.Log("entering receive thread");
+            Debug.Log("Successfully connected:" + result);
 
             numRecvMap = tcpClient.Recv(mapBuffer, MAX_INIT_BUFFER_SIZE);
             if (numRecvMap <= 0)
@@ -66,14 +66,14 @@ public class GameController : MonoBehaviour {
                 Debug.Log("This shouldn't happen.");
             }
             Debug.Log("Received: " + numRecvMap);
-
-            numRecvItem = tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
-            if (numRecvItem <= 0)
-            {
-                Debug.Log(System.Text.Encoding.Default.GetString(itemBuffer));
-                Debug.Log("This REALLY shouldn't happen.");
-            }
-            Debug.Log("Received: " + numRecvItem);
+            //
+            // numRecvItem = tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
+            // if (numRecvItem <= 0)
+            // {
+            //     Debug.Log(System.Text.Encoding.Default.GetString(itemBuffer));
+            //     Debug.Log("This REALLY shouldn't happen.");
+            // }
+            // Debug.Log("Received: " + numRecvItem);
 
             // We have to close the client TCP socket at some point. Move this code as needed.
             // recvThread.Join();
@@ -85,6 +85,7 @@ public class GameController : MonoBehaviour {
 
         }
 
+        initializeGame();
 
         currentPlayerId = 0;
         players = new Dictionary<byte, GameObject>();
@@ -161,12 +162,12 @@ public class GameController : MonoBehaviour {
 
         // Get the data for terrain
         TerrainController tc = new TerrainController();
-        tc.LoadByteArray(terrainData);
+        tc.LoadByteArray(mapBuffer);
         tc.Instantiate();
 
         // Get the data from the itemData packet
-        InitRandomGuns items = new InitRandomGuns();
-        items.fromByteArrayToList(itemData);
+        // InitRandomGuns items = new InitRandomGuns();
+        // items.fromByteArrayToList(itemData);
         // items.SpawnedGuns is a list that has been populated with weaponspell object
         // which has ID, Type, Xcoord, and Zcoord
         // code needs to be created in unison with asset team to put items on the map
