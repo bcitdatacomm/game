@@ -126,7 +126,7 @@ public unsafe class gameServer : MonoBehaviour
         // -after terrain data has been generated
         // -after you have total number of players/endpoints
         // -before itemData is sent via TCP
-        getitems = new InitRandomGuns(endpoints.Count, terrainController.occupiedPositions);
+        getitems = new InitRandomGuns(endpoints.Count);
         //itemData = getitems.pcktarray;
 
 

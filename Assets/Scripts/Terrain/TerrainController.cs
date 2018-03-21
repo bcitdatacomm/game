@@ -353,6 +353,7 @@ public class TerrainController
         }
 
         this.Data = new Encoding() { tiles = map };
+        Instantiate();
     }
 
     /*-------------------------------------------------------------------------------------------------

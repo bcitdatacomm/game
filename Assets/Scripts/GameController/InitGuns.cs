@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 
 namespace InitGuns
@@ -31,6 +33,7 @@ namespace InitGuns
 
         // An array of bytes to be initialized
         public byte[] pcktarray;
+        public byte[] compressedpcktarray;
 
         // Constructor that creates an InitRandomGuns Object
 
@@ -175,6 +178,19 @@ namespace InitGuns
                 Buffer.BlockCopy(warray, 0, pcktarray, offset, 13);
                 offset += 13;
             }
+            compressedpcktarray = compressByteArray(pcktarray);
+        }
+
+        // Roger
+        public static byte[] compressByteArray(byte[] data)
+        {
+            using (var compressedStream = new MemoryStream())
+            using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+            {
+                zipStream.Write(data, 0, data.Length);
+                zipStream.Close();
+                return compressedStream.ToArray();
+            }
         }
 
         public class WeaponSpell
@@ -307,7 +323,6 @@ namespace InitGuns
         public static bool OccupiedCheck(WeaponSpell genC, List<WeaponSpell> Occupied)
         {
             //TODO if coordinates occupied in terrain check return false
-            float OffsetX
             return Occupied.Contains(genC);
         }
 
@@ -354,7 +369,7 @@ namespace InitGuns
         // Generates a number of guns depending on the number of players
         public static int numberOfWeapons(int players)
         {
-            return players * 4 * 2;
+            return players * 2;
         }
 
 

@@ -10,10 +10,10 @@ public class TerrainControllerTestScript : MonoBehaviour
     // Use this for initialization of the Terrain Object, and for testing function calls
     void Start()
     {
-        InitRandomGuns ic = new InitRandomGuns(30, null);
+        InitRandomGuns ic = new InitRandomGuns(30);
 
         TerrainController tc = new TerrainController();
-        tc.LoadGuns(ic.pcktarray);
+        tc.LoadGuns(ic.compressedpcktarray);
         tc.GenerateEncoding();
         tc.Instantiate();
     }
