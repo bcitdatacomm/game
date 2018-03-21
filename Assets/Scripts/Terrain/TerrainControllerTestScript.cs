@@ -13,7 +13,6 @@ public class TerrainControllerTestScript : MonoBehaviour
         InitRandomGuns ic = new InitRandomGuns(30, null);
 
         TerrainController tc = new TerrainController();
-        InitRandomGuns icClient = new InitRandomGuns();
         tc.LoadGuns(ic.pcktarray);
         tc.GenerateEncoding();
         tc.Instantiate();

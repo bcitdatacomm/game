@@ -44,7 +44,8 @@ public class TerrainController
         GROUND,
         CACTUS,
         BUSH,
-        BUILDINGS
+        BUILDINGS,
+        HOTSPOTS
     };
 
     /*
@@ -143,7 +144,7 @@ public class TerrainController
     -- Generates an encoded 2D array with given width and height.
     -- Populates the map array with tile types based on given coefficients.
     -------------------------------------------------------------------------------------------------*/
-    public bool GenerateEncoding()
+    public bool GenerateEncoding()//(List<Vector2> Hotspots)
     {
         byte[,] map = new byte[this.Width, this.Length];
 
@@ -260,7 +261,7 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
 
 
-    public byte[] compressByteArray(byte[] data)
+    public static byte[] compressByteArray(byte[] data)
     {
         using (var compressedStream = new MemoryStream())
         using (var zipStream = new GZipStream(compressedStream, CompressionMode.Compress))
@@ -290,7 +291,7 @@ public class TerrainController
     -- NOTES:
     -- Compress the byteArrayData to a smaller size using system I/O.
     -------------------------------------------------------------------------------------------------*/
-    public byte[] decompressByteArray(byte[] data)
+    public static byte[] decompressByteArray(byte[] data)
     {
         int size = data.Length;
 
@@ -374,8 +375,11 @@ public class TerrainController
     -- Takes in a byte array representation of the guns data that was send over by the server and
     -- loads it.
     -------------------------------------------------------------------------------------------------*/
-    public void LoadGuns(byte[] guns)
+    public void LoadGuns(byte[] compressedGuns)
     {
+        //decompress the guns bytearray
+        byte[] guns = decompressByteArray(compressedGuns);
+
         float offsetX = this.Width / 2;
         float offsetZ = this.Length / 2;
         int size = guns.Length / 13;
