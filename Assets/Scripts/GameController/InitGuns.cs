@@ -7,8 +7,18 @@ namespace InitGuns
     class InitRandomGuns
     {
         static int clustering = 50;
-        static int towncluster = 150;
+        //static int towncluster = 150;
         static System.Random rand = new System.Random();
+
+        // Offsets for town coordinates
+        static int HEIGHT = 500;
+        static int WIDTH = 500;
+
+        // Area around items to prevent spawning on top or near
+        static int BOXSIZE = 12;
+
+        // Valid Coordinates in town
+        List<WeaponSpell> TownCoords = new List<WeaponSpell>();
 
         // Spaces Occupied By other Objects
         List<WeaponSpell> OccupiedSpaces = new List<WeaponSpell>();
@@ -29,23 +39,39 @@ namespace InitGuns
         {
         }
 
-        public InitRandomGuns(int NoPlayers, List<Vector2> OccupiedCoordinates)
+        public InitRandomGuns(int NoPlayers)
         {
-            // Add each of the Occupied Coordinates to the local OccupiedSpaces List
-            if (OccupiedCoordinates != null)
-            {
-                // foreach (var w in OccupiedCoordinates)
-                // {
-                //     OccupiedSpaces.Add(WeaponSpell((int) w.X,(int) w.Y));
-                // }
-            }
-
+        
             // Add some dummy hotspots NOTE MUST BE AT LEAST clustering AWAY FROM EDGE IN EACH DIRECTION
             HotSpots.Add(new WeaponSpell(250, 250));
             HotSpots.Add(new WeaponSpell(800, 550));
             HotSpots.Add(new WeaponSpell(750, 750));
             HotSpots.Add(new WeaponSpell(900, 100));
             HotSpots.Add(new WeaponSpell(200, 900));
+
+            //Add Set Coordinates for spawn generation in town. 
+            TownCoords.Add(new WeaponSpell(-161 + WIDTH, 57 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-41 + WIDTH, 88 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(11 + WIDTH, 120 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(41 + WIDTH, 32 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-21 + WIDTH, -3 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(23 + WIDTH, -65 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(72 + WIDTH, -85 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(132 + WIDTH, 45 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(10 + WIDTH, 75 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(18 + WIDTH, 22 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-157 + WIDTH, 107 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-12 + WIDTH, 109 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(9 + WIDTH, 64 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-161 + WIDTH, 57 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-139 + WIDTH, -22 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(30 + WIDTH, -14 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-160 + WIDTH, -88 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(133 + WIDTH, -87 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(134 + WIDTH, 120 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(2 + WIDTH, -15 + HEIGHT));
+            TownCoords.Add(new WeaponSpell(-144 + WIDTH, 70 + HEIGHT));
+
 
             WeaponSpell Weapon;
             int counter = 0;
@@ -56,9 +82,9 @@ namespace InitGuns
             {
                 if (counter < numberOfWeapons(NoPlayers) / 4)
                 {
-                    Weapon = new WeaponSpell(rand.Next(500 - towncluster, 501 + towncluster),
-                                             rand.Next(500 - towncluster, 501 + towncluster), true);
-
+                    int getT = rand.Next(TownCoords.Count);
+                    Weapon = new WeaponSpell(TownCoords[getT].X, TownCoords[getT].Z, true);
+                    TownCoords.RemoveAt(getT);
                 }
                 else
                 {
@@ -85,7 +111,15 @@ namespace InitGuns
                 {
                     counter++;
                     SpawnedGuns.Add(Weapon);
-                    OccupiedSpaces.Add(Weapon);
+
+                    // Add a 12x12 box of around the spawned point to prevent weapons spawning inside/near
+                    for (int i = Weapon.X - BOXSIZE; i < Weapon.X + BOXSIZE; i++)
+                    {
+                        for (int j = Weapon.Z - BOXSIZE; j < Weapon.Z + BOXSIZE; j++)
+                        {
+                            OccupiedSpaces.Add(new WeaponSpell(i, j));
+                        }
+                    }
                 }
             }
 
@@ -273,6 +307,7 @@ namespace InitGuns
         public static bool OccupiedCheck(WeaponSpell genC, List<WeaponSpell> Occupied)
         {
             //TODO if coordinates occupied in terrain check return false
+            float OffsetX
             return Occupied.Contains(genC);
         }
 
