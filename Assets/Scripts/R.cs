@@ -11,6 +11,7 @@
         {
             public const byte INIT_PLAYER = 0;
             public const byte NEW_CLIENT = 69;
+            public const byte TICK = 85;
         }
 
         // Contains constants associated with the packet offset or distance into the packet
@@ -61,6 +62,7 @@
             // Packet sizes
             public const int SERVER_TICK = 918;
             public const int CLIENT_TICK = 24;
+            public const int PLAYER_DATA = 14;
         }
 
     }
