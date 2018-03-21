@@ -60,7 +60,7 @@
         public static class Size
         {
             // Packet sizes
-            public const int SERVER_TICK = 918;
+            public const int SERVER_TICK = 865;
             public const int CLIENT_TICK = 24;
             public const int PLAYER_DATA = 14;
         }

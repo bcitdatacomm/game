@@ -21,14 +21,13 @@ public unsafe class gameServer : MonoBehaviour
     private static Int32 SOCKET_NODATA = 0;
     private static Int32 SOCKET_DATA_WAITING = 1;
     private static ushort PORT_NO = 9999;
-    private static int MAX_BUFFER_SIZE = 1200;
     private static Server server;
     private static IntPtr serverInstance;
     private static bool running;
     private static Thread recvThread;
 
     private TerrainController terrainController;
-    private static byte[] clientData = new byte[MAX_BUFFER_SIZE];
+    private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
 
     private static List<connection> endpoints;
@@ -81,21 +80,13 @@ public unsafe class gameServer : MonoBehaviour
             ticks++;
             nextTickTime += tickTime;
 
-            int offset = 373;
-
             mutex.WaitOne();
-            clientData[0] = 85;
-
-            foreach (connection conn in endpoints)
-            {
-                clientData[offset] = conn.connID;
-                offset++;
-            }
+            clientData[0] = R.Net.Header.TICK;
 
             // Send the packet to each client
             foreach (connection conn in endpoints)
             {
-                server.Send(conn.end, clientData, MAX_BUFFER_SIZE);
+                server.Send(conn.end, clientData, R.Net.Size.SERVER_TICK);
             }
             mutex.ReleaseMutex();
 
@@ -104,7 +95,7 @@ public unsafe class gameServer : MonoBehaviour
 
     public static void recvThrdFunc()
     {
-        byte[] recvBuffer = new byte[MAX_BUFFER_SIZE];
+        byte[] recvBuffer = new byte[R.Net.Size.CLIENT_TICK];
         Int32 numRead;
         EndPoint ep = new EndPoint();
         bool newConn = true;
@@ -116,7 +107,7 @@ public unsafe class gameServer : MonoBehaviour
             // If poll returns 0 (SOCKET_NODATA), there is no data waiting to be read
             if (server.Poll())
             {
-                numRead = server.Recv(ref ep, recvBuffer, MAX_BUFFER_SIZE);
+                numRead = server.Recv(ref ep, recvBuffer, R.Net.Size.CLIENT_TICK);
                 if (numRead <= 0)
                 {
                     Debug.Log("Failed to read from socket.");
@@ -133,7 +124,7 @@ public unsafe class gameServer : MonoBehaviour
                             && ep.addr.Byte2 == conn.end.addr.Byte2 && ep.addr.Byte3 == conn.end.addr.Byte3)
                         {
                             recvConn = conn;
-                            if (recvBuffer[0].Equals(85))
+                            if (recvBuffer[0].Equals(R.Net.Header.TICK))
                             {
                                 UpdateCoord(recvConn.connID, recvBuffer);
                             }
@@ -172,13 +163,30 @@ public unsafe class gameServer : MonoBehaviour
     //Creates a new player's information
     private static void SendInitData(byte pID, EndPoint ep)
     {
-        mutex.WaitOne();
         clientData[0] = 0;
-        clientData[373] = pID;
+        byte[] newPlayer = new byte[R.Net.Size.SERVER_TICK];
+
         float playerx = 0 + playerID;
         float playerz = 0 + playerID;
         float rotation = 0;
-        int offset = 13 + (playerID * 12);
+
+        // Creates the player init packet
+        newPlayer[0] = R.Net.Header.INIT_PLAYER;
+        newPlayer[1] = pID;
+        server.Send(ep, newPlayer, R.Net.Size.SERVER_TICK);
+
+        mutex.WaitOne();
+
+        // Find the offset to add the player to clientdata
+        int offset = R.Net.Offset.PLAYERS;
+        while (clientData[offset] != 0)
+        {
+            offset += R.Net.Size.PLAYER_DATA;
+        }
+
+        // Sets the player ID
+        clientData[offset] = pID;
+        offset++;
 
         // sets the coordinates for each player connected
         Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, clientData, offset, 4);
@@ -190,35 +198,38 @@ public unsafe class gameServer : MonoBehaviour
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
         offset += 4;
 
-        server.Send(ep, clientData, MAX_BUFFER_SIZE);
         mutex.ReleaseMutex();
     }
 
     // Takes the recieved coords and updates client data
     private static void UpdateCoord(byte pID, byte[] recvConn)
     {
-        int offset = 13 + (pID * 12);
-
+        int offset = R.Net.Offset.X;
         float playerX = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
 
+        offset = R.Net.Offset.Z;
         float playerZ = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
 
+        offset = R.Net.Offset.R;
         float rotation = BitConverter.ToSingle(recvConn, offset);
-        offset += 4;
 
-        offset = 13 + (pID * 12);
+        offset = R.Net.Offset.PLAYERS;
+        // Find the existing player in the array
+        while (clientData[offset] != pID)
+        {
+            offset += R.Net.Size.PLAYER_DATA;
+        }
 
         mutex.WaitOne();
+
+        offset += R.Net.Offset.Player.X;
         Buffer.BlockCopy(BitConverter.GetBytes(playerX), 0, clientData, offset, 4);
-        offset += 4;
 
+        offset += 4;
         Buffer.BlockCopy(BitConverter.GetBytes(playerZ), 0, clientData, offset, 4);
-        offset += 4;
 
+        offset += 4;
         Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, clientData, offset, 4);
         mutex.ReleaseMutex();
-        offset += 4;
     }
 }
