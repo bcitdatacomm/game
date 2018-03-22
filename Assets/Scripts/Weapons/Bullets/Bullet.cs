@@ -26,7 +26,6 @@ public class Bullet : MonoBehaviour
     {
         // Generate Identification, Direction and Timer to destroy bullet object
         this.ID = GetInstanceID();
-        Debug.Log("Bullet: Bullet ID Shot: " + this.ID);
         this.direction = this.direction.normalized;
         initPos = this.transform.position;
         Destroy(this.gameObject, LifeTime);
