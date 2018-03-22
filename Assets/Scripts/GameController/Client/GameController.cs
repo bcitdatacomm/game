@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour {
         client.Send(initPacket, PACKET_SIZE);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (this.currentPlayerId != 0)
         {
@@ -59,12 +59,12 @@ public class GameController : MonoBehaviour {
     {
         this.sendPlayerDataToServer();
 
-        if (client.Poll())
+        if (!this.client.Poll())
         {
             return;
         }
 
-        if (client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
+        if (this.client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
         {
             return;
         }
@@ -177,6 +177,10 @@ public class GameController : MonoBehaviour {
         {
             for (int i = 0; i < playerIds.Count; i++)
             {
+                if (playerIds[i] == this.currentPlayerId)
+                {
+                    continue;
+                }
                 this.players[playerIds[i]].transform.position = positions[i];
                 this.players[playerIds[i]].transform.rotation = rotations[i];
             }
