@@ -79,9 +79,10 @@ public unsafe class gameServer : MonoBehaviour
         {
             ticks++;
             nextTickTime += tickTime;
+            byte header = ((byte)(129 + playerID));
 
             mutex.WaitOne();
-            clientData[0] = R.Net.Header.TICK;
+            clientData[0] = header;
 
             // Send the packet to each client
             foreach (connection conn in endpoints)
