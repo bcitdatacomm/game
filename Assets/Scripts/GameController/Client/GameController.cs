@@ -203,7 +203,7 @@ public class GameController : MonoBehaviour {
         index += 4;
 
         // Let the server know that a shot has been fired
-        Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
+        Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Player>().FiredShots;
 
         while (playerBullets.Count > 0)
         {

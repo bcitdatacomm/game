@@ -7,39 +7,44 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Defined in Prefab
     public int Health;
-
     public int Armor;
-
     public float MovementSpeed;
-
-    public Item currentItem;
-
-    Vector3 movement;                   // The vector to store the direction of the player's movement.
-    Animator anim;                      // Reference to the animator component.
-    Rigidbody playerRigidbody;          // Reference to the player's rigidbody.
     AudioSource sound;
     public AudioClip reload;
-    int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer
-    float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-    public Vector3 net;
-    private Inventory inventory;
-    private Spell[] spells;             // Spell list
-    DateTime lastPickUp;
+    // A layer mask so that a ray can be cast just at gameobjects on the floor layer
+    int floorMask;
 
-    // TODO ADD CURRENT GUN
+    // The vector to store the direction of the player's movement.
+    Vector3 movement;
+    // Reference to the animator component.
+    Animator anim;
+    // Reference to the player's rigidbody.
+    Rigidbody playerRigidbody;
+    public Vector3 net;
+
+    // For Item Logic
+    private Inventory inventory;
+    public Item currentItem;
+    // Spell list
+    private Spell[] spells;
+    DateTime lastPickUp;
     public Gun currentGun;
 
-    private bool pressed;
+    // Keep Track of Bullets
+    public Stack<Bullet> FiredShots;
+    public Dictionary<int, Bullet> TrackedShots;
 
     void Start()
     {
         Debug.Log("Player start");
         this.Health = 100;
         this.Armor = 0;
+        this.FiredShots = new Stack<Bullet>();
+        this.TrackedShots = new Dictionary<int, Bullet>();
         net = Vector3.zero;
-        MovementSpeed = .1f;
-        pressed = false;
+
 
         sound = GetComponent<AudioSource>();
         sound.Play();
@@ -107,7 +112,9 @@ public class Player : MonoBehaviour
         {
             transform.GetChild(2).GetComponent<Gun>().Reload();
             sound.PlayOneShot(reload);
-
+        }
+        if (Input.GetKey("t")) // Log Print tester
+        {
             // For Testing Inventory byte array.
             // byte[] invent;
             // invent = getInventory();
@@ -116,6 +123,11 @@ public class Player : MonoBehaviour
             // Debug.Log(invent[1]);
             // Debug.Log(invent[2]);
             // Debug.Log(invent[3]);
+
+            // For Testing Bullets
+            // Bullet stackBullet = this.FiredShots.Peek();
+            // Debug.Log("Player: Bullet Stack Stored: " + stackBullet.ID);
+            // Debug.Log("Player: BULLET DICTIONARY: " + this.TrackedShots.ContainsKey(stackBullet.ID));
         }
     }
 
@@ -217,7 +229,7 @@ public class Player : MonoBehaviour
 
     byte[] getInventory()
     {
-        byte[] checkInventory = new byte[5] { inventory.getWeapon(), inventory.getSpell1(), inventory.getSpell2(), inventory.getSpell3(), inventory.getCurrentSpell() };
+        byte[] checkInventory = new byte[5] { inventory.getWeapon(), inventory.getSpell(1), inventory.getSpell(2), inventory.getSpell(3), inventory.getCurrentSpell() };
         return checkInventory;
     }
 }

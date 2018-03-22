@@ -6,8 +6,6 @@ public class Gun : Item
 {
     // Link Via unity
     public Bullet BulletPrefab;
-    // Keep Track of Bullets
-    public Stack<Bullet> FiredShots;
     // Check if can reload
     public bool reloading;
     // Time in seconds between shots
@@ -23,7 +21,6 @@ public class Gun : Item
     {
         Debug.Log("Gun start");
         nextShotTime = 0;
-        this.FiredShots = new Stack<Bullet>();
         reloading = false;
 
         // Get audio
@@ -38,10 +35,8 @@ public class Gun : Item
         // Only allow Equipped guns to shoot; If this check is gone all guns shoot! Logic fix required...
         //if (this.isEquipped)
         //{
-            Shoot();
-            ReloadCheck();
-            // TODO: Need to move this to HUD
-            //this.transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
+        Shoot();
+        ReloadCheck();
         //}
     }
 
@@ -63,8 +58,6 @@ public class Gun : Item
             {
                 Debug.Log("reloading done");
                 currAmmo = ClipSize;
-                // TODO: MOVE TO HUD
-                //transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
                 reloading = false;
             }
         }
@@ -85,13 +78,16 @@ public class Gun : Item
 
             if (firedShot != null)
             {
-                this.FiredShots.Push(firedShot);
+                // Debug.Log("GUN: Bullet ID ShotAgain: " + firedShot.GetInstanceID());
+                GameObject PlayerRef = GameObject.FindGameObjectWithTag("Player");
+                Player player = PlayerRef.GetComponent<Player>();
+                player.FiredShots.Push(firedShot);
+                player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
+                // Debug.Log("GUN: Bullet Dictionary" + player.TrackedShots.ContainsKey(firedShot.ID));
             }
 
             currAmmo--;
 
-            // TODO: MOVE TO HUD
-            // transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
             if (currAmmo <= 0)
             {
                 Reload();
