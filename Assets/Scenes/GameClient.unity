@@ -207,7 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 1340644898554646, guid: f44294f0343864beea647813f636497d,
     type: 2}
-  PlayerPrefab: {fileID: 1855621232060850, guid: fcc0dabc7a7ad0a488495ad026ad620d,
+  PlayerPrefab: {fileID: 1673333701319656, guid: fcc0dabc7a7ad0a488495ad026ad620d,
     type: 2}
   EnemyPrefab: {fileID: 1959928942408444, guid: bc229d5b46adbc94ca7babe10ded46cb,
     type: 2}
