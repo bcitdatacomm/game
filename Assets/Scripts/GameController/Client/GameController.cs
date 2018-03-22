@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
         public PlayerData(byte id)
         {
-            this.Id = 0;
+            this.Id = id;
             this.X = 0;
             this.Z = 0;
             this.R = 0;
@@ -69,7 +69,7 @@ public class GameController : MonoBehaviour
         {
             return (0x80 & header) > 0;
         }
-        
+
         public static bool HasBullet(byte header)
         {
             return (0x40 & header) > 0;
@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "142.232.18.98";
+    public const string SERVER_ADDRESS = "192.168.0.21";
 
     private byte currentPlayerId;
 
@@ -102,11 +102,13 @@ public class GameController : MonoBehaviour
         buffer = new byte[R.Net.Size.SERVER_TICK];
         client = new Client();
         client.Init(SERVER_ADDRESS, R.Net.PORT);
+        Debug.Log("Init");
 
-        byte[] initPacket = new byte[R.Net.Size.SERVER_TICK];
+        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
         initPacket[0] = 69;
 
         client.Send(initPacket, R.Net.Size.CLIENT_TICK);
+        Debug.Log("Send");
     }
 
     void Update()
