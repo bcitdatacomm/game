@@ -91,7 +91,7 @@ public class Player : MonoBehaviour
         if (Input.GetKey("w"))
         {
             this.transform.position = this.transform.position + new Vector3(0, 0, MovementSpeed);
-            net = net + new Vector3(0, 0, MovementSpeed);
+			net = net + new Vector3(0, 0, MovementSpeed);
         }
         if (Input.GetKey("s"))
         {
