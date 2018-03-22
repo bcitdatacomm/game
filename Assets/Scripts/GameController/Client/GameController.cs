@@ -59,6 +59,9 @@ public class GameController : MonoBehaviour {
 
             Debug.Log("Successfully connected:" + result);
 
+            tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
+            Debug.Log("Received itemBuffer: " + itemBuffer.Length);
+
             numRecvMap = tcpClient.Recv(mapBuffer, MAX_INIT_BUFFER_SIZE);
             if (numRecvMap <= 0)
             {
@@ -66,6 +69,8 @@ public class GameController : MonoBehaviour {
                 Debug.Log("This shouldn't happen.");
             }
             Debug.Log("Received: " + numRecvMap);
+
+            Debug.Log("Close socket result: " + tcpClient.CloseConnection(result));
             //
             // numRecvItem = tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
             // if (numRecvItem <= 0)
@@ -159,11 +164,10 @@ public class GameController : MonoBehaviour {
     // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
     void initializeGame()
     {
-
         // Get the data for terrain
         TerrainController tc = new TerrainController();
+        tc.LoadGuns(itemBuffer);
         tc.LoadByteArray(mapBuffer);
-        tc.Instantiate();
 
         // Get the data from the itemData packet
         // InitRandomGuns items = new InitRandomGuns();
