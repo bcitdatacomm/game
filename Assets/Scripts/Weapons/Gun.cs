@@ -84,6 +84,8 @@ public class Gun : Item
                 player.FiredShots.Push(firedShot);
                 player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
                 // Debug.Log("GUN: Bullet Dictionary" + player.TrackedShots.ContainsKey(firedShot.ID));
+
+
             }
 
             currAmmo--;
@@ -92,6 +94,7 @@ public class Gun : Item
             {
                 Reload();
             }
+
         }
     }
 }

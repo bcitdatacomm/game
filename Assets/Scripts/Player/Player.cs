@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     int floorMask;
 
+    float camRayLength = 100f;
     // The vector to store the direction of the player's movement.
     Vector3 movement;
     // Reference to the animator component.

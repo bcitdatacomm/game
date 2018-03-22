@@ -12,7 +12,7 @@ public class HUD : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        Inventory.ItemAdded += InventoryScript_ItemAdded;
+        // Inventory.ItemAdded += InventoryScript_ItemAdded;
 
 	}
 
