@@ -14,7 +14,7 @@ public unsafe class gameServer : MonoBehaviour
 {
     // Constant max packet size for terrain & spawn data
     private const Int32 MAX_INIT_BUFFER_SIZE = 8192;
-    private const Int32 MAX_NUM_CLIENTS = 3;
+    private const Int32 MAX_NUM_CLIENTS = 2;
 
 
     // TCP server added for TCP transmission
@@ -49,7 +49,7 @@ public unsafe class gameServer : MonoBehaviour
     private static byte[] clientData = new byte[R.Net.Size.SERVER_TICK];
 
     // Random Weapon/Spell object and packet byte
-    private InitRandomGuns getitems;
+    private InitRandomGuns getItems;
     private static byte[] itemData;
 
     private static List<connectionData> endpoints;
@@ -62,6 +62,9 @@ public unsafe class gameServer : MonoBehaviour
     void Start()
     {
 
+        itemData = new byte[MAX_INIT_BUFFER_SIZE];
+        getItems = new InitRandomGuns(30);
+        itemData = getItems.compressedpcktarray;
 
 
         // Create the terrain packet with format 1B header + 4B size as int + data
@@ -126,8 +129,8 @@ public unsafe class gameServer : MonoBehaviour
         // -after terrain data has been generated
         // -after you have total number of players/endpoints
         // -before itemData is sent via TCP
-        getitems = new InitRandomGuns(endpoints.Count);
-        //itemData = getitems.pcktarray;
+        // getItems = new InitRandomGuns(endpoints.Count);
+        // itemData = getitems.pcktarray;
 
 
         // ENDSECTION
@@ -355,8 +358,10 @@ public unsafe class gameServer : MonoBehaviour
         {
             Debug.Log("numClients:" + numClients);
             Debug.Log("Sending to client: " + clientSockFdArr[i]);
-            tcpServer.Send(clientSockFdArr[i], terrainPacket, MAX_INIT_BUFFER_SIZE);
 
+            Debug.Log(Encoding.UTF8.GetString(itemData));
+            tcpServer.Send(clientSockFdArr[i], itemData, MAX_INIT_BUFFER_SIZE);
+            tcpServer.Send(clientSockFdArr[i], terrainPacket, MAX_INIT_BUFFER_SIZE);
 
             result = tcpServer.CloseClientSocket(clientSockFdArr[i]);
             Debug.Log("Result of closeclientsocket: " + result);
