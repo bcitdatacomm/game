@@ -11,12 +11,11 @@ public class Player : MonoBehaviour
     public int Health;
     public int Armor;
     public float MovementSpeed;
-    AudioSource sound;
+    public AudioSource sound;
     public AudioClip reload;
     // A layer mask so that a ray can be cast just at gameobjects on the floor layer
     int floorMask;
 
-    float camRayLength = 100f;
     // The vector to store the direction of the player's movement.
     Vector3 movement;
     // Reference to the animator component.
@@ -49,6 +48,7 @@ public class Player : MonoBehaviour
 
         sound = GetComponent<AudioSource>();
         sound.Play();
+
         // TEST CODE
         // GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
         // currentGun = Pistol.GetComponent("Gun") as Gun;
@@ -84,7 +84,9 @@ public class Player : MonoBehaviour
     {
         move();
         turn();
-        switchSpell();
+        ManualReload();
+        SwitchSpell();
+        DebugLogger(); // Testing purposes.
     }
 
     void move()
@@ -109,26 +111,24 @@ public class Player : MonoBehaviour
             this.transform.position = this.transform.position + new Vector3(MovementSpeed, 0, 0);
             net = net + new Vector3(MovementSpeed, 0, 0);
         }
+    }
+
+    void ManualReload()
+    {
+        // TODO: Minor issue, reloads multiple times, perhaps multiple ticks?
         if (Input.GetKey("r"))
         {
-            transform.GetChild(2).GetComponent<Gun>().Reload();
-            sound.PlayOneShot(reload);
-        }
-        if (Input.GetKey("t")) // Log Print tester
-        {
-            // For Testing Inventory byte array.
-            // byte[] invent;
-            // invent = getInventory();
+            Debug.Log("Reloading!");
+            GameObject GunRef = GameObject.FindGameObjectWithTag("currentWeapon");
+            Gun reloadGun = GunRef.GetComponentInChildren<Gun>();
 
-            // Debug.Log(invent[0]);
-            // Debug.Log(invent[1]);
-            // Debug.Log(invent[2]);
-            // Debug.Log(invent[3]);
+            if (reloadGun != null)
+            {
+                reloadGun.Reload();
+                Debug.Log(GunRef.name);
+                sound.PlayOneShot(reload);
+            }
 
-            // For Testing Bullets
-            // Bullet stackBullet = this.FiredShots.Peek();
-            // Debug.Log("Player: Bullet Stack Stored: " + stackBullet.ID);
-            // Debug.Log("Player: BULLET DICTIONARY: " + this.TrackedShots.ContainsKey(stackBullet.ID));
         }
     }
 
@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void switchSpell()
+    void SwitchSpell()
     {
         // Spell switching
         int slotCurrentSpell = -1;
@@ -225,6 +225,26 @@ public class Player : MonoBehaviour
 
                 // TODO: Logic to instantiate spell game object required.
             }
+        }
+    }
+
+    void DebugLogger()
+    {
+        if (Input.GetKey("t")) // Log Print tester
+        {
+            // For Testing Inventory byte array.
+            // byte[] invent;
+            // invent = getInventory();
+
+            // Debug.Log(invent[0]);
+            // Debug.Log(invent[1]);
+            // Debug.Log(invent[2]);
+            // Debug.Log(invent[3]);
+
+            // For Testing Bullets
+            //Bullet stackBullet = this.FiredShots.Peek();
+            //Debug.Log("Player: Bullet Stack Stored: " + stackBullet.ID);
+            //Debug.Log("Player: BULLET DICTIONARY: " + this.TrackedShots.ContainsKey(stackBullet.ID));
         }
     }
 

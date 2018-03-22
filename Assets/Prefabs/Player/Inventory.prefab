@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114961377175284022}
   m_Layer: 0
   m_Name: Spell3
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 114901393954982256}
   m_Layer: 0
   m_Name: Spell2
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 114259860629339992}
   m_Layer: 0
   m_Name: Spell1
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -170,8 +170,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6896f9a9570674f90f17d21a00f37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumUses: 0
-  Owner: {fileID: 0}
+  Category: 0
+  Type: 0
+  FireRate: 0
+  reloadTime: 0
+  ClipSize: 0
+  isEquipped: 0
   duration: 0
   startTime: 0
 --- !u!114 &114759457512663838
@@ -196,8 +200,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6896f9a9570674f90f17d21a00f37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumUses: 0
-  Owner: {fileID: 0}
+  Category: 0
+  Type: 0
+  FireRate: 0
+  reloadTime: 0
+  ClipSize: 0
+  isEquipped: 0
   duration: 0
   startTime: 0
 --- !u!114 &114961377175284022
@@ -211,7 +219,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6896f9a9570674f90f17d21a00f37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumUses: 0
-  Owner: {fileID: 0}
+  Category: 0
+  Type: 0
+  FireRate: 0
+  reloadTime: 0
+  ClipSize: 0
+  isEquipped: 0
   duration: 0
   startTime: 0
