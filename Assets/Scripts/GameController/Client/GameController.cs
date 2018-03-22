@@ -7,7 +7,7 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.4";
+    public const string SERVER_ADDRESS = "192.168.0.19";
     public const ushort SERVER_PORT = 42069;
     public const int PACKET_SIZE = 918;
     public const byte INIT_HEADER = 0;
@@ -206,7 +206,7 @@ public class GameController : MonoBehaviour {
         index += 4;
         Array.Copy(z    , 0, this.buffer, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, this.buffer, index, 4);
+        Array.Copy(pheta, 0, this.buffer, index,  4);
         index += 4;
 
         // Let the server know that a shot has been fired
