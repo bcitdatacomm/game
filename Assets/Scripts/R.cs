@@ -3,7 +3,7 @@
     // Contains all the constants associated with networking and the packet
     public static class Net
     {
-        public const ushort PORT = 42;
+        public const ushort PORT = 42069;
         
 
         // Contains constants associated with the header type of the packet

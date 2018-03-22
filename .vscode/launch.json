@@ -1,0 +1,9 @@
+{
+    "versions":"0.20",
+    "configurations":
+    [{
+        "name":"Unity Editor",
+        "type":"unity",
+        "request":"launch"
+    }]
+}
