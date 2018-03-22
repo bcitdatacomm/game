@@ -396,19 +396,19 @@ public class TerrainController
             count += 13;
         }
 
-        GameObject gun1 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
-        GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
-        GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
-        GameObject gun4 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Shotgun.prefab", typeof(GameObject));
-        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Axe.prefab", typeof(GameObject));
-        GameObject gun6 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
-        GameObject gun7 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
-        GameObject gun8 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
-        GameObject gun9 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Shotgun.prefab", typeof(GameObject));
-        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Axe.prefab", typeof(GameObject));
-        GameObject gun11 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Knife.prefab", typeof(GameObject));
-        GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Pistol.prefab", typeof(GameObject));
-        GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Rifle.prefab", typeof(GameObject));
+        GameObject gun1 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
+        GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
+        GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
+        GameObject gun4 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
+        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Axe.prefab", typeof(GameObject));
+        GameObject gun6 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
+        GameObject gun7 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
+        GameObject gun8 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
+        GameObject gun9 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
+        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Axe.prefab", typeof(GameObject));
+        GameObject gun11 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
+        GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
+        GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
 
         foreach (var w in gunsList)
         {
