@@ -38,22 +38,32 @@ public class HUD : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+		updateLife();
         updateAmmoHud();
 	}
 
-    void updateAmmoHud()
-    {
-        bool hudReload= this.transform.parent.Find("Inventory").Find("Weapon").GetChild(0).GetComponent<Gun>().reloading;
-        if(hudReload == false)
-        {
-            int hudCurrAmmo = this.transform.parent.Find("Inventory").Find("Weapon").GetChild(0).GetComponent<Gun>().currAmmo;
-            int hudClipSize = this.transform.parent.Find("Inventory").Find("Weapon").GetChild(0).GetComponent<Gun>().ClipSize;
-            this.transform.Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(hudCurrAmmo, hudClipSize);
-        }
-        else
-        {
-            this.transform.Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(0, 0);
-        }
+	void updateLife()
+	{
+		int hudHp = this.transform.parent.GetComponent<Player>().Health;
+		int hudArmor = this.transform.parent.GetComponent<Player>().Armor;
+		this.transform.Find("Life").Find("Health").Find("CurrentHealth").GetComponent<SimpleHealthBar>().UpdateBar(hudHp, 100);
+		this.transform.Find("Life").Find("Armor").Find("CurrentArmor").GetComponent<SimpleHealthBar>().UpdateBar(hudArmor, 100);
+	}
 
+    void updateAmmoHud()
+    {	
+		if (this.transform.parent.Find ("Inventory").Find ("Weapon").childCount > 0) {
+			bool hudReload = this.transform.parent.Find ("Inventory").Find ("Weapon").GetChild (0).GetComponent<Gun> ().reloading;
+			if (hudReload == false) {
+				int hudCurrAmmo = this.transform.parent.Find ("Inventory").Find ("Weapon").GetChild (0).GetComponent<Gun> ().currAmmo;
+				int hudClipSize = this.transform.parent.Find ("Inventory").Find ("Weapon").GetChild (0).GetComponent<Gun> ().ClipSize;
+				this.transform.Find ("Weapons").Find ("AmmoBar").Find ("CurrentAmmo").GetComponent<SimpleHealthBar> ().UpdateBar (hudCurrAmmo, hudClipSize);
+			} 
+			else 
+			{
+				this.transform.Find ("Weapons").Find ("AmmoBar").Find ("CurrentAmmo").GetComponent<SimpleHealthBar> ().UpdateBar (0, 0);
+			}
+		}
+			
     }
 }
