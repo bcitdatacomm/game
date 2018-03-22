@@ -46,7 +46,7 @@ public unsafe class gameServer : MonoBehaviour
         while (!terrainController.GenerateEncoding()) ;
         TerrainController.Encoding encoded = terrainController.Data;
 
-        server.Init(42069);
+        server.Init(R.Net.PORT);
 
         endpoints = new List<connection>();
         recvThread = new Thread(recvThrdFunc);
@@ -169,16 +169,26 @@ public unsafe class gameServer : MonoBehaviour
         float playerx = 0 + playerID;
         float playerz = 0 + playerID;
         float rotation = 0;
+        int offset = 2;
 
         // Creates the player init packet
         newPlayer[0] = R.Net.Header.INIT_PLAYER;
         newPlayer[1] = pID;
+
+        Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, newPlayer, offset, 4);
+        offset += 4;
+
+        Buffer.BlockCopy(BitConverter.GetBytes(playerz), 0, newPlayer, offset, 4);
+        offset += 4;
+
+        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, newPlayer, offset, 4);
+
         server.Send(ep, newPlayer, R.Net.Size.SERVER_TICK);
 
         mutex.WaitOne();
 
         // Find the offset to add the player to clientdata
-        int offset = R.Net.Offset.PLAYERS;
+        offset = R.Net.Offset.PLAYERS;
         while (clientData[offset] != 0)
         {
             offset += R.Net.Size.PLAYER_DATA;
