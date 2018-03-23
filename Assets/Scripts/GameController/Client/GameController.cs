@@ -8,7 +8,7 @@ using InitGuns;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "192.168.0.2";
+    public const string SERVER_ADDRESS = "192.168.0.13";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -103,12 +103,6 @@ public class GameController : MonoBehaviour {
         initPacket[0] = R.Net.Header.NEW_CLIENT;
 
         client.Send(initPacket, R.Net.Size.CLIENT_TICK);
-
-
-
-
-
-
     }
 
     void FixedUpdate()

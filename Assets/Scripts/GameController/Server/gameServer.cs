@@ -14,7 +14,7 @@ public unsafe class gameServer : MonoBehaviour
 {
     // Constant max packet size for terrain & spawn data
     private const Int32 MAX_INIT_BUFFER_SIZE = 8192;
-    private const Int32 MAX_NUM_CLIENTS = 2;
+    private const Int32 MAX_NUM_CLIENTS = 5;
 
 
     // TCP server added for TCP transmission
@@ -24,7 +24,7 @@ public unsafe class gameServer : MonoBehaviour
     Int32[] clientSockFdArr = new Int32[MAX_NUM_CLIENTS];
     Int32 numClients = 0;
     Thread listenThread;
-    Thread[] transmitThrdArr;
+    Thread[] transmitThrdArr = new Thread[MAX_NUM_CLIENTS];
     // Rename this or something, EndPoint used to store the TCP connection
     EndPoint connectionEp;
 
@@ -74,13 +74,7 @@ public unsafe class gameServer : MonoBehaviour
         int terrainDataLength = terrainController.CompressedData.Length;
         // **MODIFIED** Use a constant buffer size of 8192 bytes now.
         terrainPacket = new byte[MAX_INIT_BUFFER_SIZE];
-
-        //terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
-        //Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
         Array.Copy(terrainController.CompressedData, 0, terrainPacket, 0, terrainDataLength);
-
-        Debug.Log(System.Text.Encoding.UTF8.GetString(terrainPacket));
-
 
         // TCP initialization and transmission occurs BEFORE UDP!
         tcpServer = new TCPServer();
@@ -91,8 +85,6 @@ public unsafe class gameServer : MonoBehaviour
         listenThread.Start();
         //listenThread.Join();
 
-
-
         // UDP initialization
         server = new Server();
         server.Init(R.Net.PORT);
@@ -100,29 +92,9 @@ public unsafe class gameServer : MonoBehaviour
         // Listen for new players with tcp for a set time period or until max players have joined
         endpoints = new List<connectionData>();
 
-        // // Create the terrain packet with format 1B header + 4B size as int + data
-        // terrainController = new TerrainController();
-        // while (!terrainController.GenerateEncoding());
-
-        // int terrainDataLength = terrainController.CompressedData.Length;
-        // // **MODIFIED** Use a constant buffer size of 8192 bytes now.
-        // terrainPacket = new byte[MAX_INIT_BUFFER_SIZE];
-
-        // terrainPacket[0] = R.Net.Header.TERRAIN_DATA;
-        // Array.Copy(BitConverter.GetBytes(terrainDataLength), 0, terrainPacket, 1, 4);
-        // Array.Copy(terrainController.CompressedData, 0, terrainPacket, 5, terrainDataLength);
-
-
-        endpoints = new List<connectionData>();
         // recvThread = new Thread(recvThrdFunc);
         // running = true;
         // recvThread.Start();
-
-        // Create the terrain packet with format 1B header + 4B size as int + data
-        terrainController = new TerrainController();
-        while (!terrainController.GenerateEncoding()) ;
-
-
 
         // INITIALIZE WEAPONS AND SPELLS SECTION
         // NOTE this must happen:
@@ -348,32 +320,20 @@ public unsafe class gameServer : MonoBehaviour
             else
             {
                 clientSockFdArr[numClients] = clientsockfd;
-                Debug.Log("Connected client: " + clientsockfd);
+                Debug.Log("Connected client: " + connectionEp.ToString());
                 numClients++;
             }
         }
         Debug.Log("Total clients: " + numClients);
 
+        // Intialize and start transmit threads
         for (int i = 0; i < numClients; i++)
         {
-            Debug.Log("numClients:" + numClients);
-            Debug.Log("Sending to client: " + clientSockFdArr[i]);
-
-            Debug.Log(Encoding.UTF8.GetString(itemData));
-            tcpServer.Send(clientSockFdArr[i], itemData, MAX_INIT_BUFFER_SIZE);
-            tcpServer.Send(clientSockFdArr[i], terrainPacket, MAX_INIT_BUFFER_SIZE);
-
-            result = tcpServer.CloseClientSocket(clientSockFdArr[i]);
-            Debug.Log("Result of closeclientsocket: " + result);
+            transmitThrdArr[i] = new Thread(transmitThreadFunc);
+            transmitThrdArr[i].Start(clientSockFdArr[i]);
         }
-        Debug.Log("Completed listenthread");
 
-        // // Intialize and start transmit threads
-        // for (int i = 0; i < numClients; i++)
-        // {
-        //     transmitThrdArr[i] = new Thread(transmitThreadFunc);
-        //     transmitThrdArr[i].Start(i);
-        // }
+        Debug.Log("Completed listenthread");
     }
 
     //TODO: Pass in clientsockfd (client socket descriptor) into thread function
@@ -384,14 +344,16 @@ public unsafe class gameServer : MonoBehaviour
     private void transmitThreadFunc(object clientsockfd)
     {
         Int32 numSentMap;
-        Int32 numSentWep;
+        Int32 numSentItem;
         Int32 sockfd = (Int32)clientsockfd;
 
+        numSentItem = tcpServer.Send(sockfd, itemData, MAX_INIT_BUFFER_SIZE);
+        Debug.Log("Num Item Bytes Sent: " + numSentItem);
         numSentMap = tcpServer.Send(sockfd, terrainPacket, MAX_INIT_BUFFER_SIZE);
         Debug.Log("Num Map Bytes Sent: " + numSentMap);
-        // numSentWep = tcpServer.Send(sockfd, itemData, MAX_INIT_BUFFER_SIZE);
-        // Debug.Log("Num Item Bytes Sent: " + numSentWep);
+        
 
+        //tcpServer.CloseClientSocket(sockfd);
     }
 
     private void OnDisable()
