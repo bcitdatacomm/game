@@ -46,7 +46,7 @@ public unsafe class gameServer : MonoBehaviour
         while (!terrainController.GenerateEncoding()) ;
         TerrainController.Encoding encoded = terrainController.Data;
 
-        server.Init(42069);
+        server.Init(R.Net.PORT);
 
         endpoints = new List<connection>();
         recvThread = new Thread(recvThrdFunc);
@@ -79,7 +79,7 @@ public unsafe class gameServer : MonoBehaviour
         {
             ticks++;
             nextTickTime += tickTime;
-
+            
             mutex.WaitOne();
             clientData[0] = R.Net.Header.TICK;
 
@@ -173,6 +173,7 @@ public unsafe class gameServer : MonoBehaviour
         // Creates the player init packet
         newPlayer[0] = R.Net.Header.INIT_PLAYER;
         newPlayer[1] = pID;
+        
         server.Send(ep, newPlayer, R.Net.Size.SERVER_TICK);
 
         mutex.WaitOne();

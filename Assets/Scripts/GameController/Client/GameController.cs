@@ -90,6 +90,7 @@ public class GameController : MonoBehaviour
     byte[] buffer;
     private Client client;
 
+    public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
@@ -157,8 +158,7 @@ public class GameController : MonoBehaviour
 
     void syncWithServer()
     {
-        bool temp = this.client.Poll();
-        if (!temp)
+        if (!this.client.Poll())
         {
             return;
         }
@@ -205,6 +205,8 @@ public class GameController : MonoBehaviour
         if (newPlayer.Id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, newPlayer.Position, newPlayer.Rotation);
+            this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
+            Instantiate(this.PlayerCamera);
         }
         else
         {
@@ -248,20 +250,6 @@ public class GameController : MonoBehaviour
         index += 4;
         Array.Copy(pheta, 0, this.buffer, index, 4);
         index += 4;
-
-        // Let the server know that a shot has been fired
-        // Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
-
-        //while (playerBullets.Count > 0)
-        //{
-        //    Bullet bullet = playerBullets.Pop();
-        //    byte[] bulletID = BitConverter.GetBytes(bullet.ID);
-
-        //    Array.Copy(bulletID, 0, this.buffer, index, 4);
-        //    index += 4;
-
-        //    this.buffer[index] = bullet.Type;
-        //}
 
         this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
     }
