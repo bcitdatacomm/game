@@ -111,7 +111,7 @@ public class GameController : MonoBehaviour
         Debug.Log("Send");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (this.currentPlayerId != 0)
         {
@@ -127,7 +127,7 @@ public class GameController : MonoBehaviour
     {
         this.sendPlayerDataToServer();
 
-        if (client.Poll())
+        if (!this.client.Poll())
         {
             return;
         }
@@ -248,7 +248,7 @@ public class GameController : MonoBehaviour
         index += 4;
         Array.Copy(z    , 0, this.buffer, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, this.buffer, index, 4);
+        Array.Copy(pheta, 0, this.buffer, index,  4);
         index += 4;
 
         this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);

@@ -7,6 +7,7 @@ TagManager:
   - otherPlayer
   - Item
   - currentWeapon
+  - Collide
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - 
   - Floor
   - 
-  - 
+  - Minimap
   - 
   - 
   - 
