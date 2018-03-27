@@ -5,17 +5,83 @@ using System.Threading;
 using UnityEngine;
 using Networking;
 
-public class GameController : MonoBehaviour {
+public class GameController : MonoBehaviour
+{
+    private class PlayerData
+    {
+        public byte Id { get; set; }
+        public float X { get; set; }
+        public float Z { get; set; }
+        public float R { get; set; }
+        public byte Weapon { get; set; }
+        public Vector3 Position
+        {
+            get
+            {
+                return new Vector3(this.X, 1, this.Z);
+            }
+        }
 
-    public const string SERVER_ADDRESS = "192.168.0.19";
-    public const ushort SERVER_PORT = 42069;
-    public const int PACKET_SIZE = 918;
-    public const byte INIT_HEADER = 0;
-    public const byte TICK_HEADER = 85;
-    public const byte ACK_HEADER = 170;
-    public const int ID_OFFSET = 373;
-    public const int POSITION_OFFSET = 13;
-    public const int ROTATION_OFFSET = 253;
+        public Quaternion Rotation
+        {
+            get
+            {
+                return Quaternion.Euler(0, R, 0);
+            }
+        }
+
+        public PlayerData()
+        {
+            this.Id = 0;
+            this.X = 0;
+            this.Z = 0;
+            this.R = 0;
+            this.Weapon = 0;
+        }
+
+        public PlayerData(byte id)
+        {
+            this.Id = id;
+            this.X = 0;
+            this.Z = 0;
+            this.R = 0;
+            this.Weapon = 0;
+        }
+
+        public PlayerData(byte id, float x, float z, float r, byte weapon)
+        {
+            this.Id = id;
+            this.X = x;
+            this.Z = z;
+            this.R = r;
+            this.Weapon = weapon;
+        }
+    }
+
+    private class HeaderDecoder
+    {
+        public static int GetPlayerCount(byte header)
+        {
+            return (0x1F & header);
+        }
+
+        public static bool IsTickPacket(byte header)
+        {
+            return (0x80 & header) > 0;
+        }
+
+        public static bool HasBullet(byte header)
+        {
+            return (0x40 & header) > 0;
+        }
+
+        public static bool HasWeapon(byte header)
+        {
+            return (0x20 & header) > 0;
+        }
+    }
+
+    public const string SERVER_ADDRESS = "192.168.0.21";
 
     private byte currentPlayerId;
 
@@ -33,14 +99,16 @@ public class GameController : MonoBehaviour {
         currentPlayerId = 0;
         players = new Dictionary<byte, GameObject>();
 
-        buffer = new byte[PACKET_SIZE];
+        buffer = new byte[R.Net.Size.SERVER_TICK];
         client = new Client();
-        client.Init(SERVER_ADDRESS, SERVER_PORT);
+        client.Init(SERVER_ADDRESS, R.Net.PORT);
+        Debug.Log("Init");
 
-        byte[] initPacket = new byte[PACKET_SIZE];
+        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
         initPacket[0] = 69;
 
-        client.Send(initPacket, PACKET_SIZE);
+        client.Send(initPacket, R.Net.Size.CLIENT_TICK);
+        Debug.Log("Send");
     }
 
     void FixedUpdate()
@@ -64,31 +132,28 @@ public class GameController : MonoBehaviour {
             return;
         }
 
-        if (this.client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
+        if (client.Recv(this.buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
         }
 
-        List<byte> playerIDs = this.getPlayerIDs(buffer);
-        List<Vector3> positions = this.getPlayerPositions(buffer);
-        List<Quaternion> rotations = this.getPlayerRotations(buffer);
+        int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[1]);
+        List<PlayerData> packetData = this.getPacketData(numberOfPlayers);
 
         // Add any new players
-        if (playerIDs.Count > this.players.Count)
+        if (numberOfPlayers > this.players.Count)
         {
-            for (int i = 0; i < playerIDs.Count; i++)
+            for (int i = 0; i < numberOfPlayers; i++)
             {
-                if (this.players.ContainsKey(playerIDs[i]))
+                if (this.players.ContainsKey(packetData[i].Id))
                 {
                     continue;
                 }
-                this.addPlayer(playerIDs[i], positions[i], rotations[i]);
+                this.addPlayer(packetData[i]);
             }
         }
 
-        this.movePlayers(playerIDs, positions, rotations);
-
-        //
+        this.movePlayers(packetData);
     }
 
     void syncWithServer()
@@ -98,91 +163,68 @@ public class GameController : MonoBehaviour {
             return;
         }
 
-        if (this.client.Recv(buffer, PACKET_SIZE) < PACKET_SIZE)
+        if (this.client.Recv(buffer, R.Net.Size.SERVER_TICK) < R.Net.Size.SERVER_TICK)
         {
             return;
         }
 
-        if (this.buffer[0] != INIT_HEADER)
+        if (this.buffer[0] != R.Net.Header.INIT_PLAYER)
         {
             return;
         }
-        this.currentPlayerId = buffer[ID_OFFSET];
-        this.addPlayer(this.currentPlayerId, new Vector3(0, 0, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
+
+        // Where is the id in the init packet
+        this.currentPlayerId = buffer[1];
+        this.addPlayer(new PlayerData(this.currentPlayerId));
     }
 
-    List<byte> getPlayerIDs(byte[] data)
+    List<PlayerData> getPacketData(int n)
     {
-        List<byte> playerIDs = new List<byte>();
-        for (int i = 0; i < 30; i++)
+        List<PlayerData> data = new List<PlayerData>();
+        int offset = R.Net.Offset.PLAYERS;
+
+        for (int i = 0; i < n; i++)
         {
-            byte id = data[ID_OFFSET + i];
+            byte id = this.buffer[offset + R.Net.Offset.Player.ID];
+            float x = BitConverter.ToSingle(this.buffer, offset + R.Net.Offset.Player.X);
+            float z = BitConverter.ToSingle(this.buffer, offset + R.Net.Offset.Player.Z);
+            float r = BitConverter.ToSingle(this.buffer, offset + R.Net.Offset.Player.R);
+            byte weapon = this.buffer[offset + R.Net.Offset.Player.W];
+            offset += R.Net.Size.PLAYER_DATA;
 
-            if (id == 0)
-            {
-                return playerIDs;
-            }
-
-            playerIDs.Add(id);
+            data.Add(new PlayerData(id, x, z, r, weapon));
         }
-        return playerIDs;
+
+        return data;
     }
 
-    List<Vector3> getPlayerPositions(byte[] data)
-    {
-        List<Vector3> positions = new List<Vector3>();
-        for (int i = 0; i < 30; i++)
-        {
-            float x = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8));
-            float z = BitConverter.ToSingle(data, POSITION_OFFSET + (i * 8) + 4);
-            Vector3 position = new Vector3(x, 0, z);
-            positions.Add(position);
-        }
-        return positions;
-    }
-
-    List<Quaternion> getPlayerRotations(byte[] data)
-    {
-        List<Quaternion> rotations = new List<Quaternion>();
-        for (int i = 0; i < 30; i++)
-        {
-            float pheta = BitConverter.ToSingle(data, ROTATION_OFFSET + (i * 4));
-            Quaternion rotation = Quaternion.Euler(new Vector3(0, pheta, 0));
-            rotations.Add(rotation);
-        }
-        return rotations;
-    }
-
-    void addPlayer(byte id, Vector3 position, Quaternion rotation)
+    void addPlayer(PlayerData newPlayer)
     {
         GameObject player;
 
-        if (id == this.currentPlayerId)
+        if (newPlayer.Id == this.currentPlayerId)
         {
-            player = (GameObject)Instantiate(this.PlayerPrefab, position, rotation);
+            player = (GameObject)Instantiate(this.PlayerPrefab, newPlayer.Position, newPlayer.Rotation);
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
             Instantiate(this.PlayerCamera);
         }
         else
         {
-            player = (GameObject)Instantiate(this.EnemyPrefab, position, rotation);
+            player = (GameObject)Instantiate(this.EnemyPrefab, newPlayer.Position, newPlayer.Rotation);
         }
 
-        this.players.Add(id, player);
+        this.players.Add(newPlayer.Id, player);
     }
 
-    void movePlayers(List<byte> playerIds, List<Vector3> positions, List<Quaternion> rotations)
+    // Refactor
+    void movePlayers(List<PlayerData> playerDatas)
     {
         try
         {
-            for (int i = 0; i < playerIds.Count; i++)
+            for (int i = 0; i < playerDatas.Count; i++)
             {
-                if (playerIds[i] == this.currentPlayerId)
-                {
-                    continue;
-                }
-                this.players[playerIds[i]].transform.position = positions[i];
-                this.players[playerIds[i]].transform.rotation = rotations[i];
+                this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
+                this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
             }
         }
         catch (Exception e)
@@ -200,7 +242,7 @@ public class GameController : MonoBehaviour {
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
 
         // Put position data into the packet
-        this.buffer[0] = TICK_HEADER;
+        this.buffer[0] = R.Net.Header.TICK;
         this.buffer[1] = this.currentPlayerId;
         Array.Copy(x    , 0, this.buffer, index,  4);
         index += 4;
@@ -209,20 +251,6 @@ public class GameController : MonoBehaviour {
         Array.Copy(pheta, 0, this.buffer, index,  4);
         index += 4;
 
-        // Let the server know that a shot has been fired
-        // Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
-        //
-        // while (playerBullets.Count > 0)
-        // {
-        //     Bullet bullet = playerBullets.Pop();
-        //     byte[] bulletID = BitConverter.GetBytes(bullet.ID);
-        //
-        //     Array.Copy(bulletID, 0, this.buffer, index, 4);
-        //     index += 4;
-        //
-        //     this.buffer[index] = bullet.Type;
-        // }
-
-        this.client.Send(this.buffer, PACKET_SIZE);
+        this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
     }
 }
