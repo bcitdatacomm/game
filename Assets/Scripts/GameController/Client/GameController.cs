@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.21";
+    public const string SERVER_ADDRESS = "192.168.0.20";
 
     private byte currentPlayerId;
 
@@ -137,7 +137,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[1]);
+        int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[0]);
         List<PlayerData> packetData = this.getPacketData(numberOfPlayers);
 
         // Add any new players
@@ -223,6 +223,10 @@ public class GameController : MonoBehaviour
         {
             for (int i = 0; i < playerDatas.Count; i++)
             {
+                if (this.currentPlayerId == playerDatas[i].Id)
+                {
+                    continue;
+                }
                 this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
                 this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
             }
