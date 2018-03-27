@@ -79,10 +79,9 @@ public unsafe class gameServer : MonoBehaviour
         {
             ticks++;
             nextTickTime += tickTime;
-            byte header = ((byte)(129 + playerID));
-
+            
             mutex.WaitOne();
-            clientData[0] = header;
+            clientData[0] = R.Net.Header.TICK;
 
             // Send the packet to each client
             foreach (connection conn in endpoints)
@@ -170,26 +169,17 @@ public unsafe class gameServer : MonoBehaviour
         float playerx = 0 + playerID;
         float playerz = 0 + playerID;
         float rotation = 0;
-        int offset = 2;
 
         // Creates the player init packet
         newPlayer[0] = R.Net.Header.INIT_PLAYER;
         newPlayer[1] = pID;
-
-        Buffer.BlockCopy(BitConverter.GetBytes(playerx), 0, newPlayer, offset, 4);
-        offset += 4;
-
-        Buffer.BlockCopy(BitConverter.GetBytes(playerz), 0, newPlayer, offset, 4);
-        offset += 4;
-
-        Buffer.BlockCopy(BitConverter.GetBytes(rotation), 0, newPlayer, offset, 4);
-
+        
         server.Send(ep, newPlayer, R.Net.Size.SERVER_TICK);
 
         mutex.WaitOne();
 
         // Find the offset to add the player to clientdata
-        offset = R.Net.Offset.PLAYERS;
+        int offset = R.Net.Offset.PLAYERS;
         while (clientData[offset] != 0)
         {
             offset += R.Net.Size.PLAYER_DATA;

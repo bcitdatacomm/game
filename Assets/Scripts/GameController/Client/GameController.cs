@@ -251,20 +251,6 @@ public class GameController : MonoBehaviour
         Array.Copy(pheta, 0, this.buffer, index, 4);
         index += 4;
 
-        // Let the server know that a shot has been fired
-        // Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
-        //
-        // while (playerBullets.Count > 0)
-        // {
-        //     Bullet bullet = playerBullets.Pop();
-        //     byte[] bulletID = BitConverter.GetBytes(bullet.ID);
-        //
-        //     Array.Copy(bulletID, 0, this.buffer, index, 4);
-        //     index += 4;
-        //
-        //     this.buffer[index] = bullet.Type;
-        // }
-
         this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
     }
 }
