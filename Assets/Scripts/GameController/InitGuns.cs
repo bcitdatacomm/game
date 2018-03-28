@@ -8,16 +8,7 @@ namespace InitGuns
 {
     class InitRandomGuns
     {
-        static int clustering = 50;
-        //static int towncluster = 150;
         static System.Random rand = new System.Random();
-
-        // Offsets for town coordinates
-        static int HEIGHT = 500;
-        static int WIDTH = 500;
-
-        // Area around items to prevent spawning on top or near
-        static int BOXSIZE = 12;
 
         // Valid Coordinates in town
         List<WeaponSpell> TownCoords = new List<WeaponSpell>();
@@ -35,14 +26,14 @@ namespace InitGuns
         public byte[] pcktarray;
         public byte[] compressedpcktarray;
 
-        // Constructor that creates an InitRandomGuns Object
 
-        // Empty Initializtion from pulling from byte array
+        // Empty Initialization from pulling from byte array
         public InitRandomGuns()
         {
         }
 
-        public InitRandomGuns(int NoPlayers)
+        // Constructor takes the number of players
+        public InitRandomGuns(int NumPlayers)
         {
 
             // Add some dummy hotspots NOTE MUST BE AT LEAST clustering AWAY FROM EDGE IN EACH DIRECTION
@@ -52,29 +43,28 @@ namespace InitGuns
             HotSpots.Add(new WeaponSpell(900, 100));
             HotSpots.Add(new WeaponSpell(200, 900));
 
-            //Add Set Coordinates for spawn generation in town.
-            TownCoords.Add(new WeaponSpell(-161 + WIDTH, 57 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-41 + WIDTH, 88 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(11 + WIDTH, 120 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(41 + WIDTH, 32 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-21 + WIDTH, -3 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(23 + WIDTH, -65 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(72 + WIDTH, -85 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(132 + WIDTH, 45 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(10 + WIDTH, 75 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(18 + WIDTH, 22 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-157 + WIDTH, 107 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-12 + WIDTH, 109 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(9 + WIDTH, 64 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-161 + WIDTH, 57 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-139 + WIDTH, -22 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(30 + WIDTH, -14 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-160 + WIDTH, -88 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(133 + WIDTH, -87 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(134 + WIDTH, 120 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(2 + WIDTH, -15 + HEIGHT));
-            TownCoords.Add(new WeaponSpell(-144 + WIDTH, 70 + HEIGHT));
-
+            // Add Set Coordinates for spawn generation in town. 
+            TownCoords.Add(new WeaponSpell(-161 + R.Init.TOWNWIDTH, 57 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-41 + R.Init.TOWNWIDTH, 88 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(11 + R.Init.TOWNWIDTH, 120 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(41 + R.Init.TOWNWIDTH, 32 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-21 + R.Init.TOWNWIDTH, -3 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(23 + R.Init.TOWNWIDTH, -65 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(72 + R.Init.TOWNWIDTH, -85 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(132 + R.Init.TOWNWIDTH, 45 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(10 + R.Init.TOWNWIDTH, 75 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(18 + R.Init.TOWNWIDTH, 22 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-157 + R.Init.TOWNWIDTH, 107 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-12 + R.Init.TOWNWIDTH, 109 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(9 + R.Init.TOWNWIDTH, 64 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-161 + R.Init.TOWNWIDTH, 57 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-139 + R.Init.TOWNWIDTH, -22 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(30 + R.Init.TOWNWIDTH, -14 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-160 + R.Init.TOWNWIDTH, -88 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(133 + R.Init.TOWNWIDTH, -87 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(134 + R.Init.TOWNWIDTH, 120 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(2 + R.Init.TOWNWIDTH, -15 + R.Init.TOWNHEIGHT));
+            TownCoords.Add(new WeaponSpell(-144 + R.Init.TOWNWIDTH, 70 + R.Init.TOWNHEIGHT));
 
             WeaponSpell Weapon;
             int counter = 0;
@@ -83,7 +73,7 @@ namespace InitGuns
             // Keep generating guns depending on number of players
             while (counter < numberOfWeapons(NoPlayers))
             {
-                if (counter < numberOfWeapons(NoPlayers) / 4)
+                if (counter < numberOfWeapons(NoPlayers) / R.Init.QUOTIENTTOWNGUNS)
                 {
                     int getT = rand.Next(TownCoords.Count);
                     Weapon = new WeaponSpell(TownCoords[getT].X, TownCoords[getT].Z, true);
@@ -91,18 +81,18 @@ namespace InitGuns
                 }
                 else
                 {
-                    if (rand.NextDouble() > 0.5)
+                    if (rand.NextDouble() > R.Init.PERCENTHOTSPOT)
                     {
-                        Weapon = new WeaponSpell(rand.Next(0, 1001),
-                            rand.Next(0, 1001), true);
+                        Weapon = new WeaponSpell(rand.Next(0, R.Init.MAPEND),
+                            rand.Next(0, R.Init.MAPEND), true);
                     }
                     else
                     {
                         // Choose a Hotspot at Random
                         interestTracker = rand.Next(0, HotSpots.Count);
 
-                        int a = rand.Next(HotSpots[interestTracker].X - clustering, HotSpots[interestTracker].X + clustering);
-                        int b = rand.Next(HotSpots[interestTracker].Z - clustering, HotSpots[interestTracker].Z + clustering);
+                        int a = rand.Next(HotSpots[interestTracker].X - R.Init.CLUSTERING, HotSpots[interestTracker].X + R.Init.CLUSTERING);
+                        int b = rand.Next(HotSpots[interestTracker].Z - R.Init.CLUSTERING, HotSpots[interestTracker].Z + R.Init.CLUSTERING);
 
                         Weapon = new WeaponSpell(a, b, true);
                     }
@@ -116,9 +106,9 @@ namespace InitGuns
                     SpawnedGuns.Add(Weapon);
 
                     // Add a 12x12 box of around the spawned point to prevent weapons spawning inside/near
-                    for (int i = Weapon.X - BOXSIZE; i < Weapon.X + BOXSIZE; i++)
+                    for (int i = Weapon.X - R.Init.OCCURANCESQUARE; i < Weapon.X + R.Init.OCCURANCESQUARE; i++)
                     {
-                        for (int j = Weapon.Z - BOXSIZE; j < Weapon.Z + BOXSIZE; j++)
+                        for (int j = Weapon.Z - R.Init.OCCURANCESQUARE; j < Weapon.Z + R.Init.OCCURANCESQUARE; j++)
                         {
                             OccupiedSpaces.Add(new WeaponSpell(i, j));
                         }
@@ -151,32 +141,32 @@ namespace InitGuns
         // Take a byteArray and fill spawnedGuns list from bytearray
         public void fromByteArrayToList(byte[] transmittedBytes)
         {
-            int size = transmittedBytes.Length / 13;
+            int size = transmittedBytes.Length / R.Init.INDWPNPCKT;
             int count = 0;
-            byte[] tempw = new byte[13];
+            byte[] tempw = new byte[R.Init.INDWPNPCKT];
             SpawnedGuns.Clear();
 
             for (int i = 0; i < size; i++)
             {
-                Buffer.BlockCopy(transmittedBytes, count, tempw, 0, 13);
+                Buffer.BlockCopy(transmittedBytes, count, tempw, 0, R.Init.INDWPNPCKT);
                 WeaponSpell tempwpn = GetWeaponFromBytes(tempw);
                 SpawnedGuns.Add(tempwpn);
-                count += 13;
+                count += R.Init.INDWPNPCKT;
             }
         }
 
         // Output the list of weapons as a bytearray
         public void getByteArray()
         {
-            pcktarray = new byte[13 * SpawnedGuns.Count];
+            pcktarray = new byte[R.Init.INDWPNPCKT * SpawnedGuns.Count];
             byte[] warray;
             int offset = 0;
 
             foreach (var w in SpawnedGuns)
             {
                 warray = PutWeaponIntoBytes(w);
-                Buffer.BlockCopy(warray, 0, pcktarray, offset, 13);
-                offset += 13;
+                Buffer.BlockCopy(warray, 0, pcktarray, offset, R.Init.INDWPNPCKT);
+                offset += R.init.INDWPNPCKT;
             }
             compressedpcktarray = compressByteArray(pcktarray);
         }
@@ -258,17 +248,17 @@ namespace InitGuns
                     if (seed2 > 0.5)
                     {
                         //type 1 -- 50% chance
-                        return 1;
+                        return R.Init.WPN1;
                     }
                     else if (seed2 > 0.15)
                     {
                         //type = 2 -- 35% chance
-                        return 2;
+                        return R.Init.WPN2;
                     }
                     else
                     {
                         //type = 3 -- 15% chance
-                        return 3;
+                        return R.Init.WPN3;
                     }
                 }
 
@@ -277,43 +267,43 @@ namespace InitGuns
                 {
                     if (seed2 > 0.9)
                     {
-                        return 4;
+                        return R.Init.WPN4;
                     }
                     else if (seed2 > 0.8)
                     {
-                        return 5;
+                        return R.Init.WPN5;
                     }
                     else if (seed2 > 0.7)
                     {
-                        return 6;
+                        return R.Init.WPN6;
                     }
                     else if (seed2 > 0.6)
                     {
-                        return 7;
+                        return R.Init.WPN7;
                     }
                     else if (seed2 > 0.5)
                     {
-                        return 8;
+                        return R.Init.WPN8;
                     }
                     else if (seed2 > 0.4)
                     {
-                        return 9;
+                        return R.Init.WPN9;
                     }
                     else if (seed2 > 0.3)
                     {
-                        return 10;
+                        return R.Init.WPN10;
                     }
                     else if (seed2 > 0.2)
                     {
-                        return 11;
+                        return R.Init.WPN11;
                     }
                     else if (seed2 > 0.1)
                     {
-                        return 12;
+                        return R.Init.WPN12;
                     }
                     else
                     {
-                        return 13;
+                        return R.Init.WPN13;
                     }
                 }
             }
@@ -322,27 +312,26 @@ namespace InitGuns
         // Check if a certain set of spaces is occupied
         public static bool OccupiedCheck(WeaponSpell genC, List<WeaponSpell> Occupied)
         {
-            //TODO if coordinates occupied in terrain check return false
             return Occupied.Contains(genC);
         }
 
         // Takes a Weapon Object and puts it into byte array format
         public static byte[] PutWeaponIntoBytes(WeaponSpell Weapon)
         {
-            byte[] wpn = new byte[13];
+            byte[] wpn = new byte[R.Init.INDWPNPACKT];
 
             byte[] type = new byte[sizeof(byte)];
             type[0] = Weapon.Type;
             Buffer.BlockCopy(type, 0, wpn, 0, 1);
 
             byte[] ID = BitConverter.GetBytes(Weapon.ID);
-            Buffer.BlockCopy(ID, 0, wpn, 1, sizeof(int));
+            Buffer.BlockCopy(ID, 0, wpn, R.Init.WEAPONOFFSETID, sizeof(int));
 
             byte[] X = BitConverter.GetBytes(Weapon.X);
-            Buffer.BlockCopy(X, 0, wpn, 5, sizeof(int));
+            Buffer.BlockCopy(X, 0, wpn, R.Init.WEAPONOFFSETX, sizeof(int));
 
             byte[] Z = BitConverter.GetBytes(Weapon.Z);
-            Buffer.BlockCopy(Z, 0, wpn, 9, sizeof(int));
+            Buffer.BlockCopy(Z, 0, wpn, R.Init.WEAPONOFFSETZ, sizeof(int));
 
             return wpn;
         }
@@ -354,14 +343,14 @@ namespace InitGuns
 
             Weapon.Type = weaponinbytes[0];
 
-            byte[] ID = new byte[4];
-            Weapon.ID = BitConverter.ToInt32(weaponinbytes, 1);
+            byte[] ID = new byte[R.Init.IDBYTES];
+            Weapon.ID = BitConverter.ToInt32(weaponinbytes, R.Init.WEAPONOFFSETID);
 
-            byte[] X = new byte[4];
-            Weapon.X = BitConverter.ToInt32(weaponinbytes, 5);
+            byte[] X = new byte[R.Init.COORDBYTES];
+            Weapon.X = BitConverter.ToInt32(weaponinbytes, R.Init.WEAPONOFFSETX);
 
-            byte[] Z = new byte[4];
-            Weapon.Z = BitConverter.ToInt32(weaponinbytes, 9);
+            byte[] Z = new byte[R.Init.COORDBYTES];
+            Weapon.Z = BitConverter.ToInt32(weaponinbytes, R.Init.WEAPONOFFSETZ);
 
             return Weapon;
         }
@@ -369,36 +358,7 @@ namespace InitGuns
         // Generates a number of guns depending on the number of players
         public static int numberOfWeapons(int players)
         {
-            return players * 2;
+            return players * R.Init.PLAYERMULT;
         }
-
-
-        /*
-        // Example Usage is below
-        public static void Main(string[] args)
-        {
-            // Create a bunch of spawned gun coordinates for 10 players
-            // second coordinate should be a list of occupied spaces might need slight reworking
-            InitRandomGuns guns = new InitRandomGuns(10,null);
-            guns.printExpandedCoordinates();
-
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("");
-
-            // Create a second empty InitRandomGuns object
-            InitRandomGuns guns2 = new InitRandomGuns();
-
-            // Grab and process a byte array and put into coordinate list
-            // in this case I am directly grabbing first objects packet array
-            guns2.fromByteArrayToList(guns.pcktarray);
-            guns2.printExpandedCoordinates();
-
-
-            Console.Write("");
-        }
-        */
-
     }
 }
