@@ -59,7 +59,25 @@ using System;
         // Terrain Constants
         public static class Terrain
         {
-			
+            // Define default constants
+            public const long DEFAULT_WIDTH = 1000;
+            public const long DEFAULT_LENGTH = 1000;
+            public const long DEFAULT_TILE_SIZE = 20;
+            public const long DEFAULT_COLLIDER_SIZE = 20;
+            // For the gun objects
+            public const int GUN_OBJECT_SIZE = 13;
+            public const int ID_BYTE_SIZE = 4;
+            public const int X_BYTE_SIZE = 4;
+            public const int Z_BYTE_SIZE = 4;
+            public const int ID_OFFSET = 1;
+            public const int X_OFFSET = 5;
+            public const int Z_OFFSET = 9;
+            // Changed to a percentage - ALam
+            public const float DEFAULT_CACTUS_PERC = 0.9997f;
+            public const float DEFAULT_BUSH_PERC = 0.9995f;
+            public const float DEFAULT_BUILDING_PERC = 0.9999f;
+            // Terrain name
+            public const string DEFAULT_NAME = "Terrain";
         }
 
         // Player Constants

@@ -44,7 +44,7 @@ namespace InitGuns
 
         public InitRandomGuns(int NoPlayers)
         {
-        
+
             // Add some dummy hotspots NOTE MUST BE AT LEAST clustering AWAY FROM EDGE IN EACH DIRECTION
             HotSpots.Add(new WeaponSpell(250, 250));
             HotSpots.Add(new WeaponSpell(800, 550));
@@ -52,7 +52,7 @@ namespace InitGuns
             HotSpots.Add(new WeaponSpell(900, 100));
             HotSpots.Add(new WeaponSpell(200, 900));
 
-            //Add Set Coordinates for spawn generation in town. 
+            //Add Set Coordinates for spawn generation in town.
             TownCoords.Add(new WeaponSpell(-161 + WIDTH, 57 + HEIGHT));
             TownCoords.Add(new WeaponSpell(-41 + WIDTH, 88 + HEIGHT));
             TownCoords.Add(new WeaponSpell(11 + WIDTH, 120 + HEIGHT));
