@@ -7,9 +7,9 @@ using Networking;
 
 public class GameController : MonoBehaviour {
 
-    public const string SERVER_ADDRESS = "142.232.18.98";
+    public const string SERVER_ADDRESS = "192.168.0.4";
     public const ushort SERVER_PORT = 42069;
-    public const int PACKET_SIZE = 1200;
+    public const int PACKET_SIZE = 918;
     public const byte INIT_HEADER = 0;
     public const byte TICK_HEADER = 85;
     public const byte ACK_HEADER = 170;
@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour {
     byte[] buffer;
     private Client client;
 
+    public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
@@ -92,7 +93,7 @@ public class GameController : MonoBehaviour {
 
     void syncWithServer()
     {
-        if (this.client.Poll())
+        if (!this.client.Poll())
         {
             return;
         }
@@ -159,6 +160,8 @@ public class GameController : MonoBehaviour {
         if (id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, position, rotation);
+            this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
+            Instantiate(this.PlayerCamera);
         }
         else
         {
@@ -203,18 +206,19 @@ public class GameController : MonoBehaviour {
         index += 4;
 
         // Let the server know that a shot has been fired
-        Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
 
-        while (playerBullets.Count > 0)
-        {
-            Bullet bullet = playerBullets.Pop();
-            byte[] bulletID = BitConverter.GetBytes(bullet.ID);
-
-            Array.Copy(bulletID, 0, this.buffer, index, 4);
-            index += 4;
-
-            this.buffer[index] = bullet.Type;
-        }
+        // Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
+        //
+        // while (playerBullets.Count > 0)
+        // {
+        //     Bullet bullet = playerBullets.Pop();
+        //     byte[] bulletID = BitConverter.GetBytes(bullet.ID);
+        //
+        //     Array.Copy(bulletID, 0, this.buffer, index, 4);
+        //     index += 4;
+        //
+        //     this.buffer[index] = bullet.Type;
+        // }
 
         this.client.Send(this.buffer, PACKET_SIZE);
     }
