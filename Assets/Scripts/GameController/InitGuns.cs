@@ -43,7 +43,7 @@ namespace InitGuns
             HotSpots.Add(new WeaponSpell(900, 100));
             HotSpots.Add(new WeaponSpell(200, 900));
 
-            // Add Set Coordinates for spawn generation in town. 
+            // Add Set Coordinates for spawn generation in town.
             TownCoords.Add(new WeaponSpell(-161 + R.Init.TOWNWIDTH, 57 + R.Init.TOWNHEIGHT));
             TownCoords.Add(new WeaponSpell(-41 + R.Init.TOWNWIDTH, 88 + R.Init.TOWNHEIGHT));
             TownCoords.Add(new WeaponSpell(11 + R.Init.TOWNWIDTH, 120 + R.Init.TOWNHEIGHT));
@@ -71,9 +71,9 @@ namespace InitGuns
             int interestTracker = 0;
 
             // Keep generating guns depending on number of players
-            while (counter < numberOfWeapons(NoPlayers))
+            while (counter < numberOfWeapons(NumPlayers))
             {
-                if (counter < numberOfWeapons(NoPlayers) / R.Init.QUOTIENTTOWNGUNS)
+                if (counter < numberOfWeapons(NumPlayers) / R.Init.QUOTIENTTOWNGUNS)
                 {
                     int getT = rand.Next(TownCoords.Count);
                     Weapon = new WeaponSpell(TownCoords[getT].X, TownCoords[getT].Z, true);
@@ -166,7 +166,7 @@ namespace InitGuns
             {
                 warray = PutWeaponIntoBytes(w);
                 Buffer.BlockCopy(warray, 0, pcktarray, offset, R.Init.INDWPNPCKT);
-                offset += R.init.INDWPNPCKT;
+                offset += R.Init.INDWPNPCKT;
             }
             compressedpcktarray = compressByteArray(pcktarray);
         }
@@ -318,7 +318,7 @@ namespace InitGuns
         // Takes a Weapon Object and puts it into byte array format
         public static byte[] PutWeaponIntoBytes(WeaponSpell Weapon)
         {
-            byte[] wpn = new byte[R.Init.INDWPNPACKT];
+            byte[] wpn = new byte[R.Init.INDWPNPCKT];
 
             byte[] type = new byte[sizeof(byte)];
             type[0] = Weapon.Type;

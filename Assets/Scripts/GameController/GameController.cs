@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.20";
+    public const string SERVER_ADDRESS = "192.168.0.13";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -156,21 +156,14 @@ public class GameController : MonoBehaviour
             }
         }
 
+        this.client = new Client();
+        this.client.Init(SERVER_ADDRESS, R.Net.PORT);
+
+        this.currentPlayerId = 0;
+        this.players = new Dictionary<byte, GameObject>();
+        this.buffer = new byte[R.Net.Size.SERVER_TICK];
+
         initializeGame();
-
-        currentPlayerId = 0;
-        players = new Dictionary<byte, GameObject>();
-
-        buffer = new byte[R.Net.Size.SERVER_TICK];
-        client = new Client();
-        client.Init(SERVER_ADDRESS, R.Net.PORT);
-        Debug.Log("Init");
-
-        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
-        initPacket[0] = 69;
-
-        client.Send(initPacket, R.Net.Size.CLIENT_TICK);
-        Debug.Log("Send");
     }
 
     void FixedUpdate()
@@ -226,6 +219,11 @@ public class GameController : MonoBehaviour
         TerrainController tc = new TerrainController();
         tc.LoadGuns(itemBuffer);
         tc.LoadByteArray(mapBuffer);
+
+        byte[] ackPack = new byte[R.Net.Size.CLIENT_TICK];
+        ackPack[0] = R.Net.Header.ACK;
+
+        client.Send(ackPack, R.Net.Size.CLIENT_TICK);
 
         // Get the data from the itemData packet
         // InitRandomGuns items = new InitRandomGuns();
