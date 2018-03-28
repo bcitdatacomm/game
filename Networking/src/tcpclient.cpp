@@ -73,10 +73,10 @@ int32_t TCPClient::receiveBytes(char * buffer, uint32_t len)
 
 	size_t n = 0;
 	size_t bytesToRead = len;
-	while ((n = recv (clientSocket, buffer, bytesToRead, 0)) < len)
+	while ((n = recv (clientSocket, buffer, bytesToRead, 0)) < bytesToRead)
 	{
 		buffer += n;
 		bytesToRead -= n;
 	}
-	return (len - bytesToRead);
+	return (bytesToRead);
 }
