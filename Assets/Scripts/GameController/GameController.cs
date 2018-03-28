@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Networking;
+using InitGuns;
 
 public class GameController : MonoBehaviour
 {
@@ -81,7 +82,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.20";
+    public const string SERVER_ADDRESS = "192.168.0.13";
+    public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
 
@@ -90,25 +92,78 @@ public class GameController : MonoBehaviour
     byte[] buffer;
     private Client client;
 
+    // packet for terrain data
+    private byte[] terrainData;
+    // packet for item data
+    private byte[] itemData;
+
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
+    // ADDED: Game initialization variables
+    private TCPClient tcpClient;
+    private Int32 clientsockfd;
+    private byte[] mapBuffer;
+    private byte[] itemBuffer;
+    private EndPoint epServer;
+
     void Start()
     {
-        currentPlayerId = 0;
-        players = new Dictionary<byte, GameObject>();
 
-        buffer = new byte[R.Net.Size.SERVER_TICK];
-        client = new Client();
-        client.Init(SERVER_ADDRESS, R.Net.PORT);
-        Debug.Log("Init");
+        mapBuffer = new byte[MAX_INIT_BUFFER_SIZE];
+        itemBuffer = new byte[MAX_INIT_BUFFER_SIZE];
+        // Adding TCP receive code here, move as needed
+        epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
+        tcpClient = new TCPClient();
+        Int32 result = tcpClient.Init(epServer);
 
-        byte[] initPacket = new byte[R.Net.Size.CLIENT_TICK];
-        initPacket[0] = 69;
+        if (result <= 0)
+        {
+            Debug.Log("Error initializing TCP client socket: " + result);
+        }
+        if (result > 0)
+        {
+            int numRecvMap;
+            int numRecvItem;
 
-        client.Send(initPacket, R.Net.Size.CLIENT_TICK);
-        Debug.Log("Send");
+            Debug.Log("Successfully connected:" + result);
+
+            // Receiving the item packet
+            numRecvItem = tcpClient.Recv(itemBuffer, MAX_INIT_BUFFER_SIZE);
+            if (numRecvItem <= 0)
+            {
+                Debug.Log(System.Text.Encoding.Default.GetString(itemBuffer));
+                Debug.Log("This REALLY shouldn't happen.");
+            }
+            Debug.Log("Received: " + numRecvItem);
+
+            // Receiving the map packet
+            numRecvMap = tcpClient.Recv(mapBuffer, MAX_INIT_BUFFER_SIZE);
+            if (numRecvMap <= 0)
+            {
+                Debug.Log(System.Text.Encoding.Default.GetString(mapBuffer));
+                Debug.Log("This shouldn't happen.");
+            }
+            Debug.Log("Received: " + numRecvMap);
+
+            // Close the TCP connection after the work is done
+            Debug.Log("Close socket result: " + (result = tcpClient.CloseConnection(result)));
+
+            if (result != 0)
+            {
+                Debug.Log("Error closing TCP client socket.");
+            }
+        }
+
+        this.client = new Client();
+        this.client.Init(SERVER_ADDRESS, R.Net.PORT);
+
+        this.currentPlayerId = 0;
+        this.players = new Dictionary<byte, GameObject>();
+        this.buffer = new byte[R.Net.Size.SERVER_TICK];
+
+        initializeGame();
     }
 
     void FixedUpdate()
@@ -155,6 +210,30 @@ public class GameController : MonoBehaviour
 
         this.movePlayers(packetData);
     }
+
+    // This method will get the terrain and weapons and put them on the map
+    // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
+    void initializeGame()
+    {
+        // Get the data for terrain
+        TerrainController tc = new TerrainController();
+        tc.LoadGuns(itemBuffer);
+        tc.LoadByteArray(mapBuffer);
+
+        byte[] ackPack = new byte[R.Net.Size.CLIENT_TICK];
+        ackPack[0] = R.Net.Header.ACK;
+
+        client.Send(ackPack, R.Net.Size.CLIENT_TICK);
+
+        // Get the data from the itemData packet
+        // InitRandomGuns items = new InitRandomGuns();
+        // items.fromByteArrayToList(itemData);
+        // items.SpawnedGuns is a list that has been populated with weaponspell object
+        // which has ID, Type, Xcoord, and Zcoord
+        // code needs to be created in unison with asset team to put items on the map
+
+    }
+
 
     void syncWithServer()
     {
