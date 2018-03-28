@@ -35,7 +35,7 @@ namespace InitGuns
         // Constructor takes the number of players
         public InitRandomGuns(int NumPlayers)
         {
-        
+
             // Add some dummy hotspots NOTE MUST BE AT LEAST clustering AWAY FROM EDGE IN EACH DIRECTION
             HotSpots.Add(new WeaponSpell(250, 250));
             HotSpots.Add(new WeaponSpell(800, 550));

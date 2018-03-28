@@ -57,7 +57,10 @@ public class TerrainController
     {
         public byte[,] tiles;
     };
+
+    // The map encoding
     public Encoding Data { get; set; }
+    // The compressed version of the map encoding
     public byte[] CompressedData { get; set; }
 
     // Width of the terrain
@@ -80,22 +83,12 @@ public class TerrainController
     // Bush gameobject prefab
     public GameObject BushPrefab { get; set; }
 
-    //Occupied positions on the map
+    // Occupied positions on the map
     public List<Vector2> occupiedPositions;
 
-    // Define default constants
-    public const long DEFAULT_WIDTH = 1000;
-    public const long DEFAULT_LENGTH = 1000;
-    public const long DEFAULT_TILE_SIZE = 20;
-    public const long DEFAULT_COLLIDER_SIZE = 20;
-    // Changed to a percentage - ALam
-    public const float DEFAULT_CACTUS_PERC = 0.9997f;
-    public const float DEFAULT_BUSH_PERC = 0.9995f;
-    public const string DEFAULT_NAME = "Terrain";
-
-    public const float DEFAULT_BUILDING_PERC = 0.9999f;
-
+    // The list of guns
     List<WeaponSpell> gunsList = new List<WeaponSpell>();
+
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: TerrainController()
     --
@@ -117,11 +110,11 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public TerrainController()
     {
-        this.Width = DEFAULT_WIDTH;
-        this.Length = DEFAULT_LENGTH;
-        this.TileSize = DEFAULT_TILE_SIZE;
-        this.CactusPerc = DEFAULT_CACTUS_PERC;
-        this.BushPerc = DEFAULT_BUSH_PERC;
+        this.Width = R.Game.Terrain.DEFAULT_WIDTH;
+        this.Length = R.Game.Terrain.DEFAULT_LENGTH;
+        this.TileSize = R.Game.Terrain.DEFAULT_TILE_SIZE;
+        this.CactusPerc = R.Game.Terrain.DEFAULT_CACTUS_PERC;
+        this.BushPerc = R.Game.Terrain.DEFAULT_BUSH_PERC;
         this.occupiedPositions = new List<Vector2>();
     }
 
@@ -144,7 +137,7 @@ public class TerrainController
     -- Generates an encoded 2D array with given width and height.
     -- Populates the map array with tile types based on given coefficients.
     -------------------------------------------------------------------------------------------------*/
-    public bool GenerateEncoding()//(List<Vector2> Hotspots)
+    public bool GenerateEncoding()
     {
         byte[,] map = new byte[this.Width, this.Length];
 
@@ -165,20 +158,17 @@ public class TerrainController
                     float randomValue = UnityEngine.Random.value;
 
                     // Changed the comparison signs around
-                    if (randomValue > DEFAULT_BUILDING_PERC)
+                    if (randomValue > R.Game.Terrain.DEFAULT_BUILDING_PERC)
                     {
                         map[i, j] = (byte)TileTypes.BUILDINGS;
-                        //this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.CactusPerc)
                     {
                         map[i, j] = (byte)TileTypes.CACTUS;
-                        //this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else if (randomValue > this.BushPerc)
                     {
                         map[i, j] = (byte)TileTypes.BUSH;
-                        //this.occupiedPositions.Add(new Vector2(i, j));
                     }
                     else
                     {
@@ -336,6 +326,7 @@ public class TerrainController
         byte[] decompressed = decompressByteArray(compressed);
 
         this.Width = System.BitConverter.ToInt64(decompressed, 0);
+        //TODO: LONG_OFFSET = 8
         this.Length = System.BitConverter.ToInt64(decompressed, 8);
 
         byte[,] map = new byte[this.Width, this.Length];
@@ -378,24 +369,29 @@ public class TerrainController
     -------------------------------------------------------------------------------------------------*/
     public void LoadGuns(byte[] compressedGuns)
     {
-        //decompress the guns bytearray
+        // Decompress the guns bytearray
         byte[] guns = decompressByteArray(compressedGuns);
 
         float offsetX = this.Width / 2;
         float offsetZ = this.Length / 2;
-        int size = guns.Length / 13;
+        int size = guns.Length / R.Game.Terrain.GUN_OBJECT_SIZE;
         int count = 0;
-        byte[] tempw = new byte[13];
+        byte[] tempw = new byte[R.Game.Terrain.GUN_OBJECT_SIZE];
+
+        // Clear out any old data
         gunsList.Clear();
 
+        // Go through the decompressed gun packet, create WeaponSpell objects,
+        // and the assign it too the gun list
         for (int i = 0; i < size; i++)
         {
-            Buffer.BlockCopy(guns, count, tempw, 0, 13);
+            Buffer.BlockCopy(guns, count, tempw, 0, R.Game.Terrain.GUN_OBJECT_SIZE);
             WeaponSpell tempwpn = GetWeaponFromBytes(tempw);
             gunsList.Add(tempwpn);
-            count += 13;
+            count += R.Game.Terrain.GUN_OBJECT_SIZE;
         }
 
+        //Load all of the gun prefabs
         GameObject gun1 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
         GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
@@ -410,48 +406,49 @@ public class TerrainController
         GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
 
+        //Go through every gun in the list and instantiate the gun based on type
         foreach (var w in gunsList)
         {
             switch (w.Type)
             {
                 case 1:
-                    GameObject Ob1 = (GameObject)UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 2:
-                    GameObject Ob2 = (GameObject)UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 3:
-                    GameObject Ob3 = (GameObject)UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 4:
-                    GameObject Ob4 = (GameObject)UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 5:
-                    GameObject Ob5 = (GameObject)UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 6:
-                    GameObject Ob6 = (GameObject)UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 7:
-                    GameObject Ob7 = (GameObject)UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 8:
-                    GameObject Ob8 = (GameObject)UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 9:
-                    GameObject Ob9 = (GameObject)UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 10:
-                    GameObject Ob10 = (GameObject)UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 11:
-                    GameObject Ob11 = (GameObject)UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 12:
-                    GameObject Ob12 = (GameObject)UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 13:
-                    GameObject Ob13 = (GameObject)UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 default:
                     break;
@@ -459,28 +456,32 @@ public class TerrainController
         }
     }
 
-    //Alfred
-    //Modified by Roger
-    public WeaponSpell GetWeaponFromBytes(byte[] weaponinbytes)
+    // This is a helper function that parses chunks of the decompressed
+    // gun packet and returns the parsed packet data as a WeaponSpell object
+    //
+    // Alfred's code, modified by Roger
+    private WeaponSpell GetWeaponFromBytes(byte[] weaponinbytes)
     {
         WeaponSpell Weapon = new WeaponSpell();
 
+        //Grab the first byte
         Weapon.Type = weaponinbytes[0];
 
-        byte[] ID = new byte[4];
-        Weapon.ID = BitConverter.ToInt32(weaponinbytes, 1);
+        byte[] ID = new byte[R.Game.Terrain.ID_BYTE_SIZE];
+        Weapon.ID = BitConverter.ToInt32(weaponinbytes, R.Game.Terrain.ID_OFFSET);
 
-        byte[] X = new byte[4];
-        Weapon.X = BitConverter.ToInt32(weaponinbytes, 5);
+        byte[] X = new byte[R.Game.Terrain.X_BYTE_SIZE];
+        Weapon.X = BitConverter.ToInt32(weaponinbytes, R.Game.Terrain.X_OFFSET);
 
-        byte[] Z = new byte[4];
-        Weapon.Z = BitConverter.ToInt32(weaponinbytes, 9);
+        byte[] Z = new byte[R.Game.Terrain.Z_BYTE_SIZE];
+        Weapon.Z = BitConverter.ToInt32(weaponinbytes, R.Game.Terrain.Z_OFFSET);
 
         return Weapon;
     }
 
-    //Alfred
-    //Modified by Roger
+    // The client side version of the WeaponSpell class
+    //
+    // Alfred's code, modified by Roger
     public class WeaponSpell
     {
         public static int inc = 0;
@@ -522,19 +523,16 @@ public class TerrainController
         TerrainData tData = new TerrainData
         {
             size = new Vector3(Width, 0, Length),
-            name = DEFAULT_NAME
+            name = R.Game.Terrain.DEFAULT_NAME
         };
 
-        // Gets the number of tile types
-        int numTileTypes = TileTypes.GetNames(typeof(TileTypes)).Length;
-
-        // Grab the rock prefabs
+        // Grab the prefabs
         GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
-        //GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock2/Rock2_A.prefab", typeof(GameObject));
         GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/Cactus1.prefab", typeof(GameObject));
         GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuilding1.prefab", typeof(GameObject));
         GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/Town1.prefab", typeof(GameObject));
 
+        //Set the collider boundaries of the game objects
         float rockColliderX = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
         float rockColliderY = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.y;
         float rockColliderZ = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.z;
@@ -554,6 +552,7 @@ public class TerrainController
         // Spawning the town at the center with collider 300X300
         GameObject TownObject = (GameObject)UnityEngine.Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX, 0, Length / 2 - offsetZ), Quaternion.identity);
 
+        //Spawn the game obstacles
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < Data.tiles.GetLength(1); j++)
@@ -637,9 +636,8 @@ public class TerrainController
 
         // Spawn the terrain
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
-        terrain.name = DEFAULT_NAME;
+        terrain.name = R.Game.Terrain.DEFAULT_NAME;
         terrain.transform.Translate(-offsetX, 0, -offsetZ);
-        //Debug.Log("Occupied position: " + occupiedPositions.Count);
 
         return true;
     }
