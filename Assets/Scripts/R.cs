@@ -1,6 +1,6 @@
 using System;
 
-﻿namespace R
+namespace R
 {
 	// Contains all the constants associated with networking and the packet
 	public static class Net
@@ -13,8 +13,8 @@ using System;
 		public static class Header
 		{
 			public const byte INIT_PLAYER = 0;
-			public const byte TICK = 85;
 			public const byte NEW_CLIENT = 69;
+			public const byte TICK = 85;
 			public const byte ACK = 170;
 
 			public const byte TERRAIN_DATA = 55;
@@ -71,7 +71,6 @@ using System;
 			public const int CLIENT_TICK = 24;
 			public const int PLAYER_DATA = 14;
 		}
-
 	}
 
 	// Contains Constants Related to the game
@@ -108,6 +107,7 @@ using System;
 		}
 
 	}
+
 	public static class Init
 	{
 		public const int PLAYERMULT = 2;
@@ -137,7 +137,5 @@ using System;
 		public const int WPN13 = 13;
 		public const int MAPEND = 1001;
 		public const double PERCENTHOTSPOT = 0.5;
-
-
 	}
 }

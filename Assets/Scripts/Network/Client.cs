@@ -15,8 +15,7 @@ namespace Networking
 
 		public Client()
 		{
-			connection = ServerLibrary.Client_CreateClient();
-
+			connection = ServerLibrary.Server_CreateServer();
 		}
 
 		public Int32 Init(string ipaddr, ushort port)
