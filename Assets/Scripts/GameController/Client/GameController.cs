@@ -88,7 +88,7 @@ public class GameController : MonoBehaviour {
 
         this.movePlayers(playerIDs, positions, rotations);
 
-        //
+        // 
     }
 
     void syncWithServer()
@@ -206,6 +206,7 @@ public class GameController : MonoBehaviour {
         index += 4;
 
         // Let the server know that a shot has been fired
+
         // Stack<Bullet> playerBullets = this.players[this.currentPlayerId].GetComponent<Gun>().FiredShots;
         //
         // while (playerBullets.Count > 0)
