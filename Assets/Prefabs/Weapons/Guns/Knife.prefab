@@ -9,19 +9,22 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1442020802060914}
+  m_RootGameObject: {fileID: 1381062127431562}
   m_IsPrefabParent: 1
---- !u!1 &1442020802060914
+--- !u!1 &1381062127431562
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 456250}
-  - component: {fileID: 3350158}
-  - component: {fileID: 2398592}
-  - component: {fileID: 65002204220814480}
+  - component: {fileID: 4652543874372978}
+  - component: {fileID: 65955817135343886}
+  - component: {fileID: 23431499060073734}
+  - component: {fileID: 33765107856992996}
+  - component: {fileID: 65157733368790658}
+  - component: {fileID: 114835052945986364}
+  - component: {fileID: 82869852660190436}
   m_Layer: 0
   m_Name: Knife
   m_TagString: Untagged
@@ -29,25 +32,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4203708152885696
+--- !u!4 &4652543874372978
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442020802060914}
+  m_GameObject: {fileID: 1381062127431562}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23556633171605420
+--- !u!23 &23431499060073734
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442020802060914}
+  m_GameObject: {fileID: 1381062127431562}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -77,36 +80,48 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33233717636763946
+--- !u!33 &33765107856992996
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442020802060914}
+  m_GameObject: {fileID: 1381062127431562}
   m_Mesh: {fileID: 4300002, guid: 0e018eff60891b748a97de94781aef81, type: 3}
---- !u!65 &65808498448500262
+--- !u!65 &65157733368790658
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442020802060914}
+  m_GameObject: {fileID: 1381062127431562}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.043421417, y: 0.11423478, z: 0.6323415}
   m_Center: {x: 0.0000000018626451, y: 0.000000007450581, z: 0.1993103}
---- !u!82 &82516798363321260
+--- !u!65 &65955817135343886
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1381062127431562}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.043421417, y: 0.11423478, z: 0.6323415}
+  m_Center: {x: 0.0000000018626451, y: 0.000000007450581, z: 0.1993103}
+--- !u!82 &82869852660190436
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442020802060914}
+  m_GameObject: {fileID: 1381062127431562}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 51fcf928d40b7f943ba156c18dfe3280, type: 3}
-  m_PlayOnAwake: 0
+  m_audioClip: {fileID: 8300000, guid: 1984b6d3c2008496d970d19f71cc95b8, type: 3}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -167,24 +182,49 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 135764}
-  m_IsPrefabParent: 1
---- !u!65 &65002204220814480
-BoxCollider:
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &114835052945986364
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 135764}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_GameObject: {fileID: 1381062127431562}
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.043421417, y: 0.11423478, z: 0.6323415}
-  m_Center: {x: 0.0000000018626451, y: 0.000000007450581, z: 0.1993103}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a2ea20915b7204cb33d37c996ccecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Category: 1
+  Type: 1
+  FireRate: 0.5
+  reloadTime: 0.5
+  ClipSize: 999
+  isEquipped: 0
+  BulletPrefab: {fileID: 114733449328346020, guid: 49bc26419b707a24fa27e3565b20284a,
+    type: 2}
+  reloading: 0
+  currAmmo: 0
+  weaponSound: {fileID: 82869852660190436}
