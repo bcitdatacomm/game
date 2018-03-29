@@ -343,7 +343,7 @@ namespace InitGuns
 
             Weapon.Type = weaponinbytes[0];
 
-            byte[] ID = new byte[R.Init.IDBYTES];
+            byte[] ID = new byte[R.Init.ID_BYTES];
             Weapon.ID = BitConverter.ToInt32(weaponinbytes, R.Init.WEAPON_OFFSET_ID);
 
             byte[] X = new byte[R.Init.COORDINATE_BYTES];
