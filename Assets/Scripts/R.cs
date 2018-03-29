@@ -110,32 +110,32 @@ namespace R
 
 	public static class Init
 	{
-		public const int PLAYERMULT = 2;
-		public const int WEAPONOFFSETID = 1;
-		public const int WEAPONOFFSETX = 5;
-		public const int WEAPONOFFSETZ = 9;
-		public const int COORDBYTES = 4;
-		public const int IDBYTES = 4;
-		public const int INDWPNPCKT = 13;
-		public const int QUOTIENTTOWNGUNS = 4;
+		public const int PLAYER_WEAPON_MULTIPLIER = 6;
+		public const int WEAPON_OFFSET_ID = 1;
+		public const int WEAPON_OFFSET_X = 5;
+		public const int WEAPON_OFFSET_Z = 9;
+		public const int COORDINATE_BYTES = 4;
+		public const int ID_BYTES = 4;
+		public const int WEAPON_PACKET = 13;
+		public const int DIVIDE_TOWNGUNS = 4;
 		public const int CLUSTERING = 50;
-		public const int TOWNHEIGHT = 500;
-		public const int TOWNWIDTH = 500;
-		public const int OCCURANCESQUARE = 12;
-		public const int WPN1 = 1;
-		public const int WPN2 = 2;
-		public const int WPN3 = 3;
-		public const int WPN4 = 4;
-		public const int WPN5 = 5;
-		public const int WPN6 = 6;
-		public const int WPN7 = 7;
-		public const int WPN8 = 8;
-		public const int WPN9 = 9;
-		public const int WPN10 = 10;
-		public const int WPN11 = 11;
-		public const int WPN12 = 12;
-		public const int WPN13 = 13;
-		public const int MAPEND = 1001;
-		public const double PERCENTHOTSPOT = 0.5;
+		public const int TOWN_HEIGHT = 500;
+		public const int TOWN_WIDTH = 500;
+		public const int OCCURANCE_SQUARE = 12;
+		public const int WEAPON_1 = 1;
+		public const int WEAPON_2 = 2;
+		public const int WEAPON_3 = 3;
+		public const int WEAPON_4 = 4;
+		public const int WEAPON_5 = 5;
+		public const int WEAPON_6 = 6;
+		public const int WEAPON_7 = 7;
+		public const int WEAPON_8 = 8;
+		public const int WEAPON_9 = 9;
+		public const int WEAPON_10 = 10;
+		public const int WEAPON_11 = 11;
+		public const int WEAPON_12 = 12;
+		public const int WEAPON_13 = 13;
+		public const int MAP_END = 1001;
+		public const double PERCENT_HOTSPOT = 0.5;
 	}
 }
