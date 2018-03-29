@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
         {
             get
             {
-                return new Vector3(this.X, 1, this.Z);
+                return new Vector3(this.X, 0, this.Z);
             }
         }
 
