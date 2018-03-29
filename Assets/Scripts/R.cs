@@ -92,9 +92,9 @@ namespace R
 			public const int ID_OFFSET = 1;
 			public const int X_OFFSET = 5;
 			public const int Z_OFFSET = 9;
-			// Changed to a percentage - ALam
-			public const float DEFAULT_CACTUS_PERC = 0.9997f;
-			public const float DEFAULT_BUSH_PERC = 0.9995f;
+            // Changed to a percentage - ALam
+            public const float DEFAULT_CACTUS_PERC = 0;//0.9993f;
+            public const float DEFAULT_BUSH_PERC = 0.9995f;
 			public const float DEFAULT_BUILDING_PERC = 0.9999f;
 			// Terrain name
 			public const string DEFAULT_NAME = "Terrain";

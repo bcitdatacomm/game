@@ -396,12 +396,12 @@ public class TerrainController
         GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
         GameObject gun4 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
-        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Axe.prefab", typeof(GameObject));
+        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun6 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
         GameObject gun7 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun8 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
         GameObject gun9 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
-        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Axe.prefab", typeof(GameObject));
+        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
         GameObject gun11 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
         GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
         GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
@@ -527,9 +527,9 @@ public class TerrainController
         };
 
         // Grab the prefabs
-        GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/Rock1_B.prefab", typeof(GameObject));
-        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/Cactus1.prefab", typeof(GameObject));
-        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuilding1.prefab", typeof(GameObject));
+        GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/RockScaled.prefab", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/CactusScaled.prefab", typeof(GameObject));
+        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuildingScaled.prefab", typeof(GameObject));
         GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/Town1.prefab", typeof(GameObject));
 
         //Set the collider boundaries of the game objects
