@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.20";
+    public const string SERVER_ADDRESS = "192.168.0.13";
 
     private byte currentPlayerId;
 
