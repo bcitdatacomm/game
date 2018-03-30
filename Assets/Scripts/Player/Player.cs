@@ -111,6 +111,10 @@ public class Player : MonoBehaviour
             this.transform.position = this.transform.position + new Vector3(MovementSpeed, 0, 0);
             net = net + new Vector3(MovementSpeed, 0, 0);
         }
+        Vector3 pos = this.transform.position;
+        pos.y = 0;
+        this.transform.position = pos;
+
     }
 
     void ManualReload()
