@@ -244,8 +244,11 @@ public class GameController : MonoBehaviour
         }
 
         // Where is the id in the init packet
-        this.currentPlayerId = buffer[1];
-        this.addPlayer(new PlayerData(this.currentPlayerId));
+        this.currentPlayerId = this.buffer[1];
+        float x = BitConverter.ToSingle(buffer, 2);
+        float z = BitConverter.ToSingle(buffer, 6);
+        Debug.Log("Spawn location at " + x + ", " + z);
+        this.addPlayer(new PlayerData(this.currentPlayerId, x, z, 0, 0));
     }
 
     List<PlayerData> getPacketData(int n)
@@ -275,8 +278,10 @@ public class GameController : MonoBehaviour
         if (newPlayer.Id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, newPlayer.Position, newPlayer.Rotation);
+            float x = newPlayer.Position.x;
+            float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
-            Instantiate(this.PlayerCamera);
+            Instantiate(this.PlayerCamera, new Vector3(x, 15, z), Quaternion.Euler(90, 0, 0));
         }
         else
         {
