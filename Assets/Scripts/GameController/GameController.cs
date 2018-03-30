@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.13";
+    public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -110,7 +110,6 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-
         mapBuffer = new byte[MAX_INIT_BUFFER_SIZE];
         itemBuffer = new byte[MAX_INIT_BUFFER_SIZE];
         // Adding TCP receive code here, move as needed
@@ -224,14 +223,6 @@ public class GameController : MonoBehaviour
         ackPack[0] = R.Net.Header.ACK;
 
         client.Send(ackPack, R.Net.Size.CLIENT_TICK);
-
-        // Get the data from the itemData packet
-        // InitRandomGuns items = new InitRandomGuns();
-        // items.fromByteArrayToList(itemData);
-        // items.SpawnedGuns is a list that has been populated with weaponspell object
-        // which has ID, Type, Xcoord, and Zcoord
-        // code needs to be created in unison with asset team to put items on the map
-
     }
 
 

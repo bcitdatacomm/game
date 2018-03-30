@@ -56,7 +56,6 @@ GameObject:
   - component: {fileID: 23129898120289230}
   - component: {fileID: 54722850016167170}
   - component: {fileID: 136691804750256166}
-  - component: {fileID: 114087632768074570}
   m_Layer: 0
   m_Name: OtherPlayerPrefab
   m_TagString: Player
@@ -118,6 +117,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: dc5404b04d6a0594da512d0bfc1e1ea7, type: 2}
   m_StaticBatchInfo:
@@ -152,6 +152,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 665a014d40bef0c4ebc7eedd6d196093, type: 2}
   m_StaticBatchInfo:
@@ -214,22 +215,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114087632768074570
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1959928942408444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04cf49bf9d4113f4b9feb66a35278aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BulletPrefab: {fileID: 1777791287502176, guid: 7389d2277b61dc9458d492956adda06f,
-    type: 2}
-  BulletSpawn: {fileID: 4890394200967282}
-  ClientController: {fileID: 0}
-  Health: 100
 --- !u!136 &136691804750256166
 CapsuleCollider:
   m_ObjectHideFlags: 1
