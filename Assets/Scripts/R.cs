@@ -38,7 +38,8 @@ namespace R
 			public const int HEALTH = 17;
 			public const int INVENTORY = 18;
 			public const int PLAYERS = 23;
-
+			public const int BULLETS = 443;
+			
 			public static class Player
 			{
 				public const int ID = 0;

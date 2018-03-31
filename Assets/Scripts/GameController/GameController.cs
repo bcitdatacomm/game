@@ -100,6 +100,7 @@ public class GameController : MonoBehaviour
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
+    public GameObject Bullet;
 
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
@@ -208,6 +209,18 @@ public class GameController : MonoBehaviour
         }
 
         this.movePlayers(packetData);
+        if(HeaderDecoder.HasBullet(this.buffer[0])) {
+            int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
+            int offset = R.Net.Offset.BULLETS + 1;
+
+            for(int i = 0; i < numBullets; i++) {
+                int ownerId = this.buffer[offset];
+                if(this.buffer[offset + 6] == 1) {
+                    Instantiate(this.Bullet, packetData[ownerId].Position, packetData[ownerId].Rotation);
+                }
+                offset += 7;
+            }
+        }
     }
 
     // This method will get the terrain and weapons and put them on the map
