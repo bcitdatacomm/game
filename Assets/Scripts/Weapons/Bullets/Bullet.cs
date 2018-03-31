@@ -16,7 +16,6 @@ public class Bullet : MonoBehaviour
     public float Speed;
     // Seconds till Bullet Destroyed
     public float LifeTime;
-    public int AoE;
 
     // Bullet Direction
     public Vector3 initPos;

@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.8";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -320,6 +320,7 @@ public class GameController : MonoBehaviour
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
+        byte[] bullet = BitConverter.GetBytes(currentPlayer.FiredShots.Pop());
 
         // Put position data into the packet
         this.buffer[0] = R.Net.Header.TICK;
@@ -330,7 +331,10 @@ public class GameController : MonoBehaviour
         index += 4;
         Array.Copy(pheta, 0, this.buffer, index,  4);
         index += 4;
-
+        Array.Copy(currentPlayer.getInventory(), 0, this.buffer, index, 5);
+        index += 5;
+        Array.Copy(bullet, 0, this.buffer, index, 5);
+        index += 5;
         this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
     }
 }
