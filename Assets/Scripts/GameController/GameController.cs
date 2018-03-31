@@ -321,7 +321,11 @@ public class GameController : MonoBehaviour
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
-        byte[] bullet = BitConverter.GetBytes(playerRef.FiredShots.Pop());
+        byte[] bullet = new byte[5];
+        if(playerRef.FiredShots.Count() > 0) {
+            bullet = BitConverter.GetBytes(playerRef.FiredShots.Pop());
+        }
+
 
         // Put position data into the packet
         this.buffer[0] = R.Net.Header.TICK;
