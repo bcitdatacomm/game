@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour
         public float Z { get; set; }
         public float R { get; set; }
         public byte Weapon { get; set; }
+        public int Health { get; set; }
+
         public Vector3 Position
         {
             get
@@ -38,6 +40,7 @@ public class GameController : MonoBehaviour
             this.Z = 0;
             this.R = 0;
             this.Weapon = 0;
+            this.Health = 100;
         }
 
         public PlayerData(byte id)
@@ -47,6 +50,7 @@ public class GameController : MonoBehaviour
             this.Z = 0;
             this.R = 0;
             this.Weapon = 0;
+            this.Health = 100;
         }
 
         public PlayerData(byte id, float x, float z, float r, byte weapon)
@@ -56,6 +60,17 @@ public class GameController : MonoBehaviour
             this.Z = z;
             this.R = r;
             this.Weapon = weapon;
+            this.Health = 100;
+        }
+
+        public PlayerData(byte id, float x, float z, float r, byte weapon, int health)
+        {
+            this.Id = id;
+            this.X = x;
+            this.Z = z;
+            this.R = r;
+            this.Weapon = weapon;
+            this.Health = health;
         }
     }
 
@@ -82,7 +97,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.5";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -254,6 +269,9 @@ public class GameController : MonoBehaviour
     List<PlayerData> getPacketData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
+        int heathOffset = R.Net.Offset.HEALTH;
+        int health = BitConverter.ToInt32(this.buffer, heathOffset);
+
         int offset = R.Net.Offset.PLAYERS;
 
         for (int i = 0; i < n; i++)
@@ -265,7 +283,7 @@ public class GameController : MonoBehaviour
             byte weapon = this.buffer[offset + R.Net.Offset.Player.W];
             offset += R.Net.Size.PLAYER_DATA;
 
-            data.Add(new PlayerData(id, x, z, r, weapon));
+            data.Add(new PlayerData(id, x, z, r, weapon, health));
         }
 
         return data;
@@ -301,6 +319,11 @@ public class GameController : MonoBehaviour
             {
                 if (this.currentPlayerId == playerDatas[i].Id)
                 {
+                    Debug.Log("Player health: " + playerDatas[i].Health);
+                    if (playerDatas[i].Health == 0)
+                    {
+                        Destroy(this.players[playerDatas[i].Id]);
+                    }
                     continue;
                 }
                 this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
