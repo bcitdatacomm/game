@@ -193,34 +193,43 @@ public class GameController : MonoBehaviour
         }
 
         int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[0]);
-        List<PlayerData> packetData = this.getPacketData(numberOfPlayers);
+        List<PlayerData> playerData = this.getPlayerData(numberOfPlayers);
 
         // Add any new players
         if (numberOfPlayers > this.players.Count)
         {
             for (int i = 0; i < numberOfPlayers; i++)
             {
-                if (this.players.ContainsKey(packetData[i].Id))
+                if (this.players.ContainsKey(playerData[i].Id))
                 {
                     continue;
                 }
-                this.addPlayer(packetData[i]);
+                this.addPlayer(playerData[i]);
             }
         }
 
-        this.movePlayers(packetData);
-        if(HeaderDecoder.HasBullet(this.buffer[0])) {
+        if (HeaderDecoder.HasBullet(this.buffer[0]))
+        {
             int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
-            int offset = R.Net.Offset.BULLETS + 1;
+            Debug.Log("Number of bullets: " + numBullets);
 
-            for(int i = 0; i < numBullets; i++) {
-                int ownerId = this.buffer[offset];
-                if(this.buffer[offset + 6] == 1) {
-                    Instantiate(this.Bullet, packetData[ownerId].Position, packetData[ownerId].Rotation);
+            int offset = R.Net.Offset.BULLETS + 1;
+            byte ownerId;
+
+            for(int i = 0; i < numBullets; i++)
+            {
+                if (this.buffer[offset + 6] == 1)
+                {
+                    ownerId = this.buffer[offset];
+                    Debug.Log("owner is " + ownerId);
+                    Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                    Debug.Log("creating bullet");
                 }
                 offset += 7;
             }
         }
+
+        this.movePlayers(playerData);
     }
 
     // This method will get the terrain and weapons and put them on the map
@@ -258,13 +267,14 @@ public class GameController : MonoBehaviour
 
         // Where is the id in the init packet
         this.currentPlayerId = this.buffer[1];
+        Debug.Log("My id is " + this.currentPlayerId);
         float x = BitConverter.ToSingle(buffer, 2);
         float z = BitConverter.ToSingle(buffer, 6);
         Debug.Log("Spawn location at " + x + ", " + z);
         this.addPlayer(new PlayerData(this.currentPlayerId, x, z, 0, 0));
     }
 
-    List<PlayerData> getPacketData(int n)
+    List<PlayerData> getPlayerData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
         int offset = R.Net.Offset.PLAYERS;
@@ -335,26 +345,27 @@ public class GameController : MonoBehaviour
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
         byte[] bullet = new byte[5];
+        byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
+
         if(playerRef.FiredShots.Count > 0)
         {
             Bullet bulletRef = playerRef.FiredShots.Pop();
             bullet = bulletRef.ToBytes();
         }
 
-
         // Put position data into the packet
-        this.buffer[0] = R.Net.Header.TICK;
-        this.buffer[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, this.buffer, index,  4);
+        packet[0] = R.Net.Header.TICK;
+        packet[1] = this.currentPlayerId;
+        Array.Copy(x    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(z    , 0, this.buffer, index,  4);
+        Array.Copy(z    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, this.buffer, index,  4);
+        Array.Copy(pheta, 0, packet, index,  4);
         index += 4;
-        Array.Copy(playerRef.getInventory(), 0, this.buffer, index, 5);
+        Array.Copy(playerRef.getInventory(), 0, packet, index, 5);
         index += 5;
-        Array.Copy(bullet, 0, this.buffer, index, 5);
+        Array.Copy(bullet, 0, packet, index, 5);
         index += 5;
-        this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
+        this.client.Send(packet, R.Net.Size.CLIENT_TICK);
     }
 }
