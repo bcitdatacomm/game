@@ -322,8 +322,8 @@ public class GameController : MonoBehaviour
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
         byte[] bullet = new byte[5];
-        if(playerRef.FiredShots.Count() > 0) {
-            bullet = BitConverter.GetBytes(playerRef.FiredShots.Pop());
+        if(playerRef.FiredShots.Count > 0) {
+            bullet = BitConverter.GetBytes(playerRef.FiredShots.Pop().GetBytes());
         }
 
 

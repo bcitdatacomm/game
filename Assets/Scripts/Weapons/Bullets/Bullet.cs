@@ -38,4 +38,10 @@ public class Bullet : MonoBehaviour
         Vector3 p = this.transform.position;
         this.transform.position = new Vector3(p.x, 1, p.z);
     }
+
+    public void ToBytes() {
+        byte[] temp = new byte[5];
+        Array.Copy(BitConverter.GetBytes(this.ID), 0, temp, 0, 4);
+        temp[4] = this.Type;
+    }
 }
