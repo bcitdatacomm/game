@@ -269,6 +269,8 @@ public class GameController : MonoBehaviour
     List<PlayerData> getPacketData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
+
+        // getting own player health data
         int heathOffset = R.Net.Offset.HEALTH;
         int health = BitConverter.ToInt32(this.buffer, heathOffset);
 
@@ -319,11 +321,7 @@ public class GameController : MonoBehaviour
             {
                 if (this.currentPlayerId == playerDatas[i].Id)
                 {
-                    Debug.Log("Player health: " + playerDatas[i].Health);
-                    if (playerDatas[i].Health == 0)
-                    {
-                        Destroy(this.players[playerDatas[i].Id]);
-                    }
+                    checkPlayerHealth(i);
                     continue;
                 }
                 this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
@@ -333,6 +331,18 @@ public class GameController : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e.Message);
+        }
+    }
+
+    void checkPlayerHealth(int index)
+    {
+        Player playerRef = this.players[playerDatas[index].Id].GetComponent<Player>();
+        playerRef.Health = playerDatas[index].Health;
+        //Debug.Log("Player health: " + playerRef.Health);
+        if (playerRef.Health == 0)
+        {
+            // player is dead, do something here
+            // remove player from players Dictionary
         }
     }
 
