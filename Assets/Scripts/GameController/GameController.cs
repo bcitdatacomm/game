@@ -100,7 +100,7 @@ public class GameController : MonoBehaviour
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
-    public GameObject Bullet;
+    public Bullet Bullet;
 
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
@@ -222,7 +222,7 @@ public class GameController : MonoBehaviour
                 {
                     ownerId = this.buffer[offset];
                     Debug.Log("owner is " + ownerId);
-                    Bullet newBullet = Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                    Bullet newBullet = (Bullet)GameObject.Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
                     newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
                     Debug.Log("creating bullet");
                 }
