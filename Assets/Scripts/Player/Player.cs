@@ -252,7 +252,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    byte[] getInventory()
+    public byte[] getInventory()
     {
         byte[] checkInventory = new byte[5] { inventory.getWeapon(), inventory.getSpell(1), inventory.getSpell(2), inventory.getSpell(3), inventory.getCurrentSpell() };
         return checkInventory;

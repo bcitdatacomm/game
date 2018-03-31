@@ -317,10 +317,11 @@ public class GameController : MonoBehaviour
     {
         int index = 2;
         GameObject currentPlayer = this.players[this.currentPlayerId];
+        Player playerRef = currentPlayer.transform.GetComponent<Player>();
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
         byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
-        byte[] bullet = BitConverter.GetBytes(currentPlayer.FiredShots.Pop());
+        byte[] bullet = BitConverter.GetBytes(playerRef.FiredShots.Pop());
 
         // Put position data into the packet
         this.buffer[0] = R.Net.Header.TICK;
@@ -331,7 +332,7 @@ public class GameController : MonoBehaviour
         index += 4;
         Array.Copy(pheta, 0, this.buffer, index,  4);
         index += 4;
-        Array.Copy(currentPlayer.getInventory(), 0, this.buffer, index, 5);
+        Array.Copy(playerRef.getInventory(), 0, this.buffer, index, 5);
         index += 5;
         Array.Copy(bullet, 0, this.buffer, index, 5);
         index += 5;
