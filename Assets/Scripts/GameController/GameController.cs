@@ -286,6 +286,7 @@ public class GameController : MonoBehaviour
         else
         {
             player = (GameObject)Instantiate(this.EnemyPrefab, newPlayer.Position, newPlayer.Rotation);
+
         }
 
         this.players.Add(newPlayer.Id, player);
