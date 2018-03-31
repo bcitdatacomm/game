@@ -209,7 +209,7 @@ MonoBehaviour:
     type: 2}
   PlayerPrefab: {fileID: 1049622008066804, guid: fcc0dabc7a7ad0a488495ad026ad620d,
     type: 2}
-  EnemyPrefab: {fileID: 1959928942408444, guid: bc229d5b46adbc94ca7babe10ded46cb,
+  EnemyPrefab: {fileID: 1078639813505866, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}
 --- !u!4 &1078105887
 Transform:
