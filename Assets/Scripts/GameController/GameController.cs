@@ -103,6 +103,7 @@ public class GameController : MonoBehaviour
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
+    private bool currentPlayerDead = false;
 
     byte[] buffer;
     private Client client;
@@ -321,7 +322,7 @@ public class GameController : MonoBehaviour
             {
                 if (this.currentPlayerId == playerDatas[i].Id)
                 {
-                    checkPlayerHealth(i);
+                    checkPlayerHealth(playerDatas[i]);
                     continue;
                 }
                 this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
@@ -334,36 +335,45 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void checkPlayerHealth(int index)
+    void checkPlayerHealth(PlayerData pData)
     {
-        Player playerRef = this.players[playerDatas[index].Id].GetComponent<Player>();
-        playerRef.Health = playerDatas[index].Health;
-        //Debug.Log("Player health: " + playerRef.Health);
+        Player playerRef = this.players[pData.Id].GetComponent<Player>();
+        playerRef.Health = pData.Health;
+        Debug.Log("Player health: " + playerRef.Health);
         if (playerRef.Health == 0)
         {
-            // player is dead, do something here
-            // remove player from players Dictionary
+            removePlayer(pData);
         }
+    }
+
+    void removePlayer(PlayerData deadPlayer)
+    {
+        // player is dead, do something here
+        Destroy(this.players[deadPlayer.Id]);
+        currentPlayerDead = true;
     }
 
     void sendPlayerDataToServer()
     {
-        int index = 2;
-        GameObject currentPlayer = this.players[this.currentPlayerId];
-        byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
-        byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
-        byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
+        if (!currentPlayerDead)
+        {
+            int index = 2;
+            GameObject currentPlayer = this.players[this.currentPlayerId];
+            byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
+            byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
+            byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
 
-        // Put position data into the packet
-        this.buffer[0] = R.Net.Header.TICK;
-        this.buffer[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, this.buffer, index,  4);
-        index += 4;
-        Array.Copy(z    , 0, this.buffer, index,  4);
-        index += 4;
-        Array.Copy(pheta, 0, this.buffer, index,  4);
-        index += 4;
+            // Put position data into the packet
+            this.buffer[0] = R.Net.Header.TICK;
+            this.buffer[1] = this.currentPlayerId;
+            Array.Copy(x    , 0, this.buffer, index,  4);
+            index += 4;
+            Array.Copy(z    , 0, this.buffer, index,  4);
+            index += 4;
+            Array.Copy(pheta, 0, this.buffer, index,  4);
+            index += 4;
 
-        this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
+            this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
+        }
     }
 }
