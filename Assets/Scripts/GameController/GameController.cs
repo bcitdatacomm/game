@@ -223,7 +223,7 @@ public class GameController : MonoBehaviour
                     ownerId = this.buffer[offset];
                     Debug.Log("owner is " + ownerId);
                     Bullet newBullet = (Bullet)GameObject.Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                    newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
+                    newBullet.direction = this.players[ownerId].transform.rotation.y * Vector3.forward;
                     Debug.Log("creating bullet");
                 }
                 offset += 7;
