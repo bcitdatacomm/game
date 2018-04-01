@@ -3846,8 +3846,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 313048252}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -20, y: 17, z: 15}
+  m_LocalPosition: {x: 35, y: 0, z: 10}
+  m_LocalScale: {x: 20, y: 17, z: 15}
   m_Children: []
   m_Father: {fileID: 1185919367}
   m_RootOrder: 4
@@ -4951,7 +4951,7 @@ Transform:
   m_GameObject: {fileID: 757260168}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 50}
-  m_LocalScale: {x: -22, y: 18, z: 15}
+  m_LocalScale: {x: 22, y: 18, z: 15}
   m_Children: []
   m_Father: {fileID: 1185919367}
   m_RootOrder: 3
@@ -5721,7 +5721,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 926138277}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 15, z: -80}
+  m_LocalPosition: {x: 0, y: 15, z: -50}
   m_LocalScale: {x: -18, y: 17, z: 15}
   m_Children: []
   m_Father: {fileID: 1185919367}
@@ -5990,8 +5990,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 975145741}
   m_TextComponent: {fileID: 535488151}
   m_Placeholder: {fileID: 745506322}
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -8131,8 +8131,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1795978075}
   m_TextComponent: {fileID: 750606069}
   m_Placeholder: {fileID: 1755166524}
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
