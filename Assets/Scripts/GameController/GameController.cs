@@ -223,8 +223,9 @@ public class GameController : MonoBehaviour
                     ownerId = this.buffer[offset];
                     Debug.Log("owner is " + ownerId);
                     Bullet newBullet = (Bullet)GameObject.Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                    newBullet.direction = this.players[ownerId].transform.rotation.y * Vector3.forward;
+                    newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
                     Debug.Log("creating bullet");
+                    Debug.Log("" + newBullet.direction);
                 }
                 offset += 7;
             }
@@ -344,7 +345,7 @@ public class GameController : MonoBehaviour
         Player playerRef = currentPlayer.transform.GetComponent<Player>();
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
-        byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
+        byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.eulerAngles.y);
         byte[] bullet = new byte[5];
         byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
 
