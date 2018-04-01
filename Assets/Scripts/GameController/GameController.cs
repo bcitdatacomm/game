@@ -82,12 +82,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.8";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
+    private Dictionary<int, Bullet> bullets;
 
     byte[] buffer;
     private Client client;
@@ -101,6 +102,10 @@ public class GameController : MonoBehaviour
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
 
+    public Bullet PistolBullet;
+    public Bullet ShotGunBullet;
+    public Bullet RifleBullet;
+    public Bullet MeleeBullet;
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
     private Int32 clientsockfd;
@@ -160,6 +165,7 @@ public class GameController : MonoBehaviour
 
         this.currentPlayerId = 0;
         this.players = new Dictionary<byte, GameObject>();
+        this.bullets = new Dictionary<int, Bullet>();
         this.buffer = new byte[R.Net.Size.SERVER_TICK];
 
         initializeGame();
@@ -192,22 +198,56 @@ public class GameController : MonoBehaviour
         }
 
         int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[0]);
-        List<PlayerData> packetData = this.getPacketData(numberOfPlayers);
+        List<PlayerData> playerData = this.getPlayerData(numberOfPlayers);
 
         // Add any new players
         if (numberOfPlayers > this.players.Count)
         {
             for (int i = 0; i < numberOfPlayers; i++)
             {
-                if (this.players.ContainsKey(packetData[i].Id))
+                if (this.players.ContainsKey(playerData[i].Id))
                 {
                     continue;
                 }
-                this.addPlayer(packetData[i]);
+                this.addPlayer(playerData[i]);
             }
         }
 
-        this.movePlayers(packetData);
+        if (HeaderDecoder.HasBullet(this.buffer[0]))
+        {
+            int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
+            Debug.Log("Number of bullets: " + numBullets);
+
+            int offset = R.Net.Offset.BULLETS + 1;
+            byte ownerId;
+
+            for(int i = 0; i < numBullets; i++)
+            {
+                if (this.buffer[offset + 6] == 1)
+                {
+                    ownerId = this.buffer[offset];
+                    Bullet newBullet = null;
+                    switch(this.buffer[offset + 5]) {
+                        case R.Type.KNIFE:
+                            newBullet = (Bullet)GameObject.Instantiate(this.MeleeBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.PISTOL:
+                            newBullet = (Bullet)GameObject.Instantiate(this.PistolBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.SHOTGUN:
+                            newBullet = (Bullet)GameObject.Instantiate(this.ShotGunBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.RIFLE:
+                            newBullet = (Bullet)GameObject.Instantiate(this.RifleBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                    }
+                    newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
+                    bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
+                }
+                offset += 7;
+            }
+        }
+        this.movePlayers(playerData);
     }
 
     // This method will get the terrain and weapons and put them on the map
@@ -245,13 +285,14 @@ public class GameController : MonoBehaviour
 
         // Where is the id in the init packet
         this.currentPlayerId = this.buffer[1];
+        Debug.Log("My id is " + this.currentPlayerId);
         float x = BitConverter.ToSingle(buffer, 2);
         float z = BitConverter.ToSingle(buffer, 6);
         Debug.Log("Spawn location at " + x + ", " + z);
         this.addPlayer(new PlayerData(this.currentPlayerId, x, z, 0, 0));
     }
 
-    List<PlayerData> getPacketData(int n)
+    List<PlayerData> getPlayerData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
         int offset = R.Net.Offset.PLAYERS;
@@ -317,20 +358,32 @@ public class GameController : MonoBehaviour
     {
         int index = 2;
         GameObject currentPlayer = this.players[this.currentPlayerId];
+        Player playerRef = currentPlayer.transform.GetComponent<Player>();
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
         byte[] z = BitConverter.GetBytes(currentPlayer.transform.position.z);
-        byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.rotation.y);
+        byte[] pheta = BitConverter.GetBytes(currentPlayer.transform.eulerAngles.y);
+        byte[] bullet = new byte[5];
+        byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
+
+        if(playerRef.FiredShots.Count > 0)
+        {
+            Bullet bulletRef = playerRef.FiredShots.Pop();
+            bullet = bulletRef.ToBytes();
+        }
 
         // Put position data into the packet
-        this.buffer[0] = R.Net.Header.TICK;
-        this.buffer[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, this.buffer, index,  4);
+        packet[0] = R.Net.Header.TICK;
+        packet[1] = this.currentPlayerId;
+        Array.Copy(x    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(z    , 0, this.buffer, index,  4);
+        Array.Copy(z    , 0, packet, index,  4);
         index += 4;
-        Array.Copy(pheta, 0, this.buffer, index,  4);
+        Array.Copy(pheta, 0, packet, index,  4);
         index += 4;
-
-        this.client.Send(this.buffer, R.Net.Size.CLIENT_TICK);
+        Array.Copy(playerRef.getInventory(), 0, packet, index, 5);
+        index += 5;
+        Array.Copy(bullet, 0, packet, index, 5);
+        index += 5;
+        this.client.Send(packet, R.Net.Size.CLIENT_TICK);
     }
 }
