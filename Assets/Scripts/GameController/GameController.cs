@@ -88,6 +88,7 @@ public class GameController : MonoBehaviour
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
+    private Dictionary<int, Bullet> bullets;
 
     byte[] buffer;
     private Client client;
@@ -100,8 +101,11 @@ public class GameController : MonoBehaviour
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
-    public Bullet Bullet;
 
+    public Bullet PistolBullet;
+    public Bullet ShotGunBullet;
+    public Bullet RifleBullet;
+    public Bullet MeleeBullet;
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
     private Int32 clientsockfd;
@@ -161,6 +165,7 @@ public class GameController : MonoBehaviour
 
         this.currentPlayerId = 0;
         this.players = new Dictionary<byte, GameObject>();
+        this.bullets = new Dictionary<int, Bullet>();
         this.buffer = new byte[R.Net.Size.SERVER_TICK];
 
         initializeGame();
@@ -221,16 +226,27 @@ public class GameController : MonoBehaviour
                 if (this.buffer[offset + 6] == 1)
                 {
                     ownerId = this.buffer[offset];
-                    Debug.Log("owner is " + ownerId);
-                    Bullet newBullet = (Bullet)GameObject.Instantiate(this.Bullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                    Bullet newBullet = null;
+                    switch(this.buffer[offset + 5]) {
+                        case R.Type.KNIFE:
+                            newBullet = (Bullet)GameObject.Instantiate(this.MeleeBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.PISTOL:
+                            newBullet = (Bullet)GameObject.Instantiate(this.PistolBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.SHOTGUN:
+                            newBullet = (Bullet)GameObject.Instantiate(this.ShotGunBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                        case R.Type.RIFLE:
+                            newBullet = (Bullet)GameObject.Instantiate(this.RifleBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                            break;
+                    }
                     newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
-                    Debug.Log("creating bullet");
-                    Debug.Log("" + newBullet.direction);
+                    bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
                 }
                 offset += 7;
             }
         }
-
         this.movePlayers(playerData);
     }
 

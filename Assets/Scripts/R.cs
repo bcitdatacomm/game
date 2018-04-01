@@ -39,7 +39,7 @@ namespace R
 			public const int INVENTORY = 18;
 			public const int PLAYERS = 23;
 			public const int BULLETS = 443;
-			
+
 			public static class Player
 			{
 				public const int ID = 0;
@@ -109,6 +109,14 @@ namespace R
 
 	}
 
+	public static class Type
+	{
+		public const byte KNIFE = 1;
+		public const byte PISTOL = 2;
+		public const byte SHOTGUN = 3;
+		public const byte RIFLE = 4;
+	}
+	
 	public static class Init
 	{
 		public const int PLAYER_WEAPON_MULTIPLIER = 2;
