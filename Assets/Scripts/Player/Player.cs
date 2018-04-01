@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
 
         // Init spell list
         spells = new Spell[3];
+
         for (int i = 0; i < 3; i++)
         {
             // spells[i] = this.transform.GetChild(IDX_PREFAB_PLYR + 1 + i).GetComponent<Spell>();
@@ -82,6 +83,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        anim.SetBool("Moving", false);
         move();
         turn();
         ManualReload();
@@ -94,26 +96,40 @@ public class Player : MonoBehaviour
         if (Input.GetKey("w"))
         {
             this.transform.position = this.transform.position + new Vector3(0, 0, MovementSpeed);
-			net = net + new Vector3(0, 0, MovementSpeed);
+            net = net + new Vector3(0, 0, MovementSpeed);
+            anim.SetBool("Moving", true);
         }
         if (Input.GetKey("s"))
         {
             this.transform.position = this.transform.position + new Vector3(0, 0, -MovementSpeed);
             net = net + new Vector3(0, 0, -MovementSpeed);
+            anim.SetBool("Moving", true);
         }
         if (Input.GetKey("a"))
         {
             this.transform.position = this.transform.position + new Vector3(-MovementSpeed, 0, 0);
             net = net + new Vector3(-MovementSpeed, 0, 0);
+            anim.SetBool("Moving", true);
         }
         if (Input.GetKey("d"))
         {
             this.transform.position = this.transform.position + new Vector3(MovementSpeed, 0, 0);
             net = net + new Vector3(MovementSpeed, 0, 0);
+            anim.SetBool("Moving", true);
         }
         Vector3 pos = this.transform.position;
         pos.y = 0;
         this.transform.position = pos;
+
+    }
+
+    void FootR()
+    {
+
+    }
+
+    void FootL()
+    {
 
     }
 
