@@ -211,6 +211,7 @@ MonoBehaviour:
     type: 2}
   EnemyPrefab: {fileID: 1078639813505866, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}
+  Bullet: {fileID: 1151185244210784, guid: 06db919e12d98aa4cba5a93f01dd02b4, type: 2}
 --- !u!4 &1078105887
 Transform:
   m_ObjectHideFlags: 0
