@@ -40,12 +40,12 @@ public class Player : MonoBehaviour
     {
         get
         {
-            if (this.inventory.items.Length == 0)
+            Item gun = this.inventory.items[0];
+
+            if (gun == null)
             {
                 return new byte[5];
             }
-
-            Item gun = this.inventory.items[0];
 
             byte[] tmp = new byte[5];
 
