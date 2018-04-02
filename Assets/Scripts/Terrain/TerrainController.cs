@@ -352,23 +352,26 @@ public class TerrainController
     --
     -- DATE: March 21, 2018
     --
-    -- REVISIONS: N/A
+    -- REVISIONS: Because we later found out we need a reference to all the guns in on place we made
+    --            this function return a Dictionary of the game objects mapped to their id instead of
+    --            void.
     --
-    -- DESIGNER: Alfred Swinton & Roger Zhang
+    -- DESIGNER: Alfred Swinton & Roger Zhang & Benny Wang
     --
-    -- PROGRAMMER: Alfred Swinton & Roger Zhang
+    -- PROGRAMMER: Alfred Swinton & Roger Zhang & Benny Wang
     --
-    -- INTERFACE: LoadGuns(byte[] guns)
+    -- INTERFACE: Dictionary<int, GameObject> LoadGuns(byte[] guns)
     --                  byte[] guns: A byte array contains the gun data.
     --
-    -- RETURNS: void
+    -- RETURNS: A dictionary of all spawned items where they are mapped to their id.
     --
     -- NOTES:
     -- Takes in a byte array representation of the guns data that was send over by the server and
     -- loads it.
     -------------------------------------------------------------------------------------------------*/
-    public void LoadGuns(byte[] compressedGuns)
+    public Dictionary<int, GameObject> LoadGuns(byte[] compressedGuns)
     {
+        Dictionary<int, GameObject> tmp = new Dictionary<int, GameObject>();
         // Decompress the guns bytearray
         byte[] guns = decompressByteArray(compressedGuns);
 
@@ -456,7 +459,11 @@ public class TerrainController
             }
 
             newGun.GetComponent<Gun>().ID = w.ID;
+
+            tmp[w.ID] = newGun;
         }
+
+        return tmp;
     }
 
     // This is a helper function that parses chunks of the decompressed

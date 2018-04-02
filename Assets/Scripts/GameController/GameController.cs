@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
+    private Dictioanry<int, GameObject> weapons;
     private Dictionary<int, Bullet> bullets;
 
     byte[] buffer;
@@ -115,7 +116,7 @@ public class GameController : MonoBehaviour
     {
         // Get the data for terrain
         TerrainController tc = new TerrainController();
-        tc.LoadGuns(itemBuffer);
+        weapons = tc.LoadGuns(itemBuffer);
         tc.LoadByteArray(mapBuffer);
 
         byte[] ackPack = new byte[R.Net.Size.CLIENT_TICK];
