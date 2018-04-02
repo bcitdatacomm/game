@@ -287,7 +287,7 @@ public class GameController : MonoBehaviour
             for (int i = 0; i < weaponSwapEventCount; i++)
             {
                 byte ownerId = this.buffer[offset];
-                int newWeaponId = BitConvert.ToInt32(this.buffer, offset + 1);
+                int newWeaponId = BitConverter.ToInt32(this.buffer, offset + 1);
 
                 Debug.Log("Player " + ownerId + " has just picked up weapon with id " + newWeaponId);
 
