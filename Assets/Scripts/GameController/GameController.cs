@@ -293,6 +293,11 @@ public class GameController : MonoBehaviour
 
                 Debug.Log("Player " + ownerId + " has just picked up weapon with id " + newWeaponId);
 
+                if (ownerId != this.currentPlayerId)
+                {
+                    // Move the weapon here
+                }
+
                 offset += 5;
             }
         }
