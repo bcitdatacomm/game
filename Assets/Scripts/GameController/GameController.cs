@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
-    private Dictioanry<int, GameObject> weapons;
+    private Dictionary<int, GameObject> weapons;
     private Dictionary<int, Bullet> bullets;
 
     byte[] buffer;
