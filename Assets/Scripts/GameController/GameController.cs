@@ -283,6 +283,7 @@ public class GameController : MonoBehaviour
         {
             int offset = R.Net.Offset.WEAPONS;
             int weaponSwapEventCount = Convert.ToInt32(this.buffer[offset]);
+            offset++;
 
             for (int i = 0; i < weaponSwapEventCount; i++)
             {
