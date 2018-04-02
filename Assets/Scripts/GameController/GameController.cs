@@ -295,7 +295,17 @@ public class GameController : MonoBehaviour
 
                 if (ownerId != this.currentPlayerId)
                 {
-                    // Move the weapon here
+                    GameObject parent = this.players[ownerId];
+                    Transform gun = this.weapons[newWeaponId].transform;
+
+                    // Drop the old gun if they have one
+                    if (parent.transform.Find("Inventory").childCount > 0)
+                    {
+                        parent.transform.Find("Inventory").GetChild(0).transform.parent = null;
+                    }
+
+                    // Pick up the new gun
+                    gun.parent = parent.transform.Find("Inventory").transform;
                 }
 
                 offset += 5;
