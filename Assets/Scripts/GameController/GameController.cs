@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public const string SERVER_ADDRESS = "192.168.0.8";
+    public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -356,7 +356,6 @@ public class GameController : MonoBehaviour
 
     void sendPlayerDataToServer()
     {
-        int index = 2;
         GameObject currentPlayer = this.players[this.currentPlayerId];
         Player playerRef = currentPlayer.transform.GetComponent<Player>();
         byte[] x = BitConverter.GetBytes(currentPlayer.transform.position.x);
@@ -365,7 +364,7 @@ public class GameController : MonoBehaviour
         byte[] bullet = new byte[5];
         byte[] packet = new byte[R.Net.Size.CLIENT_TICK];
 
-        if(playerRef.FiredShots.Count > 0)
+        if (playerRef.FiredShots.Count > 0)
         {
             Bullet bulletRef = playerRef.FiredShots.Pop();
             bullet = bulletRef.ToBytes();
@@ -373,17 +372,12 @@ public class GameController : MonoBehaviour
 
         // Put position data into the packet
         packet[0] = R.Net.Header.TICK;
-        packet[1] = this.currentPlayerId;
-        Array.Copy(x    , 0, packet, index,  4);
-        index += 4;
-        Array.Copy(z    , 0, packet, index,  4);
-        index += 4;
-        Array.Copy(pheta, 0, packet, index,  4);
-        index += 4;
-        Array.Copy(playerRef.getInventory(), 0, packet, index, 5);
-        index += 5;
-        Array.Copy(bullet, 0, packet, index, 5);
-        index += 5;
+        packet[R.Net.Offset.PID] = this.currentPlayerId;
+        Array.Copy(x    , 0, packet, R.Net.Offset.X,  4);
+        Array.Copy(z    , 0, packet, R.Net.Offset.Z,  4);
+        Array.Copy(pheta, 0, packet, R.Net.Offset.R,  4);
+        Array.Copy(playerRef.Weapon, 0, packet, R.Net.Offset.WEAPON, 4);
+        Array.Copy(bullet, 0, packet, R.Net.Offset.BULLET, 5);
         this.client.Send(packet, R.Net.Size.CLIENT_TICK);
     }
 }

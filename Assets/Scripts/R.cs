@@ -29,8 +29,8 @@ namespace R
 			public const int X = PID + 1;
 			public const int Z = X + 4;
 			public const int R = Z + 4;
-			public const int INV = R + 4;
-			public const int BULLET = INV + 5;
+            public const int WEAPON = R + 4;
+            public const int BULLET = WEAPON + 5;
 
 			// Offsets for server to client packet
 			public const int DANGER_ZONE = 1;

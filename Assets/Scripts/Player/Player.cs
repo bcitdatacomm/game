@@ -36,6 +36,26 @@ public class Player : MonoBehaviour
     public Stack<Bullet> FiredShots;
     public Dictionary<int, Bullet> TrackedShots;
 
+    public byte[] Weapon 
+    {
+        get
+        {
+            if (this.inventory.items.Length == 0)
+            {
+                return new byte[5];
+            }
+
+            Item gun = this.inventory.items[0];
+
+            byte[] tmp = new byte[5];
+
+            Array.Copy(BitConverter.GetBytes(gun.ID), 0, tmp, 0, 4);
+            tmp[4] = gun.Type;
+
+            return tmp;
+        }
+    }
+
     void Start()
     {
         Debug.Log("Player start");
