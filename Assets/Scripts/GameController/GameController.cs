@@ -377,7 +377,7 @@ public class GameController : MonoBehaviour
         Array.Copy(z    , 0, packet, R.Net.Offset.Z,  4);
         Array.Copy(pheta, 0, packet, R.Net.Offset.R,  4);
         Array.Copy(playerRef.Weapon, 0, packet, R.Net.Offset.WEAPON, 4);
-        // Debug.Log(BitConverter.ToString(playerRef.Weapon));
+        Debug.Log(BitConverter.ToString(playerRef.Weapon));
         Array.Copy(bullet, 0, packet, R.Net.Offset.BULLET, 5);
         this.client.Send(packet, R.Net.Size.CLIENT_TICK);
     }
