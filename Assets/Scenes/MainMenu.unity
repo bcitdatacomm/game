@@ -5313,9 +5313,8 @@ GameObject:
   - component: {fileID: 804085889}
   - component: {fileID: 804085888}
   - component: {fileID: 804085887}
-  - component: {fileID: 804085886}
   m_Layer: 5
-  m_Name: ConnectButton
+  m_Name: RegisterButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5340,17 +5339,6 @@ RectTransform:
   m_AnchoredPosition: {x: -155.90002, y: -292.73688}
   m_SizeDelta: {x: 300.90002, y: 96.0948}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &804085886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804085884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 480561d996cfe964588b129e9613abd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &804085887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5390,7 +5378,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 804085886}
+      - m_Target: {fileID: 0}
         m_MethodName: LoadByIndex
         m_Mode: 3
         m_Arguments:
@@ -6555,7 +6543,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1683339038}
-        m_MethodName: 
+        m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7246,7 +7234,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Connect
+  m_Text: Register
 --- !u!222 &1540033325
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8861,7 +8849,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1683339038}
-        m_MethodName: 
+        m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
