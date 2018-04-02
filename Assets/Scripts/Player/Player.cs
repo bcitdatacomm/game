@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
         this.FiredShots = new Stack<Bullet>();
         this.TrackedShots = new Dictionary<int, Bullet>();
         net = Vector3.zero;
-
+        net += this.transform.position;
 
         sound = GetComponent<AudioSource>();
         sound.Play();
