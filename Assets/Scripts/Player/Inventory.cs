@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
 
     public int CurrentSpell { get; set; }
     public event EventHandler<InventoryEventArgs> ItemAdded;
-    private Item[] items;
+    public Item[] items;
 
     public void Start()
     {
