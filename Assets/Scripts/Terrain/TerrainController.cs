@@ -352,23 +352,26 @@ public class TerrainController
     --
     -- DATE: March 21, 2018
     --
-    -- REVISIONS: N/A
+    -- REVISIONS: Because we later found out we need a reference to all the guns in on place we made
+    --            this function return a Dictionary of the game objects mapped to their id instead of
+    --            void.
     --
-    -- DESIGNER: Alfred Swinton & Roger Zhang
+    -- DESIGNER: Alfred Swinton & Roger Zhang & Benny Wang
     --
-    -- PROGRAMMER: Alfred Swinton & Roger Zhang
+    -- PROGRAMMER: Alfred Swinton & Roger Zhang & Benny Wang
     --
-    -- INTERFACE: LoadGuns(byte[] guns)
+    -- INTERFACE: Dictionary<int, GameObject> LoadGuns(byte[] guns)
     --                  byte[] guns: A byte array contains the gun data.
     --
-    -- RETURNS: void
+    -- RETURNS: A dictionary of all spawned items where they are mapped to their id.
     --
     -- NOTES:
     -- Takes in a byte array representation of the guns data that was send over by the server and
     -- loads it.
     -------------------------------------------------------------------------------------------------*/
-    public void LoadGuns(byte[] compressedGuns)
+    public Dictionary<int, GameObject> LoadGuns(byte[] compressedGuns)
     {
+        Dictionary<int, GameObject> tmp = new Dictionary<int, GameObject>();
         // Decompress the guns bytearray
         byte[] guns = decompressByteArray(compressedGuns);
 
@@ -407,53 +410,60 @@ public class TerrainController
         GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
 
         //Go through every gun in the list and instantiate the gun based on type
-        foreach (var w in gunsList)
+        foreach (WeaponSpell w in gunsList)
         {
+            GameObject newGun = null;
             switch (w.Type)
             {
                 case 1:
-                    UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 2:
-                    UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 3:
-                    UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 4:
-                    UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 5:
-                    UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 6:
-                    UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 7:
-                    UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 8:
-                    UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 9:
-                    UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 10:
-                    UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 11:
-                    UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 12:
-                    UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 13:
-                    UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 default:
                     break;
             }
+
+            newGun.GetComponent<Gun>().ID = w.ID;
+
+            tmp[w.ID] = newGun;
         }
+
+        return tmp;
     }
 
     // This is a helper function that parses chunks of the decompressed
@@ -477,23 +487,6 @@ public class TerrainController
         Weapon.Z = BitConverter.ToInt32(weaponinbytes, R.Game.Terrain.Z_OFFSET);
 
         return Weapon;
-    }
-
-    // The client side version of the WeaponSpell class
-    //
-    // Alfred's code, modified by Roger
-    public class WeaponSpell
-    {
-        public static int inc = 0;
-        public int X { get; set; }
-        public int Z { get; set; }
-        public int ID { get; set; }
-        public byte Type { get; set; }
-
-        // Empty Constructor
-        public WeaponSpell()
-        {
-        }
     }
 
     /*-------------------------------------------------------------------------------------------------
@@ -645,4 +638,22 @@ public class TerrainController
 
         return true;
     }
+
+    // The client side version of the WeaponSpell class
+    //
+    // Alfred's code, modified by Roger
+    public class WeaponSpell
+    {
+        public static int inc = 0;
+        public int X { get; set; }
+        public int Z { get; set; }
+        public int ID { get; set; }
+        public byte Type { get; set; }
+
+        // Empty Constructor
+        public WeaponSpell()
+        {
+        }
+    }
+
 }
