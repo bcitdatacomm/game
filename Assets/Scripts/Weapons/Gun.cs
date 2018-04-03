@@ -33,11 +33,11 @@ public class Gun : Item
     void FixedUpdate()
     {
         //Only allow Equipped guns to shoot; If this check is gone all guns shoot!Logic fix required...
-        if (transform.parent != null)
-        {
-            Shoot();
-            ReloadCheck();
-        }
+        // if (transform.parent != null)
+        // {
+        //     Shoot();
+        //     ReloadCheck();
+        // }
     }
 
     /*

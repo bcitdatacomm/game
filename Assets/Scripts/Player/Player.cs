@@ -106,7 +106,7 @@ public class Player : MonoBehaviour
         anim.SetBool("Moving", false);
         move();
         turn();
-        ManualReload();
+        CheckGun();
         SwitchSpell();
         DebugLogger(); // Testing purposes.
     }
@@ -153,22 +153,26 @@ public class Player : MonoBehaviour
 
     }
 
-    void ManualReload()
+    void CheckGun()
     {
-        // TODO: Minor issue, reloads multiple times, perhaps multiple ticks?
-        if (Input.GetKey("r"))
-        {
-            Debug.Log("Reloading!");
-            GameObject GunRef = GameObject.FindGameObjectWithTag("currentWeapon");
-            Gun reloadGun = GunRef.GetComponentInChildren<Gun>();
+        GameObject GunObject = GameObject.FindGameObjectWithTag("currentWeapon");
+        Gun gun = GunObject.GetComponentInChildren<Gun>();
 
-            if (reloadGun != null)
+        if (gun != null)
+        { 
+            // Manual Reload
+            // TODO: Minor issue, reloads multiple times, perhaps multiple ticks?
+            if (Input.GetKey("r"))
             {
-                reloadGun.Reload();
-                Debug.Log(GunRef.name);
-                sound.PlayOneShot(reload);
-            }
+                Debug.Log("Reloading!");
 
+                    gun.Reload();
+                    Debug.Log(gun.name);
+                    sound.PlayOneShot(reload);
+            }
+            
+            gun.Shoot();
+            gun.ReloadCheck();
         }
     }
 
