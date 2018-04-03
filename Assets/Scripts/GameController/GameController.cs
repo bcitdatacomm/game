@@ -306,7 +306,7 @@ public class GameController : MonoBehaviour
                     // Pick up the new gun
                     gun.parent = parent.transform.Find("Inventory").transform;
                     gun.transform.position = parent.transform.position + new Vector3(0.2f, 1, 0);
-                    gun.rotation.position = parent.transform.rotation;
+                    gun.transform.rotation = parent.transform.rotation;
                 }
 
                 offset += 5;
