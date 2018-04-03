@@ -8,7 +8,7 @@ using InitGuns;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.17";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
@@ -245,7 +245,6 @@ public class GameController : MonoBehaviour
         if (HeaderDecoder.HasBullet(this.buffer[0]))
         {
             int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
-            Debug.Log("Number of bullets: " + numBullets);
 
             int offset = R.Net.Offset.BULLETS + 1;
             byte ownerId;
@@ -306,6 +305,7 @@ public class GameController : MonoBehaviour
 
                     // Pick up the new gun
                     gun.parent = parent.transform.Find("Inventory").transform;
+                    gun.rotation = Quaternion.identity;
                 }
 
                 offset += 5;
