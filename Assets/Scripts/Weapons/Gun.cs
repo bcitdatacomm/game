@@ -50,7 +50,7 @@ public class Gun : Item
         //Debug.Log("reloading");
     }
 
-    void ReloadCheck()
+    public void ReloadCheck()
     {
         if (reloading == true)
         {
@@ -63,7 +63,7 @@ public class Gun : Item
         }
     }
 
-    void Shoot()
+    public void Shoot()
     {
         if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
         {
