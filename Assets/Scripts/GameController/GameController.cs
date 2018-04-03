@@ -254,6 +254,12 @@ public class GameController : MonoBehaviour
                 if (this.buffer[offset + 6] == 1)
                 {
                     ownerId = this.buffer[offset];
+
+                    if (ownerId == this.currentPlayerId)
+                    {
+                        continue;
+                    }
+
                     Bullet newBullet = null;
                     switch(this.buffer[offset + 5]) {
                         case R.Type.KNIFE:
