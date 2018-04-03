@@ -8,7 +8,7 @@ using InitGuns;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.17";
+    public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     private byte currentPlayerId;
