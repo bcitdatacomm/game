@@ -525,6 +525,7 @@ public class TerrainController
         GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuildingScaled.prefab", typeof(GameObject));
         GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/TownScaledOriginal.prefab", typeof(GameObject));
         GameObject townPrefab2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/TownScaled.prefab", typeof(GameObject));
+        GameObject wallPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/OuterWall.prefab", typeof(GameObject));
 
         //Set the collider boundaries of the game objects
         float rockColliderX = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
@@ -543,11 +544,15 @@ public class TerrainController
         float BUILDING_COLLIDER_SIZE = buildingColliderX > buildingColliderZ ? buildingColliderX : buildingColliderZ;
         int RandomRotationPerc = 0;
 
+        GameObject wallObject = (GameObject)UnityEngine.Object.Instantiate(wallPrefab, new Vector3(0,0,0), Quaternion.identity);
+
         // Spawning the town at the center with collider 300X300
         GameObject TownObject1 = (GameObject)UnityEngine.Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX - 30, 0, Length / 2 - offsetZ - 30), Quaternion.identity);
         GameObject TownObject2 = (GameObject)UnityEngine.Object.Instantiate(townPrefab2, new Vector3(Width / 2 - offsetX - 35, 0, Length / 2 - offsetZ + 35), Quaternion.Euler(0, 270, 0));
         GameObject TownObject3 = (GameObject)UnityEngine.Object.Instantiate(townPrefab, new Vector3(Width / 2 - offsetX + 30, 0, Length / 2 - offsetZ - 27), Quaternion.Euler(0, 180, 0));
         GameObject TownObject4 = (GameObject)UnityEngine.Object.Instantiate(townPrefab2, new Vector3(Width / 2 - offsetX + 35, 0, Length / 2 - offsetZ + 30), Quaternion.Euler(0, 90, 0));
+
+
 
         //Spawn the game obstacles
         for (int i = 0; i < Data.tiles.GetLength(0); i++)
