@@ -6,8 +6,6 @@ public class Gun : Item
 {
     // Link Via unity
     public Bullet BulletPrefab;
-    // Keep Track of Bullets
-    public Stack<Bullet> FiredShots;
     // Check if can reload
     public bool reloading;
     // Time in seconds between shots
@@ -23,7 +21,6 @@ public class Gun : Item
     {
         Debug.Log("Gun start");
         nextShotTime = 0;
-        this.FiredShots = new Stack<Bullet>();
         reloading = false;
 
         // Get audio
@@ -35,14 +32,12 @@ public class Gun : Item
 
     void FixedUpdate()
     {
-        // Only allow Equipped guns to shoot; If this check is gone all guns shoot! Logic fix required...
-        //if (this.isEquipped)
-        //{
-            Shoot();
-            ReloadCheck();
-            // TODO: Need to move this to HUD
-            //this.transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
-        //}
+        //Only allow Equipped guns to shoot; If this check is gone all guns shoot!Logic fix required...
+        // if (transform.parent != null)
+        // {
+        //     Shoot();
+        //     ReloadCheck();
+        // }
     }
 
     /*
@@ -52,29 +47,30 @@ public class Gun : Item
     {
         timeBeforeReload = Time.time + reloadTime;
         reloading = true;
-        Debug.Log("reloading");
+        //Debug.Log("reloading");
     }
 
-    void ReloadCheck()
+    public void ReloadCheck()
     {
         if (reloading == true)
         {
             if (Time.time >= timeBeforeReload)
             {
-                Debug.Log("reloading done");
+                //Debug.Log("reloading done");
                 currAmmo = ClipSize;
-                // TODO: MOVE TO HUD
-                //transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar (currAmmo, ClipSize);
                 reloading = false;
             }
         }
     }
 
-    void Shoot()
+    public void Shoot()
     {
         if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
         {
-            Debug.Log("Shot Fired");
+            GameObject PlayerRef = GameObject.FindGameObjectWithTag("Player");
+            Player player = PlayerRef.GetComponent<Player>();
+
+            //Debug.Log("Shot Fired, current Ammo: " + currAmmo);
             weaponSound.Play();
             this.nextShotTime = Time.time + this.FireRate;
 
@@ -82,20 +78,24 @@ public class Gun : Item
             Bullet firedShot = (Bullet)GameObject.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
             // Rotate bullet and multiply by parent forward direction
             firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
-
+            
             if (firedShot != null)
             {
-                this.FiredShots.Push(firedShot);
+                //Debug.Log("GUN: Bullet ID ShotAgain: " + firedShot.GetInstanceID());
+                player.FiredShots.Push(firedShot);
+                player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
+                // Debug.Log("GUN: Bullet Dictionary" + player.TrackedShots.ContainsKey(firedShot.ID));
             }
 
             currAmmo--;
 
-            // TODO: MOVE TO HUD
-            // transform.parent.Find("HUD").Find("Weapons").Find("AmmoBar").Find("CurrentAmmo").GetComponent<SimpleHealthBar>().UpdateBar(currAmmo, ClipSize);
             if (currAmmo <= 0)
             {
+                //Debug.Log("Current Ammo before reload: " + currAmmo);
                 Reload();
+                player.sound.PlayOneShot(player.reload);
             }
+
         }
     }
 }

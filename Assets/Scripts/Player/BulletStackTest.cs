@@ -15,7 +15,7 @@ public class BulletStackTest : MonoBehaviour {
         {
             Debug.Log("gun found");
 
-            Stack<Bullet> playerBullets = gun.FiredShots;
+            Stack<Bullet> playerBullets = player.GetComponent<Player>().FiredShots;
 
             while (playerBullets.Count > 0)
             {
