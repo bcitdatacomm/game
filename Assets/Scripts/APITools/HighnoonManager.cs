@@ -16,6 +16,18 @@ namespace HighnoonTools
             public string Token { get; set; }
         }
 
+		public class UserResponse
+		{
+			public string name { get; set; }
+			public bool admin { get; set; }
+			public int shots_fired { get; set; }
+			public int kills { get; set; }
+			public int deaths { get; set; }
+			public int games_played { get; set; }
+			public int games_won { get; set; }
+			public int time_played { get; set; }
+		}
+
         private static string UserAgent = "highnoonTools C#";
         private string _url;
 
@@ -257,7 +269,9 @@ namespace HighnoonTools
 
                 string responseFromServer = reader.ReadToEnd();
 
-                Response res = JsonConvert.DeserializeObject<Response>(responseFromServer);
+				Console.WriteLine(responseFromServer);
+
+                UserResponse res = JsonConvert.DeserializeObject<UserResponse>(responseFromServer);
 
                 Console.Write(responseFromServer);
 
@@ -268,6 +282,18 @@ namespace HighnoonTools
                 if (res != null)
                 {
                     _player = new HighnoonPlayer();
+
+					Console.WriteLine(res);
+
+					_player.Name = res.name;
+					_player.Admin = res.admin;
+					_player.Shots_Fired = res.shots_fired;
+					_player.Kills = res.kills;
+					_player.Deaths = res.deaths;
+					_player.Games_Played = res.games_played;
+					_player.Games_Won = res.games_won;
+					_player.Time_Played = res.time_played;
+
                     return true;
                 }
                 else

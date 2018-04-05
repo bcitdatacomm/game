@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     //Public variable to store a reference to the player game object
+
     public GameObject Player;
+
     //Private variable to store the offset distance between the player and camera
     private Vector3 offset;
 
