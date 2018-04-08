@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
 
     public int CurrentSpell { get; set; }
     public event EventHandler<InventoryEventArgs> ItemAdded;
-    private Item[] items;
+    public Item[] items;
 
     public void Start()
     {
@@ -53,7 +53,7 @@ public class Inventory : MonoBehaviour
         }
 
         Collider collider = (item as MonoBehaviour).GetComponent<Collider>();
-        if(collider.enabled)
+        if (collider.enabled)
         {
             collider.enabled = false;
             items[slot] = item;
@@ -62,18 +62,12 @@ public class Inventory : MonoBehaviour
 
         if (slot >= 0) // Item is added: this logic doesn't really make sense
         {
-            if(ItemAdded != null)
+            if (ItemAdded != null)
             {
                 // Use this to notify the HUD to update
                 ItemAdded(this, new InventoryEventArgs(item));
             }
         }
-
-        // if(ItemAdded != null)
-        // {
-        //     //Use this to notify the HUD to update
-        //     ItemAdded(this, new InventoryEventArgs(item));
-        // }
     }
 
     public byte getWeapon()
@@ -90,47 +84,19 @@ public class Inventory : MonoBehaviour
         return weapon;
     }
 
-    public byte getSpell1()
+    public byte getSpell(int index)
     {
-        byte spell1;
+        byte spell;
 
-        if (items[1] != null)
+        if (items[index] != null)
         {
-            spell1 = items[1].Type;
-        } else
-        {
-            spell1 = (byte)255;
-        }
-        return spell1;
-    }
-
-    public byte getSpell2()
-    {
-        byte spell2;
-
-        if (items[2] != null)
-        {
-            spell2 = items[2].Type;
+            spell = items[index].Type;
         }
         else
         {
-            spell2 = (byte)255;
+            spell = (byte)255;
         }
-        return spell2;
-    }
-
-    public byte getSpell3()
-    {
-        byte spell3;
-        if (items[3] != null)
-        {
-            spell3 = items[3].Type;
-        }
-        else
-        {
-            spell3 = (byte)255;
-        }
-        return spell3;
+        return spell;
     }
 
     public byte getCurrentSpell()
