@@ -24,14 +24,24 @@ int32_t TCPServer::initializeSocket	(short port)
 	}
 	int optFlag = 1;
 
-	if(setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
+	// Sets server receive timeout to 30 seconds.
+	struct timeval tv;
+	tv.tv_sec = 30;
+	tv.tv_usec = 0;
+
+	if (setsockopt(tcpSocket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval)) == -1)
 	{
-		perror("set opts failed");
+		perror("Failed to setsockopt: timeout");
+	}
+
+	if (setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
+	{
+		perror("Failed to setsockopt: reuseaddr");
 		return -4;
 	}
-	if(setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEPORT, &optFlag, sizeof(optFlag)) == -1)
+	if (setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEPORT, &optFlag, sizeof(optFlag)) == -1)
 	{
-		perror("set opts 2 failed");
+		perror("Failed to setsockopt: reuseport");
 		return -8;
 	}
 
@@ -62,9 +72,15 @@ int32_t TCPServer::acceptConnection(EndPoint* ep)
 	sockaddr_in clientAddr;
 	socklen_t addrSize = sizeof(clientAddr);
 	memset(&clientAddr, 0, addrSize);
+	errno = 0;
 
 	if ((clientSocket = accept(tcpSocket, (struct sockaddr *)&clientAddr, &addrSize)) == -1)
 	{
+		// Accept call times out
+		if (errno == EAGAIN)
+		{
+			return -errno;
+		}
 		return 0;
 	}
 
