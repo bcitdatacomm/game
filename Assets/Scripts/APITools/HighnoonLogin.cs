@@ -68,7 +68,7 @@ namespace HighnoonTools
 
 
 				print (api.Player.Name);
-				// SceneManager.LoadScene (sceneIndex);
+				SceneManager.LoadScene (sceneIndex);
 			}
 			else
 			{
