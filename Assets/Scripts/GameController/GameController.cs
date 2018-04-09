@@ -11,6 +11,10 @@ public class GameController : MonoBehaviour
     public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
+    private const long FIRST_SHRINK_STAGE = 300000;
+    private const long SECOND_SHRINK_STAGE = 600000;
+    private const long FINAL_SHRINK_STAGE = 900000;
+
     private byte currentPlayerId;
 
     private Dictionary<byte, GameObject> players;
@@ -28,17 +32,24 @@ public class GameController : MonoBehaviour
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
+    public GameObject DangerZonePrefab;
 
     public Bullet PistolBullet;
     public Bullet ShotGunBullet;
     public Bullet RifleBullet;
     public Bullet MeleeBullet;
+
+    public GameObject DgZone;
+    public float GameTime;
+
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
     private Int32 clientsockfd;
     private byte[] mapBuffer;
     private byte[] itemBuffer;
     private EndPoint epServer;
+
+    private bool dangerZoneInit;
 
     void Start()
     {
@@ -48,6 +59,7 @@ public class GameController : MonoBehaviour
         epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
         tcpClient = new TCPClient();
         Int32 result = tcpClient.Init(epServer);
+        dangerZoneInit = false;
 
         if (result <= 0)
         {
@@ -165,8 +177,19 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        GameTime = this.getGameTime();
+        Debug.Log("Current time: " + GameTime + "ms");
+        if (!dangerZoneInit)
+        {
+            this.initDangerZone();
+        }
+        else
+        {
+            this.updateDangerZone();
+        }
+
         this.moveWeapons();
-        this.spawnBullets();        
+        this.spawnBullets();
         this.movePlayers();
     }
 
@@ -188,6 +211,42 @@ public class GameController : MonoBehaviour
         }
 
         return data;
+    }
+
+    void initDangerZone()
+    {
+        int offset = R.Net.Offset.DANGER_ZONE;
+        float x = BitConverter.ToSingle(this.buffer, offset);
+        float z = BitConverter.ToSingle(this.buffer, offset + 4);
+        float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+        DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
+        DgZone.transform.localScale = new Vector3(rad, 1, rad);
+        Debug.Log("Danger zone initiated. Player health will start decreasing after 1 min.");
+        dangerZoneInit = true;
+    }
+
+    void updateDangerZone()
+    {
+        int offset = R.Net.Offset.DANGER_ZONE;
+        float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+        dgZone.transform.localScale = new Vector3(rad, 1, rad);
+    }
+
+    float getGameTime()
+    {
+        int offset = R.Net.Offset.TIME;
+        float time = BitConverter.ToSingle(this.buffer, offset);
+        return time;
+    }
+
+    void dangerZoneMessage()
+    {
+        switch(GameTime)
+        {
+        case FIRST_SHRINK_STAGE:
+            Debug.Log("10 minutes left.");
+            break;
+        }
     }
 
     void addPlayer(PlayerData newPlayer)
