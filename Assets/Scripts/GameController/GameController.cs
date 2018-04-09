@@ -11,9 +11,9 @@ public class GameController : MonoBehaviour
     public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
-    private const long FIRST_SHRINK_STAGE = 300000;
-    private const long SECOND_SHRINK_STAGE = 600000;
-    private const long FINAL_SHRINK_STAGE = 900000;
+    private const float FIRST_SHRINK_STAGE = 300000f;
+    private const float SECOND_SHRINK_STAGE = 600000f;
+    private const float FINAL_SHRINK_STAGE = 900000f;
 
     private byte currentPlayerId;
 
@@ -39,8 +39,9 @@ public class GameController : MonoBehaviour
     public Bullet RifleBullet;
     public Bullet MeleeBullet;
 
-    public GameObject DgZone;
-    public float GameTime;
+    private float GameTime;
+    private GameObject DgZone;
+    private bool dangerZoneInit;
 
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
@@ -48,8 +49,6 @@ public class GameController : MonoBehaviour
     private byte[] mapBuffer;
     private byte[] itemBuffer;
     private EndPoint epServer;
-
-    private bool dangerZoneInit;
 
     void Start()
     {
@@ -229,7 +228,7 @@ public class GameController : MonoBehaviour
     {
         int offset = R.Net.Offset.DANGER_ZONE;
         float rad = BitConverter.ToSingle(this.buffer, offset + 8);
-        dgZone.transform.localScale = new Vector3(rad, 1, rad);
+        DgZone.transform.localScale = new Vector3(rad, 1, rad);
     }
 
     float getGameTime()
@@ -241,11 +240,17 @@ public class GameController : MonoBehaviour
 
     void dangerZoneMessage()
     {
-        switch(GameTime)
+        if (GameTime == FIRST_SHRINK_STAGE)
         {
-        case FIRST_SHRINK_STAGE:
             Debug.Log("10 minutes left.");
-            break;
+        }
+        else if (GameTime == SECOND_SHRINK_STAGE)
+        {
+
+        }
+        else if (GameTime == FINAL_SHRINK_STAGE)
+        {
+
         }
     }
 
