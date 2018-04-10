@@ -1,5 +1,27 @@
+/**
+ * SOURCE FILE:	tcpclient.cpp
+ * 
+ * PROGRAM:		game
+ * 
+ * FUNCTIONS:	TCPClient();
+ *				int32_t initializeSocket(EndPoint ep);
+ *				int32_t sendBytes(char * data, uint32_t len);
+ *				int32_t receiveBytes(char * buffer, uint32_t size);
+ *				int32_t closeConnection(int32_t sockfd);
+ * 
+ * DATE:		Mar.
+ * 
+ * REVISIONS:	Mar.
+ * 				Apr.
+ * 
+ * DESIGNER:	Matthew Shew, Delan Elliot, Wilson Hu
+ * 
+ * PROGRAMMER:	Matthew Shew, Delan Elliot, Wilson Hu
+ * 
+ * NOTES:
+ * This file is a class wrapper around the client-side TCP 
+ */
 #include "tcpclient.h"
-#include <cerrno>
 
 
 
@@ -9,9 +31,23 @@ TCPClient::TCPClient()
 }
 
 /**
-	Initializes client TCP socket to receive initial game data.
-	@author Calvin Lai
-**/
+ * FUNCTION:
+ * 
+ * DATE:
+ * 
+ * REVISIONS:
+ * 
+ * DESIGNER:
+ * 
+ * PROGRAMMER:	Delan Elliot, Wilson Hu, Calvin Lai
+ * 
+ * INTERFACE:	int TCPClient::initializeSocket(EndPoint ep)
+ * 
+ * RETURNS:
+ * 
+ * NOTES:
+ * 
+ */
 int TCPClient::initializeSocket(EndPoint ep)
 {
 	if ((clientSocket = socket(AF_INET, SOCK_STREAM  , 0)) == -1) {
@@ -44,15 +80,47 @@ int TCPClient::initializeSocket(EndPoint ep)
 }
 
 
-
+/**
+ * FUNCTION:
+ * 
+ * DATE:
+ * 
+ * REVISIONS:
+ * 
+ * DESIGNER:
+ * 
+ * PROGRAMMER:
+ * 
+ * INTERFACE:
+ * 
+ * RETURNS:
+ * 
+ * NOTES:
+ * 
+ */
 int32_t TCPClient::closeConnection(int32_t sockfd)
 {
 	return close(sockfd);
 }
 
 /**
-	Sends char array to all connected clients
-**/
+ * FUNCTION:
+ * 
+ * DATE:
+ * 
+ * REVISIONS:
+ * 
+ * DESIGNER:
+ * 
+ * PROGRAMMER:
+ * 
+ * INTERFACE:
+ * 
+ * RETURNS:
+ * 
+ * NOTES:
+ * 
+ */
 int32_t TCPClient::sendBytes(char * data, uint32_t len)
 {
 	int32_t result;
@@ -63,11 +131,24 @@ int32_t TCPClient::sendBytes(char * data, uint32_t len)
 	return result;
 }
 
-
-
 /**
-	Receives upto "size" bytes char array
-**/
+ * FUNCTION:
+ * 
+ * DATE:
+ * 
+ * REVISIONS:
+ * 
+ * DESIGNER:
+ * 
+ * PROGRAMMER:
+ * 
+ * INTERFACE:
+ * 
+ * RETURNS:
+ * 
+ * NOTES:
+ * 
+ */
 int32_t TCPClient::receiveBytes(char * buffer, uint32_t len)
 {
 
