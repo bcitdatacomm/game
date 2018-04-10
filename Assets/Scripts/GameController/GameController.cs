@@ -316,7 +316,12 @@ public class GameController : MonoBehaviour
         }
         Debug.Log(output);
         Debug.Log("Removing bullet " + id);
-        Destroy(this.bullets[id]);
+
+        if (this.bullets.ContainsKey(id))
+        {
+            Destroy(this.bullets[id]);
+            this.bullets.Remove(id);
+        }
     }
 
     void moveWeapons()
