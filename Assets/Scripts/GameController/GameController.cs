@@ -286,7 +286,7 @@ public class GameController : MonoBehaviour
         }
 
         Bullet newBullet = null;
-        switch (this.buffer[offset + 5])
+        switch (this.buffer[offset + R.Net.Offset.Bullet.TYPE])
         {
             case R.Type.KNIFE:
                 newBullet = (Bullet)GameObject.Instantiate(this.MeleeBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
@@ -302,25 +302,27 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        Debug.Log("Spawning new bullet at " + this.players[ownerId].transform.position);
-
+        newBullet.ID = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
+        bullets[newBullet.ID] = newBullet;
         newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
-        bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
+
+        Debug.Log("Server spawned bullet with id " + newBullet.ID);
     }
 
     void removeBullet(int offset)
     {
         int id = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
-        string output = "Bullet array size = " + bullets.Count + ": ";
-        foreach (KeyValuePair<int, Bullet> pair in bullets)
-        {
-            output += pair.Value.ID + ", ";
-        }
-        Debug.Log(output);
-        Debug.Log("Removing bullet " + id);
 
         if (this.bullets.ContainsKey(id))
         {
+            string output = "Bullet array size = " + bullets.Count + ": ";
+            foreach (KeyValuePair<int, Bullet> pair in bullets)
+            {
+                output += pair.Value.ID + ", ";
+            }
+            Debug.Log(output);
+            Debug.Log("Removing bullet " + id);
+
             Destroy(this.bullets[id]);
             this.bullets.Remove(id);
         }

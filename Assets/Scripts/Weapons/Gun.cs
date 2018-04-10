@@ -76,6 +76,7 @@ public class Gun : Item
         {
             player.FiredShots.Push(firedShot);
             player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
+            Debug.Log("Player fired bullet with id " + firedShot.ID);
         }
 
         currAmmo--;
