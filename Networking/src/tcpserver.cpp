@@ -1,8 +1,8 @@
 /**
  * SOURCE FILE:	tcpserver.cpp
- * 
+ *
  * PROGRAM: 	game.exe
- * 
+ *
  * FUNCTIONS: 	TCPServer();
  *				int32_t initializeSocket(short port);
  *				int32_t acceptConnection(EndPoint* ep);
@@ -10,21 +10,21 @@
  *				int32_t receiveBytes(int clientSocket, char * buffer, unsigned len);
  *				int32_t closeClientSocket(int32_t clientSocket);
  *				int32_t closeListenSocket(int32_t sockfd);
- * 
+ *
  * DATE:		Apr. 10, 2018
- * 
+ *
  * REVISIONS:	Feb.
  * 				March.
  * 				Apr.
- * 
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 
+ *
  * PROGRAMMER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 
+ *
  * NOTES:
  * This class contains the C TCP/IP socket calls used by the game's networking
- * library. 
- * 
+ * library.
+ *
  */
 
 #include "tcpserver.h"
@@ -37,23 +37,23 @@
 
 /**
  * FUNCTION:	TCPServer
- * 
- * DATE:		Mar. 
- * 
- * REVISIONS:	
- * 
+ *
+ * DATE:		Mar.
+ *
+ * REVISIONS:
+ *
  * DESIGNER:	Delan Elliot
- * 
+ *
  * PROGRAMMER:	Delan Elliot
- * 
+ *
  * INTERFACE:	TCPServer()
- * 
- * RETURNS:		
- * 
+ *
+ * RETURNS:
+ *
  * NOTES:
  * This is the TCPServer class' constructor. It does not accept any
- * arguments or initialize any values. 
- * 
+ * arguments or initialize any values.
+ *
  * This constructor should be called only to create a new TCPServer object.
  * initializeServer should be called immediately afterwards to initialize
  * the socket.
@@ -65,32 +65,32 @@ TCPServer::TCPServer()
 
 /**
  * FUNCTION:	initializeSocket
- * 
- * DATE:		Mar. 
- * 
+ *
+ * DATE:		Mar.
+ *
  * REVISIONS:
- * 
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu
- * 
+ *
  * PROGRAMMER:	Delan Elliot, Wilson Hu
- * 
+ *
  * INTERFACE:	int32_t TCPServer::initializeSocket	(short port)
- * 					short port: port number 
- * 
+ * 					short port: port number
+ *
  * RETURNS:		Returns a negative value on failure, otherwise returns
  * 				the socket's file descriptor.
- * 
+ *
  * NOTES:
  * This function is used to initialize the socket from the input port number.
- * 
+ *
  * It wraps the C socket(), bind(), and listen() calls for the networking library.
  * This function performs the above socket calls in order and listens for incoming
- * connection requests. 
- * 
- * The sockopts are set to a timeout of 30s, reuse addr, and reuse port. 
- * 
- * The function programmer defined error values when the socket fails to 
- * initialize, errno when the socket fails to bind, and the server's 
+ * connection requests.
+ *
+ * The sockopts are set to a timeout of 30s, reuse addr, and reuse port.
+ *
+ * The function programmer defined error values when the socket fails to
+ * initialize, errno when the socket fails to bind, and the server's
  * listen socket descriptor on success.
  */
 int32_t TCPServer::initializeSocket	(short port)
@@ -119,7 +119,7 @@ int32_t TCPServer::initializeSocket	(short port)
 		perror("Failed to setsockopt: reuseaddr");
 		return -4;
 	}
-	
+
 	// Set socket to reuse port
 	if (setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEPORT, &optFlag, sizeof(optFlag)) == -1)
 	{
@@ -149,30 +149,30 @@ int32_t TCPServer::initializeSocket	(short port)
 
 /**
  * FUNCTION:	acceptConnection
- * 
- * DATE:		Mar. 
- * 
+ *
+ * DATE:		Mar.
+ *
  * REVISIONS:	Mar.
  * 				Apr.
- * 
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 
+ *
  * PROGRAMMER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 	
+ *
  * INTERFACE:	int32_t TCPServer::acceptConnection(EndPoint* ep)
- * 					EndPoint* ep: pointer to EndPoint struct that will 
+ * 					EndPoint* ep: pointer to EndPoint struct that will
  * 									hold the Port and IP Address of the
  * 									newly connected client
- * 
+ *
  * RETURNS:		Returns int value indicating result of accept() call
  * 					- <= 0 on failure, client socket descriptor on success (>0)
- * 
+ *
  * NOTES:
- * This function is the accept() wrapper for the game's networking library. 
- * 
+ * This function is the accept() wrapper for the game's networking library.
+ *
  * It takes an EndPoint* and writes the new connection's port and address to the
- * input EndPoint. 
- * 
+ * input EndPoint.
+ *
  */
 int32_t TCPServer::acceptConnection(EndPoint* ep)
 {
@@ -200,22 +200,22 @@ int32_t TCPServer::acceptConnection(EndPoint* ep)
 
 /**
  * FUNCTION:	sendBytes
- * 
- * DATE:		Mar. 
- * 
+ *
+ * DATE:		Mar.
+ *
  * REVISIONS:	Mar.
- * 
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 
+ *
  * PROGRAMMER:	Matthew Shew
- * 
+ *
  * INTERFACE:	int32_t TCPServer::sendBytes(int clientSocket, char * data, unsigned len)
  * 					int clientSocket: file descriptor of the client socket
  * 					char* data: pointer to the buffer this function sends from
  * 					unsigned len: number of bytes to write
- * 
+ *
  * RETURNS:		Returns the number of bytes written to the client socket
- * 
+ *
  * NOTES:
  * This function is the send() wrapper for the game's networking library.
  */
@@ -226,25 +226,25 @@ int32_t TCPServer::sendBytes(int clientSocket, char* data, unsigned len)
 
 /**
  * FUNCTION:	receiveBytes
- * 
+ *
  * DATE:		Mar. 
- * 
+ *
  * REVISIONS:	Mar.
- * 				Apr. 
- * 
+ * 				Apr.
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu, Matthew Shew
- * 
+ *
  * PROGRAMMER:	Delan Elliot, Matthew Shew
- * 
+ *
  * INTERFACE:	int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
- * 
+ *
  * RETURNS:		Returns the number of bytes NOT received before timeout
  * 					- 0 on success, >0 on timeout
- * 
+ *
  * NOTES:
  * This function is a recv() wrapper for the game's networking library.
- * It calls recv() in a loop until it reads len bytes into the buffer. 
- * 
+ * It calls recv() in a loop until it reads len bytes into the buffer.
+ *
  * On completion or timeout, it returns the difference between the number of
  * bytes passed in and the number of bytes read from the socket.
  */
@@ -262,21 +262,21 @@ int32_t TCPServer::receiveBytes(int clientSocket, char * buffer, unsigned len)
 
 /**
  * FUNCTION: 	closeClientSocket
- * 
- * DATE:		Mar. 
- * 
- * REVISIONS:	
- * 
+ *
+ * DATE:		Mar.
+ *
+ * REVISIONS:
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu
- * 
+ *
  * PROGRAMMER:	Wilson Hu
- * 
+ *
  * INTERFACE:	int32_t TCPServer::closeClientSocket(int32_t clientSocket)
  * 					int32_t clientSocket: client socket's descriptor
- * 
+ *
  * RETURNS:		Returns the result of the close() call.
  * 					- 0 on success, -1 on failure
- * 
+ *
  * NOTES:
  * This function is a close() wrapper for the game's networking library.
  * It calls close() on the input socket descriptor.
@@ -288,21 +288,21 @@ int32_t TCPServer::closeClientSocket(int32_t clientSocket)
 
 /**
  * FUNCTION:	closeListenSocket
- * 
- * DATE:		Mar. 
- * 
- * REVISIONS:	Mar. 
- * 
+ *
+ * DATE:		Mar.
+ *
+ * REVISIONS:	Mar.
+ *
  * DESIGNER:	Delan Elliot, Wilson Hu
- * 
+ *
  * PROGRAMMER:	Wilson Hu
- * 
+ *
  * INTERFACE:	int32_t TCPServer::closeListenSocket(int32_t sockfd)
  * 					int32_t sockfd: server's listen socket descriptor
- * 
+ *
  * RETURNS:		Returns the result of the close() call.
  * 					- 0 on success, -1 on failure.
- * 
+ *
  * NOTES:
  * This function is a close() wrpaper for the game's networking library.
  * It calls close() on the input socket descriptor.
