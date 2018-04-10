@@ -9,11 +9,11 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.24";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
-    private const float FIRST_SHRINK_STAGE = 600000f;
+    private const float FIRST_SHRINK_STAGE = 840000f;
     private const float SECOND_SHRINK_STAGE = 300000f;
 
     private byte currentPlayerId;
@@ -201,6 +201,11 @@ public class GameController : MonoBehaviour
     List<PlayerData> getPlayerData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
+
+        // getting own player health data
+        int heathOffset = R.Net.Offset.HEALTH;
+        int health = BitConverter.ToInt32(this.buffer, heathOffset);
+
         int offset = R.Net.Offset.PLAYERS;
 
         for (int i = 0; i < n; i++)
@@ -212,7 +217,7 @@ public class GameController : MonoBehaviour
             byte weapon = this.buffer[offset + R.Net.Offset.Player.W];
             offset += R.Net.Size.PLAYER_DATA;
 
-            data.Add(new PlayerData(id, x, z, r, weapon));
+            data.Add(new PlayerData(id, x, z, r, weapon, health));
         }
 
         return data;
@@ -234,6 +239,7 @@ public class GameController : MonoBehaviour
     {
         int offset = R.Net.Offset.DANGER_ZONE;
         float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+        Debug.Log("DZ radius: " + rad);
         DgZone.transform.localScale = new Vector3(rad, 1, rad);
     }
 
@@ -248,7 +254,7 @@ public class GameController : MonoBehaviour
     {
         int mins = Mathf.FloorToInt(GameTime / 60000);
         int secs = Mathf.FloorToInt(GameTime % 60000 / 1000);
-        GameTimeText.text = mins.ToString() + ":" + secs.ToString();
+        GameTimeText.text = "Time: " + mins.ToString() + ":" + secs.ToString();
     }
 
     void dangerZoneMessage()
@@ -318,11 +324,31 @@ public class GameController : MonoBehaviour
         {
             if (this.currentPlayerId == playerDatas[i].Id)
             {
+                checkPlayerHealth(playerDatas[i]);
                 continue;
             }
             this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
             this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
         }
+    }
+
+    void checkPlayerHealth(PlayerData pData)
+    {
+        Player playerRef = this.players[pData.Id].GetComponent<Player>();
+        playerRef.Health = pData.Health;
+        Debug.Log("Player health: " + playerRef.Health);
+        if (playerRef.Health == 0)
+        {
+            // player dead
+            //removePlayer(pData);
+        }
+    }
+
+    void removePlayer(PlayerData deadPlayer)
+    {
+        // player is dead, do something here
+        Destroy(this.players[deadPlayer.Id]);
+        currentPlayerDead = true;
     }
 
     void spawnBullets()
