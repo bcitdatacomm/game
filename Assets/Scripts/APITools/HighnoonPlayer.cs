@@ -1,3 +1,20 @@
+/*------------------------------------------------------------------------------
+-- PROGRAMMING:	c4981_Game.exe
+--
+-- FUNCTIONS:
+--
+-- DATE:		March 15th, 2018
+--
+-- DESIGNER:	Mac Craig
+--
+-- PROGRAMMER:	Mac Craig
+--
+-- NOTES:
+--	This class is used by the program to get and set game stats. It is currently
+--  not being used.
+--
+------------------------------------------------------------------------------*/
+
 ﻿using System;
 
 namespace HighnoonTools
@@ -23,4 +40,3 @@ namespace HighnoonTools
 		public int Time_Played { get { return _time_played; } set { _time_played = value; } }
     }
 }
-
