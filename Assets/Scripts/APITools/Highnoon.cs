@@ -1,4 +1,8 @@
-﻿using System.Collections;
+/*------------------------------------------------------------------------------
+-- This was just a test of the client/server connection.
+------------------------------------------------------------------------------*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
