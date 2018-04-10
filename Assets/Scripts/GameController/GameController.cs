@@ -302,7 +302,7 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        Debug.Log("Spawning new bullet at " + this.palyers[ownerId].transform.position);
+        Debug.Log("Spawning new bullet at " + this.players[ownerId].transform.position);
 
         newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
         bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
