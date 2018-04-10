@@ -214,7 +214,7 @@ public class GameController : MonoBehaviour
 
     void setHealth()
     {
-        byte health = this.buffer[R.Offset.HEALTH];
+        byte health = this.buffer[R.Net.Offset.HEALTH];
 
         this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
     }
@@ -252,7 +252,7 @@ public class GameController : MonoBehaviour
     {
         if (HeaderDecoder.HasBullet(this.buffer[0]))
         {
-            Debug.Log(BitConvert.ToString(this.buffer));
+            Debug.Log(BitConverter.ToString(this.buffer));
 
             int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
 
@@ -311,7 +311,7 @@ public class GameController : MonoBehaviour
 
     void removeBullet(int offset)
     {
-        int id = BitConverter.ToInt32(this.buffer, offset + R.Offset.Bullet.ID);
+        int id = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
         Destroy(this.bullets[id]);
     }
 
