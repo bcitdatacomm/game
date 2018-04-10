@@ -489,6 +489,58 @@ public class TerrainController
         return Weapon;
     }
 
+    public byte[] getOccupiedPosition()
+    {
+        Collider[] hitColliders;
+        for (int i = -1 * (int)Width/2; i < Width/2; i++)
+        //for (int i = -450; i < -400; i++)
+        {
+            for (int j = -1 * (int)Length/2; j < Length/2; j++)
+            //for(int j = -450; j < -400; j++)
+            {
+                hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), 1);
+                if (hitColliders.Length > 1) //Because there is terrain collider
+                {
+                    //Debug.Log("position at: " + i + "," + j);
+                    this.occupiedPositions.Add(new Vector2(i, j));
+                    //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    //cube.transform.position = new Vector3(i, 0, j);
+                }
+            }
+        }
+        byte[] ByteOccupied = new byte[sizeof(int) * 2 * occupiedPositions.Count + sizeof(int)]; // 4 bytes per long
+        int offset = 0;
+        //get the length of the array first
+        float count = occupiedPositions.Count; // must have this extra step or conversion will fail
+        Buffer.BlockCopy(BitConverter.GetBytes(count), 0, ByteOccupied, offset, sizeof(int));
+        offset += 4;
+
+        foreach (Vector2 v in occupiedPositions)
+        {
+            Buffer.BlockCopy(BitConverter.GetBytes(v.x), 0, ByteOccupied, offset, sizeof(int));
+            offset += 4;
+            Buffer.BlockCopy(BitConverter.GetBytes(v.y), 0, ByteOccupied, offset, sizeof(int));
+            offset += 4;
+        }
+        getOccupiedFromByteArray(ByteOccupied);
+        return ByteOccupied;
+    }
+
+    public List<Vector2> getOccupiedFromByteArray(byte[] Array)
+    {
+        //int[,] occupiedList = new int[1000, 1000];
+        List<Vector2> occList = new List<Vector2>();
+        int offset = 4;
+
+        int numElements = (int)BitConverter.ToSingle(Array, 0 * sizeof(float));
+        for (int i = 0; i < numElements; i++)
+        {
+            occList.Add(new Vector2(BitConverter.ToSingle(Array, offset), BitConverter.ToSingle(Array, offset + 4)));
+            offset += 8;
+        }
+        return occList;
+    }
+
     /*-------------------------------------------------------------------------------------------------
     -- FUNCTION: Instantiate()
     --
@@ -572,7 +624,7 @@ public class TerrainController
                                 for (long jj = j - (long)offsetZ - (long)rockColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)rockColliderZ / 2 + 1; jj++)
                                 {
                                     // this list will return coordinates with 0,0 at center.
-                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                    //this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
                             }
                         }
@@ -592,7 +644,7 @@ public class TerrainController
                             {
                                 for (long jj = j - (long)offsetZ - (long)cactusColliderZ / 2 - 1; jj <= j - offsetZ + (long)cactusColliderZ / 2 + 1; jj++)
                                 {
-                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                    //this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
                             }
                         }
@@ -615,7 +667,7 @@ public class TerrainController
                             {
                                 for (long jj = j - (long)offsetZ - (long)buildingColliderZ / 2 - 1; jj <= j - (long)offsetZ + (long)buildingColliderZ / 2 + 1; jj++)
                                 {
-                                    this.occupiedPositions.Add(new Vector2(ii, jj));
+                                    //this.occupiedPositions.Add(new Vector2(ii, jj));
                                 }
                             }
                         }
@@ -640,6 +692,8 @@ public class TerrainController
         GameObject terrain = (GameObject)Terrain.CreateTerrainGameObject(tData);
         terrain.name = R.Game.Terrain.DEFAULT_NAME;
         terrain.transform.Translate(-offsetX, 0, -offsetZ);
+
+        getOccupiedPosition();
 
         return true;
     }
