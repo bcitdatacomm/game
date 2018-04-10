@@ -25,12 +25,12 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         // Generate Identification, Direction and Timer to destroy bullet object
-        this.ID = GetInstanceID();
         this.direction = this.direction.normalized;
         this.initPos = this.transform.position;
 
         // Server should do this for us
         // Destroy(this.gameObject, LifeTime);
+        Debug.Log("Bullet spawned with id: " + this.ID);
     }
 
     void FixedUpdate()

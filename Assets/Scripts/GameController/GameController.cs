@@ -305,8 +305,6 @@ public class GameController : MonoBehaviour
         newBullet.ID = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
         bullets[newBullet.ID] = newBullet;
         newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
-
-        Debug.Log("Server spawned bullet with id " + newBullet.ID);
     }
 
     void removeBullet(int offset)
@@ -315,15 +313,7 @@ public class GameController : MonoBehaviour
 
         if (this.bullets.ContainsKey(id))
         {
-            string output = "Bullet array size = " + bullets.Count + ": ";
-            foreach (KeyValuePair<int, Bullet> pair in bullets)
-            {
-                output += pair.Value.ID + ", ";
-            }
-            Debug.Log(output);
-            Debug.Log("Removing bullet " + id);
-
-            Destroy(this.bullets[id]);
+            Destroy(this.bullets[id].gameObject);
             this.bullets.Remove(id);
         }
     }

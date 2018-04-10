@@ -69,6 +69,7 @@ public class Gun : Item
 
         // Create Bullet at Parent position (player)
         Bullet firedShot = (Bullet)GameObject.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
+        firedShot.ID = firedShot.GetInstanceID();
         // Rotate bullet and multiply by parent forward direction
         firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
         
