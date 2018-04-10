@@ -5,15 +5,16 @@ using System.Threading;
 using UnityEngine;
 using Networking;
 using InitGuns;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     public const string SERVER_ADDRESS = "192.168.0.19";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
-    private const float FIRST_SHRINK_STAGE = 300000f;
-    private const float SECOND_SHRINK_STAGE = 600000f;
-    private const float FINAL_SHRINK_STAGE = 900000f;
+    //private const float TOTAL_GAME_TIME = 900000f;
+    private const float FIRST_SHRINK_STAGE = 600000f;
+    private const float SECOND_SHRINK_STAGE = 300000f;
 
     private byte currentPlayerId;
 
@@ -33,6 +34,8 @@ public class GameController : MonoBehaviour
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
     public GameObject DangerZonePrefab;
+    public Text GameTimeText;
+    public Text DisplayText;
 
     public Bullet PistolBullet;
     public Bullet ShotGunBullet;
@@ -59,6 +62,7 @@ public class GameController : MonoBehaviour
         tcpClient = new TCPClient();
         Int32 result = tcpClient.Init(epServer);
         dangerZoneInit = false;
+        GameTime = 0;
 
         if (result <= 0)
         {
@@ -178,6 +182,8 @@ public class GameController : MonoBehaviour
 
         GameTime = this.getGameTime();
         Debug.Log("Current time: " + GameTime + "ms");
+        this.displayGameTime();
+        this.dangerZoneMessage();
         if (!dangerZoneInit)
         {
             this.initDangerZone();
@@ -238,19 +244,34 @@ public class GameController : MonoBehaviour
         return time;
     }
 
+    void displayGameTime()
+    {
+        int mins = Mathf.FloorToInt(GameTime / 60000);
+        int secs = Mathf.FloorToInt(GameTime % 60000 / 1000);
+        GameTimeText.text = mins.ToString() + ":" + secs.ToString();
+    }
+
     void dangerZoneMessage()
     {
-        if (GameTime == FIRST_SHRINK_STAGE)
+        if (GameTime <= FIRST_SHRINK_STAGE + 10000 && GameTime > FIRST_SHRINK_STAGE)
         {
+            // 10 secs before 10 mins mark
+            DisplayText.text = "Panic mode starts in 10 secs";
+        }
+        else if (GameTime <= FIRST_SHRINK_STAGE && GameTime > FIRST_SHRINK_STAGE - 10000)
+        {
+            // 10 mins to 10 secs after 10 mins mark
             Debug.Log("10 minutes left.");
+            DisplayText.text = "PANIC MODE";
         }
-        else if (GameTime == SECOND_SHRINK_STAGE)
+        else if (GameTime <= SECOND_SHRINK_STAGE)
         {
-
+            Debug.Log("5 minutes left.");
+            DisplayText.text = "Panic mode ends; 5 mins left";
         }
-        else if (GameTime == FINAL_SHRINK_STAGE)
+        else
         {
-
+            DisplayText.text = "";
         }
     }
 
