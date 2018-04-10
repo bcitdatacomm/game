@@ -198,6 +198,7 @@ public class GameController : MonoBehaviour
         if (newPlayer.Id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, newPlayer.Position, newPlayer.Rotation);
+            player.GetComponent<Player>().TrackedShots = this.bullets;
             float x = newPlayer.Position.x;
             float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
@@ -252,10 +253,7 @@ public class GameController : MonoBehaviour
     {
         if (HeaderDecoder.HasBullet(this.buffer[0]))
         {
-            Debug.Log(BitConverter.ToString(this.buffer));
-
             int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
-
             int offset = R.Net.Offset.BULLETS + 1;
 
             for (int i = 0; i < numBullets; i++)
@@ -306,12 +304,18 @@ public class GameController : MonoBehaviour
 
         newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
         bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
-
     }
 
     void removeBullet(int offset)
     {
         int id = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
+        string output = "Bullet array size = " + bullets.Count + ": ";
+        foreach (KeyValuePair<int, Bullet> pair in bullets)
+        {
+            output += pair.Value.ID + ", ";
+        }
+        Debug.Log(output);
+        Debug.Log("Removing bullet " + id);
         Destroy(this.bullets[id]);
     }
 
