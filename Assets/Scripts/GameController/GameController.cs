@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     private const float SECOND_SHRINK_STAGE = 300000f;
 
     private byte currentPlayerId;
+    private bool currentPlayerDead = false;
 
     private Dictionary<byte, GameObject> players;
     private Dictionary<int, GameObject> weapons;
@@ -45,6 +46,7 @@ public class GameController : MonoBehaviour
     private float GameTime;
     private GameObject DgZone;
     private bool dangerZoneInit;
+    private Transform DZIndicator;
 
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
@@ -193,6 +195,7 @@ public class GameController : MonoBehaviour
             this.updateDangerZone();
         }
 
+        this.updateDZIndicator();
         this.moveWeapons();
         this.spawnBullets();
         this.movePlayers();
@@ -230,7 +233,7 @@ public class GameController : MonoBehaviour
         float z = BitConverter.ToSingle(this.buffer, offset + 4);
         float rad = BitConverter.ToSingle(this.buffer, offset + 8);
         DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
-        DgZone.transform.localScale = new Vector3(rad, 1, rad);
+        DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
         Debug.Log("Danger zone initiated. Player health will start decreasing after 1 min.");
         dangerZoneInit = true;
     }
@@ -240,7 +243,15 @@ public class GameController : MonoBehaviour
         int offset = R.Net.Offset.DANGER_ZONE;
         float rad = BitConverter.ToSingle(this.buffer, offset + 8);
         Debug.Log("DZ radius: " + rad);
-        DgZone.transform.localScale = new Vector3(rad, 1, rad);
+        DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
+    }
+
+    void updateDZIndicator()
+    {
+        float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
+        float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
+        float angleToTurn = (float)Math.Tan(zDiff / xDiff);
+        DZIndicator.rotation = Quaternion.Euler(0, angleToTurn, 0);
     }
 
     float getGameTime()
@@ -292,6 +303,7 @@ public class GameController : MonoBehaviour
             float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
             Instantiate(this.PlayerCamera, new Vector3(x, 15, z), Quaternion.Euler(90, 0, 0));
+            DZIndicator = player.transform.Find("DZ Indicator");
         }
         else
         {
