@@ -120,7 +120,7 @@ namespace R
 	
 	public static class Init
 	{
-		public const int PLAYER_WEAPON_MULTIPLIER = 2;
+		public const int PLAYER_WEAPON_MULTIPLIER = 8;
 		public const int WEAPON_OFFSET_ID = 1;
 		public const int WEAPON_OFFSET_X = 5;
 		public const int WEAPON_OFFSET_Z = 9;

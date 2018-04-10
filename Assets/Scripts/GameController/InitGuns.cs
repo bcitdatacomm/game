@@ -75,9 +75,17 @@ namespace InitGuns
             {
                 if (counter < numberOfWeapons(NumPlayers) / R.Init.DIVIDE_TOWNGUNS)
                 {
-                    int getT = rand.Next(TownCoords.Count);
-                    Weapon = new WeaponSpell(TownCoords[getT].X, TownCoords[getT].Z, true);
-                    TownCoords.RemoveAt(getT);
+                    if (TownCoords.Count > 0)
+                    {
+                        int getT = rand.Next(TownCoords.Count);
+                        Weapon = new WeaponSpell(TownCoords[getT].X, TownCoords[getT].Z, true);
+                        TownCoords.RemoveAt(getT);
+                    }
+                    else
+                    {
+                        Weapon = new WeaponSpell(rand.Next(0, R.Init.MAP_END),
+                            rand.Next(0, R.Init.MAP_END), true);
+                    }
                 }
                 else
                 {
