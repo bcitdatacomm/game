@@ -153,8 +153,10 @@ public class GameController : MonoBehaviour
         // If you are first player
         if (this.currentPlayerId == 0)
         {
+            //Compress the data
+            byte[] obstacleBuffer = TerrainController.compressByteArray(new byte[R.Net.TCP_BUFFER_SIZE / 2]);
             // Send the obstacle mapping
-            tcpClient.Send(new byte[R.Net.TCP_BUFFER_SIZE / 2], R.Net.TCP_BUFFER_SIZE);
+            tcpClient.Send(obstacleBuffer, R.Net.TCP_BUFFER_SIZE);
         }
 
         //////////////////////////
