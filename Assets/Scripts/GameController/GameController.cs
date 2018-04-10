@@ -144,6 +144,21 @@ public class GameController : MonoBehaviour
 
         // Where is the id in the init packet
         this.currentPlayerId = this.buffer[1];
+
+        // Handle send obstacle mapping here?
+        // It seems like this is when first player
+        // is established
+        //////////////////////////
+
+        // If you are first player
+        if (this.currentPlayerId == 0)
+        {
+            // Send the obstacle mapping
+            tcpClient.Send(new byte[R.Net.TCP_BUFFER_SIZE / 2], R.Net.TCP_BUFFER_SIZE);
+        }
+
+        //////////////////////////
+
         Debug.Log("My id is " + this.currentPlayerId);
         float x = BitConverter.ToSingle(buffer, 2);
         float z = BitConverter.ToSingle(buffer, 6);
