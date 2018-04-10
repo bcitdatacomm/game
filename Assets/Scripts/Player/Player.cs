@@ -103,6 +103,11 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (this.Health == 0)
+        {
+            Debug.Log("I Dead");
+        }
+
         anim.SetBool("Moving", false);
         move();
         turn();
