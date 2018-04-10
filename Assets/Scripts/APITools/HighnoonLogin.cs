@@ -17,6 +17,8 @@ namespace HighnoonTools
 
 		public int sceneIndex;
 
+		public AudioSource magnum;
+
 		string username = "";
 		string password = "";
 
@@ -68,7 +70,8 @@ namespace HighnoonTools
 
 
 				print (api.Player.Name);
-				// SceneManager.LoadScene (sceneIndex);
+				magnum.Play();
+				SceneManager.LoadScene (sceneIndex);
 			}
 			else
 			{
