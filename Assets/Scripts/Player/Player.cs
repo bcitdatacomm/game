@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
         anim.SetBool("Moving", false);
         move();
         turn();
-        CheckGun();
+        checkGun();
         SwitchSpell();
         DebugLogger(); // Testing purposes.
     }
@@ -157,7 +157,7 @@ public class Player : MonoBehaviour
 
     }
 
-    void CheckGun()
+    void checkGun()
     {
         GameObject GunObject = GameObject.FindGameObjectWithTag("currentWeapon");
         Gun gun = GunObject.GetComponentInChildren<Gun>();
@@ -175,8 +175,8 @@ public class Player : MonoBehaviour
                 sound.PlayOneShot(reload);
             }
             
-            gun.Shoot();
-            gun.ReloadCheck();
+            gun.CheckShoot();
+            gun.CheckReload();
         }
     }
 

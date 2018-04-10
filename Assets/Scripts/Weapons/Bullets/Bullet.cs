@@ -27,8 +27,10 @@ public class Bullet : MonoBehaviour
         // Generate Identification, Direction and Timer to destroy bullet object
         this.ID = GetInstanceID();
         this.direction = this.direction.normalized;
-        initPos = this.transform.position;
-        Destroy(this.gameObject, LifeTime);
+        this.initPos = this.transform.position;
+
+        // Server should do this for us
+        // Destroy(this.gameObject, LifeTime);
     }
 
     void FixedUpdate()
@@ -40,7 +42,8 @@ public class Bullet : MonoBehaviour
         this.transform.position = new Vector3(p.x, 1, p.z);
     }
 
-    public byte[] ToBytes() {
+    public byte[] ToBytes() 
+    {
         byte[] temp = new byte[5];
         Buffer.BlockCopy(BitConverter.GetBytes(this.ID), 0, temp, 0, 4);
         temp[4] = this.Type;
