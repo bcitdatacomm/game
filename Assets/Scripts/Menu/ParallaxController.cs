@@ -18,6 +18,7 @@ public class ParallaxController : MonoBehaviour {
 	Vector3 cameraPos;
 
 	public int shift;
+	int actualShift;
 
 	// Use this for initialization
 	void Start () 
@@ -26,7 +27,7 @@ public class ParallaxController : MonoBehaviour {
 
 		mousePos = Input.mousePosition;
 	}
-	
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -38,23 +39,32 @@ public class ParallaxController : MonoBehaviour {
 		{
 			if (posByOrigin.x > innerBound && cameraPos.x < xBound) 
 			{
-				transform.Translate (shift,0,0);
-				cameraPos.x += shift;
+				actualShift = (int) posByOrigin.x / shift;
+
+				transform.Translate (actualShift,0,0);
+				cameraPos.x += actualShift;
 			}
 			else if (posByOrigin.x < -innerBound && cameraPos.x > -xBound) 
 			{
-				transform.Translate (-shift,0,0);
-				cameraPos.x -= shift;
+				actualShift = (int) posByOrigin.x / shift;
+
+				transform.Translate (actualShift,0,0);
+				cameraPos.x += actualShift;
 			}
-			else if (posByOrigin.y > innerBound && cameraPos.y < yBound) 
+
+			if (posByOrigin.y > innerBound && cameraPos.y < yBound) 
 			{
-				transform.Translate (0,shift,0);
-				cameraPos.y += shift;
+				actualShift = (int) posByOrigin.y / shift;
+
+				transform.Translate (0,actualShift,0);
+				cameraPos.y += actualShift;
 			}
 			else if (posByOrigin.y < -innerBound && cameraPos.y > -yBound) 
 			{
-				transform.Translate (0,-shift,0);
-				cameraPos.y -= shift;
+				actualShift = (int) posByOrigin.y / shift;
+
+				transform.Translate (0,actualShift,0);
+				cameraPos.y += actualShift;
 			}
 		}
 
