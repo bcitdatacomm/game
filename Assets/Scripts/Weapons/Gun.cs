@@ -75,7 +75,7 @@ public class Gun : Item
         if (firedShot != null)
         {
             player.FiredShots.Push(firedShot);
-            player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
+            player.TrackedShots.Add(firedShot.ID, firedShot);
             Debug.Log("Player fired bullet with id " + firedShot.ID);
         }
 
