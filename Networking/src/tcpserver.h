@@ -25,6 +25,11 @@
 #define SOCKET_NODATA 0
 #define SOCKET_DATA_WAITING 1
 
+#define BUFLEN					1200		//Buffer length
+#define MAX_NUM_CLIENTS 		30
+#define TRUE					1
+#define FALSE 					0
+
 
 
 class TCPServer {
@@ -42,7 +47,6 @@ public:
 
 private:
 	int tcpSocket;
-
 	sockaddr_in serverAddr;
 	struct pollfd* poll_events;
 
