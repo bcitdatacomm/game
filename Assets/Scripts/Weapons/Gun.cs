@@ -20,24 +20,14 @@ public class Gun : Item
     void Start()
     {
         Debug.Log("Gun start");
-        nextShotTime = 0;
-        reloading = false;
+        this.nextShotTime = 0;
+        this.reloading = false;
 
         // Get audio
-        weaponSound = GetComponent<AudioSource>();
+        this.weaponSound = GetComponent<AudioSource>();
 
         // Get from Prefab.
-        currAmmo = ClipSize;
-    }
-
-    void FixedUpdate()
-    {
-        //Only allow Equipped guns to shoot; If this check is gone all guns shoot!Logic fix required...
-        // if (transform.parent != null)
-        // {
-        //     Shoot();
-        //     ReloadCheck();
-        // }
+        this.currAmmo = ClipSize;
     }
 
     /*
@@ -45,57 +35,57 @@ public class Gun : Item
      */
     public void Reload()
     {
-        timeBeforeReload = Time.time + reloadTime;
-        reloading = true;
-        //Debug.Log("reloading");
+        this.timeBeforeReload = Time.time + reloadTime;
+        this.reloading = true;
     }
 
-    public void ReloadCheck()
+    public void CheckReload()
     {
-        if (reloading == true)
+        if (this.reloading == true)
         {
-            if (Time.time >= timeBeforeReload)
+            if (Time.time >= this.timeBeforeReload)
             {
-                //Debug.Log("reloading done");
-                currAmmo = ClipSize;
-                reloading = false;
+                this.currAmmo = ClipSize;
+                this.reloading = false;
             }
         }
     }
 
-    public void Shoot()
+    public void CheckShoot()
     {
         if (Input.GetButton("Fire1") && Time.time > this.nextShotTime && currAmmo > 0 && reloading == false)
         {
-            GameObject PlayerRef = GameObject.FindGameObjectWithTag("Player");
-            Player player = PlayerRef.GetComponent<Player>();
+            this.shoot();
+        }
+    }
 
-            //Debug.Log("Shot Fired, current Ammo: " + currAmmo);
-            weaponSound.Play();
-            this.nextShotTime = Time.time + this.FireRate;
+    void shoot()
+    {
+        GameObject PlayerRef = GameObject.FindGameObjectWithTag("Player");
+        Player player = PlayerRef.GetComponent<Player>();
 
-            // Create Bullet at Parent position (player)
-            Bullet firedShot = (Bullet)GameObject.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
-            // Rotate bullet and multiply by parent forward direction
-            firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
-            
-            if (firedShot != null)
-            {
-                //Debug.Log("GUN: Bullet ID ShotAgain: " + firedShot.GetInstanceID());
-                player.FiredShots.Push(firedShot);
-                player.TrackedShots.Add(firedShot.GetInstanceID(), firedShot);
-                // Debug.Log("GUN: Bullet Dictionary" + player.TrackedShots.ContainsKey(firedShot.ID));
-            }
+        weaponSound.Play();
+        this.nextShotTime = Time.time + this.FireRate;
 
-            currAmmo--;
+        // Create Bullet at Parent position (player)
+        Bullet firedShot = (Bullet)GameObject.Instantiate(BulletPrefab, this.transform.parent.position, this.transform.parent.rotation);
+        firedShot.ID = firedShot.GetInstanceID();
+        // Rotate bullet and multiply by parent forward direction
+        firedShot.direction = this.GetComponentInParent<Transform>().rotation * Vector3.forward;
+        
+        if (firedShot != null)
+        {
+            player.FiredShots.Push(firedShot);
+            player.TrackedShots.Add(firedShot.ID, firedShot);
+            Debug.Log("Player fired bullet with id " + firedShot.ID);
+        }
 
-            if (currAmmo <= 0)
-            {
-                //Debug.Log("Current Ammo before reload: " + currAmmo);
-                Reload();
-                player.sound.PlayOneShot(player.reload);
-            }
+        currAmmo--;
 
+        if (currAmmo <= 0)
+        {
+            Reload();
+            player.sound.PlayOneShot(player.reload);
         }
     }
 }

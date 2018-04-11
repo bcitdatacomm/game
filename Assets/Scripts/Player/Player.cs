@@ -62,7 +62,6 @@ public class Player : MonoBehaviour
         this.Health = 100;
         this.Armor = 0;
         this.FiredShots = new Stack<Bullet>();
-        this.TrackedShots = new Dictionary<int, Bullet>();
         net = Vector3.zero;
         net += this.transform.position;
 
@@ -103,10 +102,15 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (this.Health == 0)
+        {
+            Debug.Log("I Dead");
+        }
+
         anim.SetBool("Moving", false);
         move();
         turn();
-        CheckGun();
+        checkGun();
         SwitchSpell();
         DebugLogger(); // Testing purposes.
     }
@@ -153,7 +157,7 @@ public class Player : MonoBehaviour
 
     }
 
-    void CheckGun()
+    void checkGun()
     {
         GameObject GunObject = GameObject.FindGameObjectWithTag("currentWeapon");
         Gun gun = GunObject.GetComponentInChildren<Gun>();
@@ -166,13 +170,13 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("Reloading!");
 
-                    gun.Reload();
-                    Debug.Log(gun.name);
-                    sound.PlayOneShot(reload);
+                gun.Reload();
+                Debug.Log(gun.name);
+                sound.PlayOneShot(reload);
             }
             
-            gun.Shoot();
-            gun.ReloadCheck();
+            gun.CheckShoot();
+            gun.CheckReload();
         }
     }
 
