@@ -193,7 +193,6 @@ public class GameController : MonoBehaviour
         }
 
         GameTime = this.getGameTime();
-        //Debug.Log("Current time: " + GameTime + "ms");
         this.displayGameTime();
         this.dangerZoneMessage();
         this.updateDangerZone();
@@ -224,18 +223,6 @@ public class GameController : MonoBehaviour
 
         return data;
     }
-
-    //void initDangerZone()
-    //{
-    //    int offset = R.Net.Offset.DANGER_ZONE;
-    //    float x = BitConverter.ToSingle(this.buffer, offset);
-    //    float z = BitConverter.ToSingle(this.buffer, offset + 4);
-    //    float rad = BitConverter.ToSingle(this.buffer, offset + 8);
-    //    DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
-    //    DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
-    //    Debug.Log("Danger zone initiated.");
-    //    dangerZoneInit = true;
-    //}
 
     void updateDangerZone()
     {
@@ -273,7 +260,6 @@ public class GameController : MonoBehaviour
         {
             DgZone.transform.position = new Vector3(x, 0, z);
         }
-        Debug.Log("DZ radius: " + rad);
         DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
     }
 
@@ -339,10 +325,9 @@ public class GameController : MonoBehaviour
             // 10 secs before phase 1 shrinks
             DisplayText.text = "Safe zone starts to shrink in 10 secs";
         }
-        else if (GameTime <= SHRINK_PHASE_1_END + 1000 && GameTime > SHRINK_PHASE_1_END)
+        else if (GameTime <= SHRINK_PHASE_1_END + 10000 && GameTime > SHRINK_PHASE_1_END)
         {
             // 10 secs before phase 1 ends
-            Debug.Log("10 secs before 5 mins mark.");
             DisplayText.text = "Safe zone stablizes in 10 secs";
         }
         else if (GameTime <= SHRINK_PHASE_2 + 10000 && GameTime > SHRINK_PHASE_2)
@@ -350,9 +335,8 @@ public class GameController : MonoBehaviour
             // 10 secs before phase 2 shrinks
             DisplayText.text = "Safe zone starts to shrink in 10 secs";
         }
-        else if (GameTime <= SHRINK_PHASE_2_END + 1000 && GameTime > SHRINK_PHASE_2_END)
+        else if (GameTime <= SHRINK_PHASE_2_END + 10000 && GameTime > SHRINK_PHASE_2_END)
         {
-            Debug.Log("10 secs before 10 mins mark.");
             DisplayText.text = "Safe zone stablizes in 10 secs";
         }
         else if (GameTime <= SHRINK_PHASE_3 + 10000 && GameTime > SHRINK_PHASE_3)
