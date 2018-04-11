@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.24";
+    public const string SERVER_ADDRESS = "192.168.0.09";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
