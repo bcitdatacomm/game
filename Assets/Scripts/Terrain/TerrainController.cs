@@ -18,6 +18,9 @@ using UnityEditor;
 --                  public byte[] decompressByteArray()
 --                  public void compressData()
 --                  public void LoadByteArray()
+--                  public Dictionary<int, GameObject> LoadGuns()
+--                  public void GetWeaponFromBytes()
+--                  public WeaponSpells()
 --
 --	DATE:			Feb 16th, 2018
 --
@@ -249,8 +252,6 @@ public class TerrainController
     -- NOTES:
     -- Compress the byteArrayData to a smaller size using system I/O.
     -------------------------------------------------------------------------------------------------*/
-
-
     public static byte[] compressByteArray(byte[] data)
     {
         using (var compressedStream = new MemoryStream())
@@ -395,19 +396,10 @@ public class TerrainController
         }
 
         //Load all of the gun prefabs
-        GameObject gun1 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
-        GameObject gun2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
-        GameObject gun3 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
-        GameObject gun4 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
-        GameObject gun5 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
-        GameObject gun6 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
-        GameObject gun7 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
-        GameObject gun8 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
-        GameObject gun9 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
-        GameObject gun10 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Shotgun.prefab", typeof(GameObject));
-        GameObject gun11 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Knife.prefab", typeof(GameObject));
-        GameObject gun12 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Pistol.prefab", typeof(GameObject));
-        GameObject gun13 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Guns/Rifle.prefab", typeof(GameObject));
+        GameObject gun1 = (GameObject)Resources.Load("Knife", typeof(GameObject));
+        GameObject gun2 = (GameObject)Resources.Load("Pistol", typeof(GameObject));
+        GameObject gun3 = (GameObject)Resources.Load("Rifle", typeof(GameObject));
+        GameObject gun4 = (GameObject)Resources.Load("Shotgun", typeof(GameObject));
 
         //Go through every gun in the list and instantiate the gun based on type
         foreach (WeaponSpell w in gunsList)
@@ -428,31 +420,31 @@ public class TerrainController
                     newGun = UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 5:
-                    newGun = UnityEngine.Object.Instantiate(gun5, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 6:
-                    newGun = UnityEngine.Object.Instantiate(gun6, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 7:
-                    newGun = UnityEngine.Object.Instantiate(gun7, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 8:
-                    newGun = UnityEngine.Object.Instantiate(gun8, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 9:
-                    newGun = UnityEngine.Object.Instantiate(gun9, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun1, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 10:
-                    newGun = UnityEngine.Object.Instantiate(gun10, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun2, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 11:
-                    newGun = UnityEngine.Object.Instantiate(gun11, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 12:
-                    newGun = UnityEngine.Object.Instantiate(gun12, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun4, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 case 13:
-                    newGun = UnityEngine.Object.Instantiate(gun13, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
+                    newGun = UnityEngine.Object.Instantiate(gun3, new Vector3(w.X - offsetX, 0, w.Z - offsetZ), Quaternion.identity);
                     break;
                 default:
                     break;
@@ -466,10 +458,26 @@ public class TerrainController
         return tmp;
     }
 
-    // This is a helper function that parses chunks of the decompressed
-    // gun packet and returns the parsed packet data as a WeaponSpell object
-    //
-    // Alfred's code, modified by Roger
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: GetWeaponFromBytes()
+    --
+    -- DATE: April 11, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Alfred Swinton
+    --
+    -- PROGRAMMER: Alfred Swinton, Roger Zhang
+    --
+    -- INTERFACE: GetWeaponFromBytes(byte[] weaponinbytes)
+    --                  byte[] weaponinbytes: A byte array contain the gun data.
+    --
+    -- RETURNS: WeaponSpell object
+    --
+    -- NOTES:
+    -- This is a helper function that parses chunks of the decompressed
+    -- gun packet and returns the parsed packet data as a WeaponSpell object
+    -------------------------------------------------------------------------------------------------*/
     private WeaponSpell GetWeaponFromBytes(byte[] weaponinbytes)
     {
         WeaponSpell Weapon = new WeaponSpell();
@@ -520,12 +528,12 @@ public class TerrainController
         };
 
         // Grab the prefabs
-        GameObject rockPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Rocks Pack/Rock1/RockScaled.prefab", typeof(GameObject));
-        GameObject cactusPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/CactusScaled.prefab", typeof(GameObject));
-        GameObject buildingPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Buildings/CityBuildingScaled.prefab", typeof(GameObject));
-        GameObject townPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/TownScaledOriginal.prefab", typeof(GameObject));
-        GameObject townPrefab2 = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scenery/Town/TownScaled.prefab", typeof(GameObject));
-        GameObject wallPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Environment/OuterWall.prefab", typeof(GameObject));
+        GameObject rockPrefab = (GameObject)Resources.Load("RockScaled", typeof(GameObject));
+        GameObject cactusPrefab = (GameObject)Resources.Load("CactusScaled", typeof(GameObject));
+        GameObject buildingPrefab = (GameObject)Resources.Load("CityBuildingScaled", typeof(GameObject));
+        GameObject townPrefab = (GameObject)Resources.Load("TownScaledOriginal", typeof(GameObject));
+        GameObject townPrefab2 = (GameObject)Resources.Load("TownScaled", typeof(GameObject));
+        GameObject wallPrefab = (GameObject)Resources.Load("OuterWall", typeof(GameObject));
 
         //Set the collider boundaries of the game objects
         float rockColliderX = rockPrefab.gameObject.GetComponent<Renderer>().bounds.size.x;
@@ -631,7 +639,7 @@ public class TerrainController
         newSplatPrototypes[0] = new SplatPrototype();
 
         // Grab the texture and set it
-        newSplatPrototypes[0].texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Textures/Ground/Ground_Path.png", typeof(Texture2D));
+        newSplatPrototypes[0].texture = (Texture2D)Resources.Load("Ground_Path", typeof(Texture2D));
 
         // Assign the new splat prototype array to tData
         tData.splatPrototypes = newSplatPrototypes;
@@ -644,9 +652,24 @@ public class TerrainController
         return true;
     }
 
-    // The client side version of the WeaponSpell class
-    //
-    // Alfred's code, modified by Roger
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: WeaponSpell()
+    --
+    -- DATE: March 16, 2018
+    --
+    -- REVISIONS: N/A
+    --
+    -- DESIGNER: Alfred Swinton
+    --
+    -- PROGRAMMER: Alfred Swinton & Roger Zhang
+    --
+    -- INTERFACE: WeaponSpell
+    --
+    -- RETURNS: void
+    --
+    -- NOTES:
+    -- Modified version client side weaponspell, used to pass in gun data.
+    -------------------------------------------------------------------------------------------------*/
     public class WeaponSpell
     {
         public static int inc = 0;
