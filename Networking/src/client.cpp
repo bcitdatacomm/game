@@ -1,24 +1,32 @@
-/*------------------------------------------------------------------------------------------------------------
--- FUNCTION: sendBytes
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	client.cpp -   
 --
--- DATE: February 24th 2018
+--	PROGRAM:		libNetwork.so (dynamically loaded networking library)
 --
--- REVISIONS: March 5th 2018
---	
+--	FUNCTIONS:		Client();
+--					int32_t initializeSocket(EndPoint ep);
+--					int32_t sendBytes(char * data, uint32_t len);
+--					int32_t receiveBytes(char * buffer, uint32_t size);
+--					int32_t UdpPollSocket();
+--		
+--	DATE:			February 27th, 2018
 --
--- DESIGNER: Delan Elliot, Matthew Shew, Calvin Lai
+--	REVISIONS:		March 12th, 2018
+--						Delan Elliot: switched to select
+--					March 14th, 2018
+--						Delan Elliot: switched back to poll
+--                  
 --
--- PROGRAMMER: Delan Elliot, Matthew Shew
+--	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee, Matthew Shew, Calvin Lai, William Murphy
 --
--- INTERFACE: int32_t sendBytes(short port)
---								port: open a server on this port
+--	PROGRAMMER:		Delan Elliot, Calvin Lai
 --
--- RETURNS: the number of bytes sent, or -1 if there is an error.
---
--- NOTES:
--- 		Sends bytes of length len to the address specified by the EndPoint struct. The endpoint is host byte order.
---		The EndPoint struct is filled in C# and the binary data is interpreted reliably because of fixed width types. 
---------------------------------------------------------------------------------------------------------------*/
+--	NOTES:
+--		This class provides UDP client functionality. Receive is blocking, but it also provides a
+--		non-blocking Poll method to check for waiting datagrams so that receive only gets called
+--		when necessary. 
+--		
+---------------------------------------------------------------------------------------*/
 
 #include "client.h"
 
@@ -115,9 +123,27 @@ int32_t Client::sendBytes(char * data, unsigned len)
 
 
 
-/**
-	Sends char array to all connected clients
-**/
+/*------------------------------------------------------------------------------------------------------------
+-- FUNCTION: receiveBytes
+--
+-- DATE: March 7th 2018
+--
+-- REVISIONS:
+--
+-- DESIGNER: Delan Elliot, Matthew Shew, Calvin Lai, Jeff Chou, Wilson Hu, Jeremy Lee
+--
+-- PROGRAMMER: Delan Elliot, Calvin Lai
+--
+-- INTERFACE: int32_t receiveBytes(char * buffer, uint32_t size)
+--								buffer: char buffer of size "size"
+--								size:  size of the receive buffer/max length of datagram that can be received
+--
+-- RETURNS: the number of bytes recv, or -1 if there is an error.
+--
+-- NOTES:
+-- 		Receives datagram of max size "size". The address of the client that sent the datagram is saved into the 
+--		EndPoint referenced by addr. 
+--------------------------------------------------------------------------------------------------------------*/
 int32_t Client::receiveBytes(char * buffer, uint32_t size)
 {
 	int32_t bytesRead = recv(clientSocket, buffer, size, 0);
@@ -127,6 +153,24 @@ int32_t Client::receiveBytes(char * buffer, uint32_t size)
 
 
 
+/*------------------------------------------------------------------------------------------------------------
+-- FUNCTION: UdpPollSocket
+--
+-- DATE: February 28th 2018
+--
+-- REVISIONS:
+--
+-- DESIGNER: Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee, Matthew Shew, Calvin Lai, William Murphy
+--
+-- PROGRAMMER: Delan Elliot,  Calvin Lai
+--
+-- INTERFACE: int32_t UdpPollSocket()
+--
+-- RETURNS: 1 if data is waiting, 0 if not.
+--
+-- NOTES:
+-- 		Calls Poll() on the client socket.
+--------------------------------------------------------------------------------------------------------------*/
 int32_t Client::UdpPollSocket()
 {
 	int numfds = 1;

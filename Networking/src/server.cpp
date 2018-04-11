@@ -11,15 +11,16 @@
 --		
 --	DATE:			February 27th, 2018
 --
---	REVISIONS:		
+--	REVISIONS:		March 17th, 2018
+--						Delan Elliot: fixed issue with Select causing seg fault - moved back to Poll
 --                  
 --
---	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee, Matthew Shew, Calvin Lai
+--	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee, Matthew Shew, Calvin Lai, William Murphy
 --
 --	PROGRAMMER:		Delan Elliot, Matthew Shew
 --
 --	NOTES:
---		
+--		This class provides UDP server functionality. 
 --		
 ---------------------------------------------------------------------------------------*/
 #ifndef SERVER_DEF

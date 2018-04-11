@@ -8,18 +8,21 @@
 --					int32_t Server_PollSocket(void *serverPtr)
 --					int32_t Server_sendBytes(void *serverPtr, EndPoint ep, char *data, uint32_t len)
 --					int32_t Server_recvBytes(void *serverPtr, EndPoint *addr, char *buffer, uint32_t bufSize)
+--
 --                  Client* Client_CreateClient()
 --                  int32_t Client_sendBytes(void *clientPtr, char *buffer, uint32_t len)
 --                  int32_t Client_recvBytes(void *clientPtr, char *buffer, uint32_t len)
 --                  int32_t Client_PollSocket(void *clientPtr)
 --                  int32_t Client_initClient(void *clientPtr, EndPoint ep)
+--
 --                  TCPServer* TCPServer_CreateServer()
 --                  int32_t TCPServer_initServer(void * serverPtr, short port)
 --                  int32_t TCPServer_acceptConnection(void * serverPtr, EndPoint * ep)
 --                  int32_t TCPServer_sendBytes(void * serverPtr, int32_t clientSocket, char * data, uint32_t len)
 --                  int32_t TCPServer_recvBytes(void * serverPtr, int32_t clientSocket, char * buffer, uint32_t bufSize)
 --                  int32_t TCPServer_closeClientSocket(void* serverPtr, int32_t clientSocket)
---                  TCPServer_closeListenSocket(void* serverPtr, int32_t sockfd)
+--                  void TCPServer_closeListenSocket(void* serverPtr, int32_t sockfd)
+--
 --                  TCPClient* TCPClient_CreateClient()
 --                  int32_t TCPClient_initClient(void *clientPtr, EndPoint ep)
 --                  int32_t TCPClient_sendBytes(void *clientPtr, char *buffer, uint32_t len)
@@ -29,9 +32,9 @@
 --	DATE:			March 10th, 2018
 --
 --	REVISIONS:		
---                  March 15th, 2018: added TCP server functions - Wilson Hu
+--                  March 17th, 2018: added TCP server functions - Wilson Hu
 --
---	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee
+--	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee, Matthew Shew, Calvin Lai, William Murphy
 --
 --	PROGRAMMER:		Delan Elliot, Wilson Hu
 --
