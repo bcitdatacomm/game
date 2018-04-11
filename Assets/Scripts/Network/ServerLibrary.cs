@@ -27,13 +27,16 @@
 --      IntPtr TCPClient_CreateClient();
 --      Int32 TCPClient_initClient(IntPtr serverPtr, EndPoint ep);
 --
---	DATE:			March 10th, 2018
+--	DATE:			February 27th, 2018
 --
---	REVISIONS:		(Date and Description)
+--	REVISIONS:		March 5th, 2018:
+--                      Added Select wrappers
+--                  March 14th, 2018:
+--                      Added TCP interfaces (Wilson Hu)
 --
 --	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee
 --
---	PROGRAMMER:		Delan Elliot
+--	PROGRAMMER:		Delan Elliot, Wilson Hu
 --
 --	NOTES:
 --		This file is simply a header file to interface with the Networking shared object 

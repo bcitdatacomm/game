@@ -9,13 +9,14 @@
 --					Recv(byte[] buffer, Int32 len)
 --					Send(byte[] buffer, Int32 len)
 --
---	DATE:			March 10th, 2018
+--	DATE:			February 27th, 2018
 --
---	REVISIONS:		(Date and Description)
+--	REVISIONS:		March 5th:
+--						Added select wrapper (Jeremy Lee)
 --
 --	DESIGNERS:		Delan Elliot, Wilson Hu, Jeff Chou, Jeremy Lee
 --
---	PROGRAMMER:		Delan Elliot, Li Yan Tong
+--	PROGRAMMER:		Delan Elliot, Jeremy Lee
 --
 --	NOTES:
 --		Client.cs provides a C# wrapper for the C++ functions implemented in the shared library.

@@ -9,7 +9,8 @@
 --					Recv(byte[] buffer, Int32 len)
 --					Send(byte[] buffer, Int32 len)
 --
---	DATE:			March 10th, 2018
+--	DATE:			February 27th, 2018
+--					
 --
 --	REVISIONS:		(Date and Description)
 --
@@ -44,7 +45,7 @@ namespace Networking
 /*------------------------------------------------------------------------------------------------------------
 -- FUNCTION: Init
 --
--- DATE: March 7th 2018
+-- DATE: February 27th, 2018
 --
 -- REVISIONS:
 --
@@ -70,7 +71,7 @@ namespace Networking
 /*------------------------------------------------------------------------------------------------------------
 -- FUNCTION: Poll
 --
--- DATE: March 7th 2018
+-- DATE: February 27th, 2018
 --
 -- REVISIONS:
 --
@@ -95,7 +96,7 @@ namespace Networking
 /*------------------------------------------------------------------------------------------------------------
 -- FUNCTION: Select
 --
--- DATE: March 7th 2018
+-- DATE: March 5th, 2018
 --
 -- REVISIONS:
 --
@@ -119,7 +120,7 @@ namespace Networking
 /*------------------------------------------------------------------------------------------------------------
 -- FUNCTION: Recv
 --
--- DATE: March 7th 2018
+-- DATE: February 27th, 2018
 --
 -- REVISIONS:
 --
@@ -155,7 +156,7 @@ namespace Networking
 /*------------------------------------------------------------------------------------------------------------
 -- FUNCTION: Send
 --
--- DATE: March 7th 2018
+-- DATE: February 27th, 2018
 --
 -- REVISIONS:
 --

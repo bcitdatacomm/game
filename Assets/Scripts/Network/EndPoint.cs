@@ -7,10 +7,12 @@
 --                  CAddr
 --                  EndpointComparer
 --
---	DATE:			February 25th, 2018
+--	DATE:			February 27th, 2018
 --
 --	REVISIONS:		March 15th, 2018:
 --                      Added convenience methods for comparison (Delan Elliot)
+--                  April 11th, 2018:
+--                      Fixed compilation warning
 --
 --	DESIGNERS:		Delan Elliot
 --
@@ -92,7 +94,7 @@ namespace Networking
             return Compare(x, y) == 0;
         }
 
-        public override Equals (object x)
+        public override bool Equals (object x)
         {
             if(x is EndPoint)
             {
