@@ -51,6 +51,13 @@ public class GameController : MonoBehaviour
     private bool dangerZoneInit;
     private Transform DZIndicator;
 
+    // DZ indicator
+    private LineRenderer dzLine;
+    private int dzLineSeg = 50;
+    public float xradius = 5;
+    public float yradius = 5;
+    public int numSegments = 128;
+
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
     private Int32 clientsockfd;
@@ -241,6 +248,26 @@ public class GameController : MonoBehaviour
             DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
             Debug.Log("Danger zone initiated.");
             dangerZoneInit = true;
+
+            // dzLine = DgZone.GetComponent<LineRenderer>();
+            // dzLine.SetVertexCount (dzLineSeg + 1);
+            // dzLine.useWorldSpace = false;
+            // Color c1 = new Color(0.5f, 0.5f, 0.5f, 1);
+            // dzLine.material = new Material(Shader.Find("Particles/Additive"));
+            // dzLine.SetColors(c1, c1);
+            // dzLine.SetWidth(2f, 2f);
+            // dzLine.SetVertexCount(numSegments + 1);
+            // dzLine.useWorldSpace = false;
+            //
+            // float deltaTheta = (float) (2.0 * Mathf.PI) / numSegments;
+            // float theta = 0f;
+            //
+            // for (int i = 0 ; i < numSegments + 1 ; i++) {
+            // float x = radius * Mathf.Cos(theta);
+            // float z = radius * Mathf.Sin(theta);
+            // Vector3 pos = new Vector3(x, 0, z);
+            // dzLine.SetPosition(i, pos);
+            // theta += deltaTheta;
         }
         else
         {
@@ -250,17 +277,45 @@ public class GameController : MonoBehaviour
         DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
     }
 
+    void createDZPoints()
+    {
+        float x;
+        float y;
+        float z;
+
+        float angle = 20f;
+
+        for (int i = 0; i < (dzLineSeg + 1); i++)
+        {
+            x = Mathf.Sin (Mathf.Deg2Rad * angle) * xradius;
+            z = Mathf.Cos (Mathf.Deg2Rad * angle) * yradius;
+
+            dzLine.SetPosition (i,new Vector3(x,1,z) );
+
+            angle += (360f / dzLineSeg);
+        }
+    }
+
     void updateDZIndicator()
     {
         float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
         float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
-        float theta = (float)(Math.Atan(zDiff / xDiff) * 180 / Math.PI);
-        float angleToTurn = -1 * theta;
-        if (xDiff < 0)
+        float theta = (float)(Math.Atan(zDiff / xDiff) * Mathf.Rad2Deg);
+
+        Vector3 target = DgZone.transform.position - players[currentPlayerId].transform.position;
+        float angle = Vector3.Angle(target, Vector3.forward);
+        Quaternion rot = Quaternion.identity;
+
+        if (angle < 90)
         {
-            angleToTurn = -1 * (theta + 180f);
+            rot = Quaternion.Euler(0, -angle, 0);
         }
-        DZIndicator.rotation = Quaternion.Euler(0, angleToTurn, 0);
+        else
+        {
+            rot = Quaternion.Euler(0, angle, 0);
+        }
+
+        DZIndicator.rotation = rot;
     }
 
     float getGameTime()
