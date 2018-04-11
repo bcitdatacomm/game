@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 using System.Collections.Generic;
 using UnityEditor;
 
@@ -492,19 +493,17 @@ public class TerrainController
     public byte[] getOccupiedPosition()
     {
         Collider[] hitColliders;
-        for (int i = -1 * (int)Width/2; i < Width/2; i++)
-        //for (int i = -450; i < -400; i++)
+        //for (int i = -1 * (int)Width/2; i < Width/2; i++)
+        for (int i = -65; i < 65; i++)
         {
-            for (int j = -1 * (int)Length/2; j < Length/2; j++)
-            //for(int j = -450; j < -400; j++)
+            //for (int j = -1 * (int)Length/2; j < Length/2; j++)
+            for(int j = -56; j < 65; j++)
             {
                 hitColliders = Physics.OverlapSphere(new Vector3(i, 0, j), 1);
-                if (hitColliders.Length > 1) //Because there is terrain collider
+                if (hitColliders.Length > 2) //Because there is terrain collider, for town there is the town collider
                 {
                     //Debug.Log("position at: " + i + "," + j);
                     this.occupiedPositions.Add(new Vector2(i, j));
-                    //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    //cube.transform.position = new Vector3(i, 0, j);
                 }
             }
         }
@@ -515,15 +514,29 @@ public class TerrainController
         Buffer.BlockCopy(BitConverter.GetBytes(count), 0, ByteOccupied, offset, sizeof(int));
         offset += 4;
 
+        StringBuilder str = new StringBuilder();
+
         foreach (Vector2 v in occupiedPositions)
         {
             Buffer.BlockCopy(BitConverter.GetBytes(v.x), 0, ByteOccupied, offset, sizeof(int));
             offset += 4;
             Buffer.BlockCopy(BitConverter.GetBytes(v.y), 0, ByteOccupied, offset, sizeof(int));
             offset += 4;
+            str.Append("occupiedPosition.Add(\"" + v.x + "," + v.y + "\", true)\n");
         }
-        getOccupiedFromByteArray(ByteOccupied);
+        // comment out if you want to write to a file
+        //WriteString(str);
         return ByteOccupied;
+}
+
+public static void WriteString(StringBuilder str)
+    {
+        string path = "Assets/test.txt";
+
+        //Write some text to the test.txt file
+        StreamWriter writer = new StreamWriter(path, true);
+        writer.WriteLine(str);
+        writer.Close();
     }
 
     public List<Vector2> getOccupiedFromByteArray(byte[] Array)
