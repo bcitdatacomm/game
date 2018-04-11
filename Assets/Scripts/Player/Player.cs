@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     public Stack<Bullet> FiredShots;
     public Dictionary<int, Bullet> TrackedShots;
 
+    public bool triggerStay = false;
+
     public byte[] Weapon
     {
         get
@@ -225,21 +227,16 @@ public class Player : MonoBehaviour
         // Spell switching
     }
 
+
     void OnTriggerStay(Collider other)
     {
-        if (Input.GetKeyDown("e") && ((int)(DateTime.Now - lastPickUp).TotalMilliseconds > 10))
+        if (Input.GetKeyDown("e")&& ((int)(DateTime.Now - lastPickUp).TotalMilliseconds > 10))
         {
             lastPickUp = DateTime.Now;
 
-            Debug.Log("E pressed");
-            Debug.Log(other.tag);
             Item item = other.GetComponent<Item>();
 
-            Debug.Log("Is item null: " + (item == null));
-            Debug.Log("Item ID: " + item.ID);
-
             GameObject itemObject = other.gameObject;
-            Debug.Log("Is item object null: " + (itemObject == null));
 
             GameObject WeaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
 

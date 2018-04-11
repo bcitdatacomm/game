@@ -2719,6 +2719,7 @@ MonoBehaviour:
   net: {x: 0, y: 0, z: 0}
   currentItem: {fileID: 0}
   currentGun: {fileID: 0}
+  triggerStay: 0
 --- !u!114 &114410145204893330
 MonoBehaviour:
   m_ObjectHideFlags: 1
