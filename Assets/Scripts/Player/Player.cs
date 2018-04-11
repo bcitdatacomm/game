@@ -31,12 +31,13 @@ public class Player : MonoBehaviour
     private Spell[] spells;
     DateTime lastPickUp;
     public Gun currentGun;
-
+    public bool animationTriggered;
     // Keep Track of Bullets
     public Stack<Bullet> FiredShots;
     public Dictionary<int, Bullet> TrackedShots;
 
-    public byte[] Weapon 
+    public Player playerScript;
+    public byte[] Weapon
     {
         get
         {
@@ -64,7 +65,7 @@ public class Player : MonoBehaviour
         this.FiredShots = new Stack<Bullet>();
         net = Vector3.zero;
         net += this.transform.position;
-
+        animationTriggered = false;
         sound = GetComponent<AudioSource>();
         sound.Play();
 
@@ -98,13 +99,17 @@ public class Player : MonoBehaviour
         // Set up references.
         anim = GetComponent<Animator>();
         playerRigidbody = GetComponent<Rigidbody>();
+        playerScript = GetComponent<Player>();
     }
 
     void FixedUpdate()
     {
-        if (this.Health == 0)
+        // this.Health = 0;
+        if (this.Health == 0 && !animationTriggered)
         {
+            animationTriggered = true;
             Debug.Log("I Dead");
+            PlayerDead();
         }
 
         anim.SetBool("Moving", false);
@@ -113,6 +118,11 @@ public class Player : MonoBehaviour
         checkGun();
         SwitchSpell();
         DebugLogger(); // Testing purposes.
+    }
+
+    void PlayerDead() {
+        anim.SetTrigger("Dead");
+        playerScript.enabled = false;
     }
 
     void move()
@@ -163,7 +173,7 @@ public class Player : MonoBehaviour
         Gun gun = GunObject.GetComponentInChildren<Gun>();
 
         if (gun != null)
-        { 
+        {
             // Manual Reload
             // TODO: Minor issue, reloads multiple times, perhaps multiple ticks?
             if (Input.GetKey("r"))
@@ -174,7 +184,7 @@ public class Player : MonoBehaviour
                 Debug.Log(gun.name);
                 sound.PlayOneShot(reload);
             }
-            
+
             gun.CheckShoot();
             gun.CheckReload();
         }
