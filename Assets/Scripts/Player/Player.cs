@@ -235,7 +235,7 @@ public class Player : MonoBehaviour
             Debug.Log(other.tag);
             Item item = other.GetComponent<Item>();
 
-            Debug("Is item null: " + (item == null));
+            Debug.Log("Is item null: " + (item == null));
             Debug.Log("Item ID: " + item.ID);
 
             GameObject itemObject = other.gameObject;
