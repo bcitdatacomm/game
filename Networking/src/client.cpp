@@ -1,3 +1,25 @@
+/*------------------------------------------------------------------------------------------------------------
+-- FUNCTION: sendBytes
+--
+-- DATE: February 24th 2018
+--
+-- REVISIONS: March 5th 2018
+--	
+--
+-- DESIGNER: Delan Elliot, Matthew Shew, Calvin Lai
+--
+-- PROGRAMMER: Delan Elliot, Matthew Shew
+--
+-- INTERFACE: int32_t sendBytes(short port)
+--								port: open a server on this port
+--
+-- RETURNS: the number of bytes sent, or -1 if there is an error.
+--
+-- NOTES:
+-- 		Sends bytes of length len to the address specified by the EndPoint struct. The endpoint is host byte order.
+--		The EndPoint struct is filled in C# and the binary data is interpreted reliably because of fixed width types. 
+--------------------------------------------------------------------------------------------------------------*/
+
 #include "client.h"
 
 
@@ -7,9 +29,26 @@ Client::Client()
 }
 
 
-/**
-	Initializes client socket
-**/
+/*------------------------------------------------------------------------------------------------------------
+-- FUNCTION: initializeSocket
+--
+-- DATE: March 7th 2018
+--
+-- REVISIONS:
+--
+-- DESIGNER: Delan Elliot, Matthew Shew, Calvin Lai, Wilson Hu
+--
+-- PROGRAMMER: Delan Elliot, Calvin Lai
+--
+-- INTERFACE: int32_t initializeSocket(EndPoint ep)
+--								EndPoint: the IP address and port of the server  
+--
+-- RETURNS: 0 on success, or -1 if unsuccessfully opened. 
+--
+-- NOTES:
+-- 		init is called once the unmanaged client has been instantiated, and it creates the socket, calls "connect" to
+--		bind the socket to a single address. 
+--------------------------------------------------------------------------------------------------------------*/
 int32_t Client::initializeSocket(EndPoint ep)
 {
 	if ((clientSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
@@ -43,9 +82,27 @@ int32_t Client::initializeSocket(EndPoint ep)
 
 
 
-/**
-	Sends char array to all connected clients
-**/
+/*------------------------------------------------------------------------------------------------------------
+-- FUNCTION: sendBytes
+--
+-- DATE: March 7th 2018
+--
+-- REVISIONS:
+--
+-- DESIGNER: Delan Elliot, Matthew Shew, Calvin Lai
+--
+-- PROGRAMMER: Delan Elliot, Calvin Lai
+--
+-- INTERFACE: int32_t sendBytes(char* data, unsigned len)
+--								data: array of binary data to send
+--								len: length of data to send in bytes
+--
+-- RETURNS: the number of bytes sent, or -1 if there is an error.
+--
+-- NOTES:
+-- 		Sends the bytes specified by the array on the connected socket. Will return -1 if the socket has not been 
+--		initalized. 
+--------------------------------------------------------------------------------------------------------------*/
 int32_t Client::sendBytes(char * data, unsigned len)
 {
 	int32_t retVal;
