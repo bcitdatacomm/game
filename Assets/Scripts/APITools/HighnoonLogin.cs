@@ -162,7 +162,6 @@ namespace HighnoonTools
 
 				menu.SetActive (false);
 				wait.SetActive (true);
-
 				SceneManager.LoadScene (sceneIndex);
 			}
 			else
