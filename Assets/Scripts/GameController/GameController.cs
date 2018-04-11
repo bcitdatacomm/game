@@ -5,13 +5,22 @@ using System.Threading;
 using UnityEngine;
 using Networking;
 using InitGuns;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.19";
+    public const string SERVER_ADDRESS = "192.168.0.24";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
+    //private const float TOTAL_GAME_TIME = 900000f;
+    private const float SHRINK_PHASE_1 = 780000f;       // 2 mins mark
+    private const float SHRINK_PHASE_1_END = 600000f;   // 5 mins mark
+    private const float SHRINK_PHASE_2 = 480000f;       // 7 mins mark
+    private const float SHRINK_PHASE_2_END = 300000f;   // 10 mins mark
+    private const float SHRINK_PHASE_3 = 180000f;       // 12 mins mark
+
     private byte currentPlayerId;
+    private bool currentPlayerDead = false;
 
     private Dictionary<byte, GameObject> players;
     private Dictionary<int, GameObject> weapons;
@@ -28,11 +37,27 @@ public class GameController : MonoBehaviour
     public GameObject PlayerCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
+    public GameObject DangerZonePrefab;
+    public Text GameTimeText;
+    public Text DisplayText;
 
     public Bullet PistolBullet;
     public Bullet ShotGunBullet;
     public Bullet RifleBullet;
     public Bullet MeleeBullet;
+
+    private float GameTime;
+    private GameObject DgZone;
+    private bool dangerZoneInit;
+    private Transform DZIndicator;
+
+    // DZ indicator
+    private LineRenderer dzLine;
+    private int dzLineSeg = 50;
+    public float xradius = 5;
+    public float yradius = 5;
+    public int numSegments = 128;
+
     // ADDED: Game initialization variables
     private TCPClient tcpClient;
     private Int32 clientsockfd;
@@ -48,6 +73,8 @@ public class GameController : MonoBehaviour
         epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
         tcpClient = new TCPClient();
         Int32 result = tcpClient.Init(epServer);
+        dangerZoneInit = false;
+        GameTime = 0;
 
         if (result <= 0)
         {
@@ -165,8 +192,15 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        GameTime = this.getGameTime();
+        this.displayGameTime();
+        this.dangerZoneMessage();
+        this.updateDangerZone();
+        this.updateDZIndicator();
+
+        this.setHealth();
         this.moveWeapons();
-        this.spawnBullets();        
+        this.spawnBullets();
         this.movePlayers();
     }
 
@@ -190,6 +224,132 @@ public class GameController : MonoBehaviour
         return data;
     }
 
+    void updateDangerZone()
+    {
+        int offset = R.Net.Offset.DANGER_ZONE;
+        float x = BitConverter.ToSingle(this.buffer, offset);
+        float z = BitConverter.ToSingle(this.buffer, offset + 4);
+        float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+        if (!dangerZoneInit)
+        {
+            DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
+            Debug.Log("Danger zone initiated.");
+            dangerZoneInit = true;
+
+            // dzLine = DgZone.GetComponent<LineRenderer>();
+            // dzLine.SetVertexCount (dzLineSeg + 1);
+            // dzLine.useWorldSpace = false;
+            // Color c1 = new Color(0.5f, 0.5f, 0.5f, 1);
+            // dzLine.material = new Material(Shader.Find("Particles/Additive"));
+            // dzLine.SetColors(c1, c1);
+            // dzLine.SetWidth(2f, 2f);
+            // dzLine.SetVertexCount(numSegments + 1);
+            // dzLine.useWorldSpace = false;
+            //
+            // float deltaTheta = (float) (2.0 * Mathf.PI) / numSegments;
+            // float theta = 0f;
+            //
+            // for (int i = 0 ; i < numSegments + 1 ; i++) {
+            // float x = radius * Mathf.Cos(theta);
+            // float z = radius * Mathf.Sin(theta);
+            // Vector3 pos = new Vector3(x, 0, z);
+            // dzLine.SetPosition(i, pos);
+            // theta += deltaTheta;
+        }
+        else
+        {
+            DgZone.transform.position = new Vector3(x, 0, z);
+        }
+        DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
+    }
+
+    void createDZPoints()
+    {
+        float x;
+        float y;
+        float z;
+
+        float angle = 20f;
+
+        for (int i = 0; i < (dzLineSeg + 1); i++)
+        {
+            x = Mathf.Sin (Mathf.Deg2Rad * angle) * xradius;
+            z = Mathf.Cos (Mathf.Deg2Rad * angle) * yradius;
+
+            dzLine.SetPosition (i,new Vector3(x,1,z) );
+
+            angle += (360f / dzLineSeg);
+        }
+    }
+
+    void updateDZIndicator()
+    {
+        float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
+        float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
+        float theta = (float)(Math.Atan(zDiff / xDiff) * Mathf.Rad2Deg);
+
+        Vector3 target = DgZone.transform.position - players[currentPlayerId].transform.position;
+        float angle = Vector3.Angle(target, Vector3.forward);
+        Quaternion rot = Quaternion.identity;
+
+        if (angle < 90)
+        {
+            rot = Quaternion.Euler(0, -angle, 0);
+        }
+        else
+        {
+            rot = Quaternion.Euler(0, angle, 0);
+        }
+
+        DZIndicator.rotation = rot;
+    }
+
+    float getGameTime()
+    {
+        int offset = R.Net.Offset.TIME;
+        float time = BitConverter.ToSingle(this.buffer, offset);
+        return time;
+    }
+
+    void displayGameTime()
+    {
+        int mins = Mathf.FloorToInt(GameTime / 60000);
+        int secs = Mathf.FloorToInt(GameTime % 60000 / 1000);
+        GameTimeText.text = "Time: " + mins.ToString() + ":" + secs.ToString();
+    }
+
+    void dangerZoneMessage()
+    {
+        if (GameTime <= SHRINK_PHASE_1 + 10000 && GameTime > SHRINK_PHASE_1)
+        {
+            // 10 secs before phase 1 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_1_END + 10000 && GameTime > SHRINK_PHASE_1_END)
+        {
+            // 10 secs before phase 1 ends
+            DisplayText.text = "Safe zone stablizes in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_2 + 10000 && GameTime > SHRINK_PHASE_2)
+        {
+            // 10 secs before phase 2 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_2_END + 10000 && GameTime > SHRINK_PHASE_2_END)
+        {
+            DisplayText.text = "Safe zone stablizes in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_3 + 10000 && GameTime > SHRINK_PHASE_3)
+        {
+            // 10 secs before phase 3 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
+        }
+        else
+        {
+            DisplayText.text = "";
+        }
+    }
+
     void addPlayer(PlayerData newPlayer)
     {
         GameObject player;
@@ -201,6 +361,7 @@ public class GameController : MonoBehaviour
             float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
             Instantiate(this.PlayerCamera, new Vector3(x, 15, z), Quaternion.Euler(90, 0, 0));
+            DZIndicator = player.transform.Find("DZ Indicator");
         }
         else
         {
@@ -233,11 +394,38 @@ public class GameController : MonoBehaviour
         {
             if (this.currentPlayerId == playerDatas[i].Id)
             {
+                //checkPlayerHealth(playerDatas[i]);
                 continue;
             }
             this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
             this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
         }
+    }
+
+    //void checkPlayerHealth(PlayerData pData)
+    //{
+    //    Player playerRef = this.players[pData.Id].GetComponent<Player>();
+    //    playerRef.Health = pData.Health;
+    //    Debug.Log("Player health: " + playerRef.Health);
+    //    if (playerRef.Health == 0)
+    //    {
+    //        // player dead
+    //        //removePlayer(pData);
+    //    }
+    //}
+
+    void setHealth()
+    {
+        byte health = this.buffer[R.Net.Offset.HEALTH];
+
+        this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
+    }
+
+    void removePlayer(PlayerData deadPlayer)
+    {
+        // player is dead, do something here
+        Destroy(this.players[deadPlayer.Id]);
+        currentPlayerDead = true;
     }
 
     void spawnBullets()
