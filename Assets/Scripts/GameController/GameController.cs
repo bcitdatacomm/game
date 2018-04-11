@@ -276,7 +276,7 @@ public class GameController : MonoBehaviour
             x = Mathf.Sin (Mathf.Deg2Rad * angle) * xradius;
             z = Mathf.Cos (Mathf.Deg2Rad * angle) * yradius;
 
-            dzLine.SetPosition (i,new Vector3(x,1,z) );
+            dzLine.SetPosition (i,new Vector3(x,1,z));
 
             angle += (360f / dzLineSeg);
         }
@@ -286,22 +286,17 @@ public class GameController : MonoBehaviour
     {
         float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
         float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
-        float theta = (float)(Math.Atan(zDiff / xDiff) * Mathf.Rad2Deg);
+        float theta = (float)(Math.Atan(xDiff / zDiff) * Mathf.Rad2Deg);
 
-        Vector3 target = DgZone.transform.position - players[currentPlayerId].transform.position;
-        float angle = Vector3.Angle(target, Vector3.forward);
-        Quaternion rot = Quaternion.identity;
-
-        if (angle < 90)
+        if (zDiff < 0)
         {
-            rot = Quaternion.Euler(0, -angle, 0);
+            theta += 90;
         }
         else
         {
-            rot = Quaternion.Euler(0, angle, 0);
+            theta -= 90;
         }
-
-        DZIndicator.rotation = rot;
+        DZIndicator.rotation = Quaternion.Euler(0, theta, 0);
     }
 
     float getGameTime()
@@ -419,12 +414,17 @@ public class GameController : MonoBehaviour
         byte health = this.buffer[R.Net.Offset.HEALTH];
 
         this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
+        if (this.players[this.currentPlayerId].GetComponent<Player>().Health == 0)
+        {
+            // player dead
+            removePlayer();
+        }
     }
 
-    void removePlayer(PlayerData deadPlayer)
+    void removePlayer()
     {
         // player is dead, do something here
-        Destroy(this.players[deadPlayer.Id]);
+        Destroy(this.players[currentPlayerId]);
         currentPlayerDead = true;
     }
 
