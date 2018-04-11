@@ -33,6 +33,9 @@ namespace HighnoonTools
 
 		public Button loginButton;
 
+		public GameObject menu;
+		public GameObject wait;
+
 		HighnoonManager api;
 
 		public InputField usernameText;
@@ -156,6 +159,10 @@ namespace HighnoonTools
 
 				print (api.Player.Name);
 				magnum.Play();
+
+				menu.SetActive (false);
+				wait.SetActive (true);
+
 				SceneManager.LoadScene (sceneIndex);
 			}
 			else
