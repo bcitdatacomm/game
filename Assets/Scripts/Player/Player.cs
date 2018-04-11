@@ -239,7 +239,7 @@ public class Player : MonoBehaviour
             Debug.Log("Item ID: " + item.ID);
 
             GameObject itemObject = other.gameObject;
-            Debug("Is item object null: " + (itemObject == null));
+            Debug.Log("Is item object null: " + (itemObject == null));
 
             GameObject WeaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
 
