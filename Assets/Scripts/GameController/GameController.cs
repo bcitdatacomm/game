@@ -13,8 +13,11 @@ public class GameController : MonoBehaviour
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
-    private const float FIRST_SHRINK_STAGE = 840000f;
-    private const float SECOND_SHRINK_STAGE = 300000f;
+    private const float SHRINK_PHASE_1 = 780000f;
+    private const float SHRINK_PHASE_1_END = 600000f;
+    private const float SHRINK_PHASE_2 = 480000f;
+    private const float SHRINK_PHASE_2_END = 300000f;
+    private const float SHRINK_PHASE_3 = 180000f;
 
     private byte currentPlayerId;
     private bool currentPlayerDead = false;
@@ -250,7 +253,7 @@ public class GameController : MonoBehaviour
     {
         float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
         float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
-        float angleToTurn = (float)Math.Tan(zDiff / xDiff);
+        float angleToTurn = (float)(Math.Atan(zDiff / xDiff) * 180 / Math.PI);
         DZIndicator.rotation = Quaternion.Euler(0, angleToTurn, 0);
     }
 
@@ -270,18 +273,18 @@ public class GameController : MonoBehaviour
 
     void dangerZoneMessage()
     {
-        if (GameTime <= FIRST_SHRINK_STAGE + 10000 && GameTime > FIRST_SHRINK_STAGE)
+        if (GameTime <= SHRINK_PHASE_1 + 10000 && GameTime > SHRINK_PHASE_1)
         {
-            // 10 secs before 10 mins mark
-            DisplayText.text = "Panic mode starts in 10 secs";
+            // 10 secs before phase 1 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
         }
-        else if (GameTime <= FIRST_SHRINK_STAGE && GameTime > FIRST_SHRINK_STAGE - 10000)
+        else if (GameTime <= SHRINK_PHASE_1_END + 1000 && GameTime > SHRINK_PHASE_1_END)
         {
-            // 10 mins to 10 secs after 10 mins mark
+            // 10 secs
             Debug.Log("10 minutes left.");
             DisplayText.text = "PANIC MODE";
         }
-        else if (GameTime <= SECOND_SHRINK_STAGE)
+        else if (GameTime <= SHRINK_PHASE_2_END)
         {
             Debug.Log("5 minutes left.");
             DisplayText.text = "Panic mode ends; 5 mins left";
