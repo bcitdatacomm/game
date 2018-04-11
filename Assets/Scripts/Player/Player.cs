@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
     public Stack<Bullet> FiredShots;
     public Dictionary<int, Bullet> TrackedShots;
 
-    public byte[] Weapon 
+    public byte[] Weapon
     {
         get
         {
@@ -163,7 +163,7 @@ public class Player : MonoBehaviour
         Gun gun = GunObject.GetComponentInChildren<Gun>();
 
         if (gun != null)
-        { 
+        {
             // Manual Reload
             // TODO: Minor issue, reloads multiple times, perhaps multiple ticks?
             if (Input.GetKey("r"))
@@ -174,7 +174,7 @@ public class Player : MonoBehaviour
                 Debug.Log(gun.name);
                 sound.PlayOneShot(reload);
             }
-            
+
             gun.CheckShoot();
             gun.CheckReload();
         }
@@ -232,8 +232,14 @@ public class Player : MonoBehaviour
             lastPickUp = DateTime.Now;
 
             Debug.Log("E pressed");
+            Debug.Log(other.tag);
             Item item = other.GetComponent<Item>();
+
+            Debug("Is item null: " + (item == null));
+            Debug.Log("Item ID: " + item.ID);
+
             GameObject itemObject = other.gameObject;
+            Debug("Is item object null: " + (itemObject == null));
 
             GameObject WeaponSlot = GameObject.FindGameObjectWithTag("currentWeapon");
 
