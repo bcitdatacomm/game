@@ -13,11 +13,11 @@ public class GameController : MonoBehaviour
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
-    private const float SHRINK_PHASE_1 = 780000f;
-    private const float SHRINK_PHASE_1_END = 600000f;
-    private const float SHRINK_PHASE_2 = 480000f;
-    private const float SHRINK_PHASE_2_END = 300000f;
-    private const float SHRINK_PHASE_3 = 180000f;
+    private const float SHRINK_PHASE_1 = 780000f;       // 2 mins mark
+    private const float SHRINK_PHASE_1_END = 600000f;   // 5 mins mark
+    private const float SHRINK_PHASE_2 = 480000f;       // 7 mins mark
+    private const float SHRINK_PHASE_2_END = 300000f;   // 10 mins mark
+    private const float SHRINK_PHASE_3 = 180000f;       // 12 mins mark
 
     private byte currentPlayerId;
     private bool currentPlayerDead = false;
@@ -186,19 +186,13 @@ public class GameController : MonoBehaviour
         }
 
         GameTime = this.getGameTime();
-        Debug.Log("Current time: " + GameTime + "ms");
+        //Debug.Log("Current time: " + GameTime + "ms");
         this.displayGameTime();
         this.dangerZoneMessage();
-        if (!dangerZoneInit)
-        {
-            this.initDangerZone();
-        }
-        else
-        {
-            this.updateDangerZone();
-        }
-
+        this.updateDangerZone();
         this.updateDZIndicator();
+
+        this.setHealth();
         this.moveWeapons();
         this.spawnBullets();
         this.movePlayers();
@@ -207,11 +201,6 @@ public class GameController : MonoBehaviour
     List<PlayerData> getPlayerData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
-
-        // getting own player health data
-        int heathOffset = R.Net.Offset.HEALTH;
-        int health = BitConverter.ToInt32(this.buffer, heathOffset);
-
         int offset = R.Net.Offset.PLAYERS;
 
         for (int i = 0; i < n; i++)
@@ -223,28 +212,40 @@ public class GameController : MonoBehaviour
             byte weapon = this.buffer[offset + R.Net.Offset.Player.W];
             offset += R.Net.Size.PLAYER_DATA;
 
-            data.Add(new PlayerData(id, x, z, r, weapon, health));
+            data.Add(new PlayerData(id, x, z, r, weapon));
         }
 
         return data;
     }
 
-    void initDangerZone()
+    //void initDangerZone()
+    //{
+    //    int offset = R.Net.Offset.DANGER_ZONE;
+    //    float x = BitConverter.ToSingle(this.buffer, offset);
+    //    float z = BitConverter.ToSingle(this.buffer, offset + 4);
+    //    float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+    //    DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
+    //    DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
+    //    Debug.Log("Danger zone initiated.");
+    //    dangerZoneInit = true;
+    //}
+
+    void updateDangerZone()
     {
         int offset = R.Net.Offset.DANGER_ZONE;
         float x = BitConverter.ToSingle(this.buffer, offset);
         float z = BitConverter.ToSingle(this.buffer, offset + 4);
         float rad = BitConverter.ToSingle(this.buffer, offset + 8);
-        DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
-        DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
-        Debug.Log("Danger zone initiated. Player health will start decreasing after 1 min.");
-        dangerZoneInit = true;
-    }
-
-    void updateDangerZone()
-    {
-        int offset = R.Net.Offset.DANGER_ZONE;
-        float rad = BitConverter.ToSingle(this.buffer, offset + 8);
+        if (!dangerZoneInit)
+        {
+            DgZone = Instantiate(this.DangerZonePrefab, new Vector3(x, 0, z), Quaternion.Euler(0, 0, 0));
+            Debug.Log("Danger zone initiated.");
+            dangerZoneInit = true;
+        }
+        else
+        {
+            DgZone.transform.position = new Vector3(x, 0, z);
+        }
         Debug.Log("DZ radius: " + rad);
         DgZone.transform.localScale = new Vector3(rad * 2, 0.5f, rad * 2);
     }
@@ -253,7 +254,12 @@ public class GameController : MonoBehaviour
     {
         float xDiff = DgZone.transform.position.x - players[currentPlayerId].transform.position.x;
         float zDiff = DgZone.transform.position.z - players[currentPlayerId].transform.position.z;
-        float angleToTurn = (float)(Math.Atan(zDiff / xDiff) * 180 / Math.PI);
+        float theta = (float)(Math.Atan(zDiff / xDiff) * 180 / Math.PI);
+        float angleToTurn = -1 * theta;
+        if (xDiff < 0)
+        {
+            angleToTurn = -1 * (theta + 180f);
+        }
         DZIndicator.rotation = Quaternion.Euler(0, angleToTurn, 0);
     }
 
@@ -280,14 +286,24 @@ public class GameController : MonoBehaviour
         }
         else if (GameTime <= SHRINK_PHASE_1_END + 1000 && GameTime > SHRINK_PHASE_1_END)
         {
-            // 10 secs
-            Debug.Log("10 minutes left.");
-            DisplayText.text = "PANIC MODE";
+            // 10 secs before phase 1 ends
+            Debug.Log("10 secs before 5 mins mark.");
+            DisplayText.text = "Safe zone stablizes in 10 secs";
         }
-        else if (GameTime <= SHRINK_PHASE_2_END)
+        else if (GameTime <= SHRINK_PHASE_2 + 10000 && GameTime > SHRINK_PHASE_2)
         {
-            Debug.Log("5 minutes left.");
-            DisplayText.text = "Panic mode ends; 5 mins left";
+            // 10 secs before phase 2 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_2_END + 1000 && GameTime > SHRINK_PHASE_2_END)
+        {
+            Debug.Log("10 secs before 10 mins mark.");
+            DisplayText.text = "Safe zone stablizes in 10 secs";
+        }
+        else if (GameTime <= SHRINK_PHASE_3 + 10000 && GameTime > SHRINK_PHASE_3)
+        {
+            // 10 secs before phase 3 shrinks
+            DisplayText.text = "Safe zone starts to shrink in 10 secs";
         }
         else
         {
@@ -339,7 +355,7 @@ public class GameController : MonoBehaviour
         {
             if (this.currentPlayerId == playerDatas[i].Id)
             {
-                checkPlayerHealth(playerDatas[i]);
+                //checkPlayerHealth(playerDatas[i]);
                 continue;
             }
             this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
@@ -347,16 +363,23 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void checkPlayerHealth(PlayerData pData)
+    //void checkPlayerHealth(PlayerData pData)
+    //{
+    //    Player playerRef = this.players[pData.Id].GetComponent<Player>();
+    //    playerRef.Health = pData.Health;
+    //    Debug.Log("Player health: " + playerRef.Health);
+    //    if (playerRef.Health == 0)
+    //    {
+    //        // player dead
+    //        //removePlayer(pData);
+    //    }
+    //}
+
+    void setHealth()
     {
-        Player playerRef = this.players[pData.Id].GetComponent<Player>();
-        playerRef.Health = pData.Health;
-        Debug.Log("Player health: " + playerRef.Health);
-        if (playerRef.Health == 0)
-        {
-            // player dead
-            //removePlayer(pData);
-        }
+        byte health = this.buffer[R.Net.Offset.HEALTH];
+
+        this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
     }
 
     void removePlayer(PlayerData deadPlayer)
