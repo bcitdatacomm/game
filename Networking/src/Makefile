@@ -23,6 +23,9 @@ library.o:
 library: server.o  client.o tcpserver.o tcpclient.o library.o
 	$(CC) $(LINK)  tcpserver.o server.o client.o tcpclient.o library.o  -L/lib64/ -o libNetwork.so && cp 'libNetwork.so' ../../Assets/Plugins/Network.so
 
+server: server.o  client.o tcpserver.o tcpclient.o library.o
+	$(CC) $(LINK)  tcpserver.o server.o client.o tcpclient.o library.o  -L/lib64/ -o libNetwork.so && cp 'libNetwork.so' /usr/lib/libNetwork.so
+
 #library: server.o library.o client.o tcpserver.o tcpclient.o
 # 	$(CC) $(LINK) library.o tcpserver.o server.o client.o -o libNetwork.so && cp 'libNetwork.so' ../../Assets/Plugins/Network.so
 

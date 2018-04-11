@@ -1,3 +1,24 @@
+/*------------------------------------------------------------------------------
+-- PROGRAMMING:	c4981_Game.exe
+--
+-- FUNCTIONS: 	bool connect()
+--              bool login(string name, string password)
+--              bool register(string name, string password)
+--              bool report_match(string token, string name, int shots_fired, int kills, int deaths, int if_game_won, int time_played)
+--
+-- DATE:		March 13th, 2018
+--
+-- DESIGNER:	Mac Craig
+--
+-- PROGRAMMER:	Mac Craig & Morgan Ariss
+--
+-- NOTES:
+--	This class operates as the manager for conections between the UNITY application
+--  and the highnoon server. It contains functions for login and registration to
+--  allowing individual players to be tracked.
+--
+------------------------------------------------------------------------------*/
+
 ﻿using System;
 using System.IO;
 using System.Net;
@@ -42,6 +63,27 @@ namespace HighnoonTools
         public string Token { get { return _token; } }
         public HighnoonPlayer Player { get { return _player; } }
 
+        /*----------------------------------------------------------------------
+        -- FUNCTION:	Connect()
+        --
+        -- DATE:		March 13th, 2018
+        --
+        -- DESIGNER:	Morgan Ariss
+        --
+        -- PROGRAMMING:	Morgan Ariss
+        --
+        -- INTERFACE:	Connect()
+        --
+        -- ARGUMENTS:
+        --
+        -- RETURNS:
+        --
+        -- NOTES:
+        --	This function forms a conenction with the highnoon server allowing
+        --  further requests to be made. It returns a token to the client so
+        --  so that they are able to complete further requests.
+        --
+        ----------------------------------------------------------------------*/
         public bool Connect()
         {
             try
@@ -84,7 +126,28 @@ namespace HighnoonTools
                 return false;
             }
         }
-
+        /*----------------------------------------------------------------------
+        -- FUNCTION:	Login()
+        --
+        -- DATE:		March 13th, 2018
+        --
+        -- DESIGNER:	Mac Craig
+        --
+        -- PROGRAMMING:	Mac Craig & Morgan Ariss
+        --
+        -- INTERFACE:	Login()
+        --
+        -- ARGUMENTS:   string name; user's name
+        --              string password; user's password
+        --
+        -- RETURNS:     bool; success of the registration
+        --
+        -- NOTES:
+        --	This function attemps to login a client to an account with the highnoon
+        --  server. It needs a token for the request to be handled, otherwise it
+        --  will be ignored. it returns the success of the request.
+        --
+        ----------------------------------------------------------------------*/
         public bool Login(string name, string password)
         {
             try
@@ -138,6 +201,28 @@ namespace HighnoonTools
 
         }
 
+        /*----------------------------------------------------------------------
+        -- FUNCTION:	Register()
+        --
+        -- DATE:		March 13th, 2018
+        --
+        -- DESIGNER:	Mac Craig
+        --
+        -- PROGRAMMING:	Mac Craig
+        --
+        -- INTERFACE:	Register()
+        --
+        -- ARGUMENTS:   string name; user's name
+        --              string password; user's password
+        --
+        -- RETURNS:     bool; success of the registration
+        --
+        -- NOTES:
+        --	This function attemps to register a new account with the highnoon
+        --  server. It needs a token for the request to be handled, otherwise it
+        --  will be ignored. It returns the success or failure of the request.
+        --
+        ----------------------------------------------------------------------*/
         public bool Register(string name, string password)
         {
             try
@@ -190,6 +275,7 @@ namespace HighnoonTools
             }
         }
 
+        // Not in use currently
         public bool Report_Match(string token, string name, int shots_fired, int kills, int deaths, int if_game_won, int time_played)
         {
             try
@@ -252,6 +338,7 @@ namespace HighnoonTools
             }
         }
 
+        // Not in use currently
         public bool User(string token, string name)
         {
             try

@@ -357,6 +357,7 @@ public class GameController : MonoBehaviour
         if (newPlayer.Id == this.currentPlayerId)
         {
             player = (GameObject)Instantiate(this.PlayerPrefab, newPlayer.Position, newPlayer.Rotation);
+            player.GetComponent<Player>().TrackedShots = this.bullets;
             float x = newPlayer.Position.x;
             float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
@@ -370,6 +371,13 @@ public class GameController : MonoBehaviour
         }
 
         this.players.Add(newPlayer.Id, player);
+    }
+
+    void setHealth()
+    {
+        byte health = this.buffer[R.Net.Offset.HEALTH];
+
+        this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
     }
 
     void movePlayers()
@@ -402,6 +410,7 @@ public class GameController : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
     //void checkPlayerHealth(PlayerData pData)
     //{
     //    Player playerRef = this.players[pData.Id].GetComponent<Player>();
@@ -429,45 +438,74 @@ public class GameController : MonoBehaviour
     }
 
     void spawnBullets()
+=======
+    void handleBullets()
+>>>>>>> f9b1c61822eb1c97ba7d99d15405bdde0ab5418b
     {
         if (HeaderDecoder.HasBullet(this.buffer[0]))
         {
             int numBullets = Convert.ToInt32(this.buffer[R.Net.Offset.BULLETS]);
-
             int offset = R.Net.Offset.BULLETS + 1;
-            byte ownerId;
 
-            for(int i = 0; i < numBullets; i++)
+            for (int i = 0; i < numBullets; i++)
             {
-                if (this.buffer[offset + 6] == 1)
+                switch (this.buffer[offset + 6])
                 {
-                    ownerId = this.buffer[offset];
-
-                    if (ownerId == this.currentPlayerId)
-                    {
-                        continue;
-                    }
-
-                    Bullet newBullet = null;
-                    switch(this.buffer[offset + 5]) {
-                        case R.Type.KNIFE:
-                            newBullet = (Bullet)GameObject.Instantiate(this.MeleeBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                            break;
-                        case R.Type.PISTOL:
-                            newBullet = (Bullet)GameObject.Instantiate(this.PistolBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                            break;
-                        case R.Type.SHOTGUN:
-                            newBullet = (Bullet)GameObject.Instantiate(this.ShotGunBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                            break;
-                        case R.Type.RIFLE:
-                            newBullet = (Bullet)GameObject.Instantiate(this.RifleBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
-                            break;
-                    }
-                    newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
-                    bullets[BitConverter.ToInt32(this.buffer, offset + 1)] = newBullet;
+                    case R.Game.Bullet.ADD:
+                        addBullet(offset);
+                        break;
+                    case R.Game.Bullet.REMOVE:
+                        removeBullet(offset);
+                        break;
+                    default:
+                        Debug.Log("Bullet logic should not reach here");
+                        break;
                 }
+
                 offset += 7;
             }
+        }
+    }
+
+    void addBullet(int offset)
+    {
+        byte ownerId = this.buffer[offset];
+
+        if (ownerId == this.currentPlayerId)
+        {
+            return;
+        }
+
+        Bullet newBullet = null;
+        switch (this.buffer[offset + R.Net.Offset.Bullet.TYPE])
+        {
+            case R.Type.KNIFE:
+                newBullet = (Bullet)GameObject.Instantiate(this.MeleeBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                break;
+            case R.Type.PISTOL:
+                newBullet = (Bullet)GameObject.Instantiate(this.PistolBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                break;
+            case R.Type.SHOTGUN:
+                newBullet = (Bullet)GameObject.Instantiate(this.ShotGunBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                break;
+            case R.Type.RIFLE:
+                newBullet = (Bullet)GameObject.Instantiate(this.RifleBullet, this.players[ownerId].transform.position, this.players[ownerId].transform.rotation);
+                break;
+        }
+
+        newBullet.ID = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
+        bullets[newBullet.ID] = newBullet;
+        newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
+    }
+
+    void removeBullet(int offset)
+    {
+        int id = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
+
+        if (this.bullets.ContainsKey(id))
+        {
+            Destroy(this.bullets[id].gameObject);
+            this.bullets.Remove(id);
         }
     }
 
