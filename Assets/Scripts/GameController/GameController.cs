@@ -200,7 +200,7 @@ public class GameController : MonoBehaviour
 
         this.setHealth();
         this.moveWeapons();
-        this.spawnBullets();
+        this.handleBullets();
         this.movePlayers();
     }
 
@@ -410,7 +410,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD
     //void checkPlayerHealth(PlayerData pData)
     //{
     //    Player playerRef = this.players[pData.Id].GetComponent<Player>();
@@ -423,13 +422,6 @@ public class GameController : MonoBehaviour
     //    }
     //}
 
-    void setHealth()
-    {
-        byte health = this.buffer[R.Net.Offset.HEALTH];
-
-        this.players[this.currentPlayerId].GetComponent<Player>().Health = Convert.ToInt32(health);
-    }
-
     void removePlayer(PlayerData deadPlayer)
     {
         // player is dead, do something here
@@ -437,10 +429,7 @@ public class GameController : MonoBehaviour
         currentPlayerDead = true;
     }
 
-    void spawnBullets()
-=======
     void handleBullets()
->>>>>>> f9b1c61822eb1c97ba7d99d15405bdde0ab5418b
     {
         if (HeaderDecoder.HasBullet(this.buffer[0]))
         {
