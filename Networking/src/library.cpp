@@ -70,9 +70,9 @@ extern "C" TCPServer * TCPServer_CreateServer()
 	return new TCPServer();
 }
 
-extern "C" int32_t TCPServer_initServer(void * serverPtr, short port)
+extern "C" int32_t TCPServer_initServer(void * serverPtr, short port, short timeout)
 {
-	return ((TCPServer *)serverPtr)->initializeSocket(port);
+	return ((TCPServer *)serverPtr)->initializeSocket(port, timeout);
 }
 
 extern "C" int32_t TCPServer_acceptConnection(void * serverPtr, EndPoint * ep)

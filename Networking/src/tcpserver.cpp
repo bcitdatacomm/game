@@ -93,7 +93,7 @@ TCPServer::TCPServer()
  * initialize, errno when the socket fails to bind, and the server's
  * listen socket descriptor on success.
  */
-int32_t TCPServer::initializeSocket	(short port)
+int32_t TCPServer::initializeSocket	(short port, short timeout)
 {
 	struct	sockaddr_in server;
 	if ((tcpSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -103,15 +103,16 @@ int32_t TCPServer::initializeSocket	(short port)
 	}
 	int optFlag = 1;
 
-	// Sets server receive timeout to 30 seconds.
+	// Sets server receive timeout to input timeout seconds.
 	struct timeval tv;
-	tv.tv_sec = 30;
+	tv.tv_sec = timeout;
 	tv.tv_usec = 0;
 
 	if (setsockopt(tcpSocket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval)) == -1)
 	{
 		perror("Failed to setsockopt: timeout");
 	}
+	fprintf(stderr, "Timeout set to: %ld\n", tv.tv_sec);
 
 	// Set socket to reuse address
 	if (setsockopt(tcpSocket, SOL_SOCKET, SO_REUSEADDR, &optFlag, sizeof(optFlag)) == -1)
@@ -153,7 +154,7 @@ int32_t TCPServer::initializeSocket	(short port)
  * DATE:		Mar.
  *
  * REVISIONS:	Mar.
- * 				Apr.
+ * 				Apr. 9 (added timeout), 10, 11 (init takes timeout)
  *
  * DESIGNER:	Delan Elliot, Wilson Hu, Matthew Shew
  *
