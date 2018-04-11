@@ -248,9 +248,12 @@ public class Player : MonoBehaviour
             //GameObject SpellSlot2 = GameObject.FindGameObjectWithTag("SpellSlot2");
             //GameObject SpellSlot3 = GameObject.FindGameObjectWithTag("SpellSlot3");
 
+            Debug.Log("Item collided: " + item.name);
             if (item != null && item.Category == 1) // Add a Weapon
             {
+                Debug.Log("Weapon picked up: " + item.name);
                 inventory.AddItem(item);
+                string name = item.name;
 
                 if (WeaponSlot.transform.childCount > 0) // Add Weapon GameObject to Player GameObject
                 {
@@ -262,12 +265,18 @@ public class Player : MonoBehaviour
                 }
                 itemObject.transform.parent = WeaponSlot.transform;
 
+                //item.isEquipped = true;
                 item.transform.position = this.transform.position + new Vector3(0.2f, 1, 0);
                 item.transform.rotation = this.transform.rotation;
+
+                // Debug.Log(this.transform.name);
             }
             else if (item != null && item.Category == 2) // Add Spell
             {
+                Debug.Log("picked up: " + item.name);
                 inventory.AddItem(item);
+                string name = item.name;
+
                 // TODO: Logic to instantiate spell game object required.
             }
         }

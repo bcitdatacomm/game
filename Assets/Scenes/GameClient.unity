@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -55,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -208,7 +207,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 1340644898554646, guid: f44294f0343864beea647813f636497d,
     type: 2}
-  PlayerPrefab: {fileID: 1131176958648528, guid: 34ce6afd8b2f048dc8e01bf76aa4d3fe,
+  MinimapCamera: {fileID: 1150903758253836, guid: 80509de38f0674fbcaf9acc05d153ea1,
+    type: 2}
+  PlayerPrefab: {fileID: 1624198065846142, guid: bf23e673654c54b0b9c4c0b6d17cab67,
     type: 2}
   EnemyPrefab: {fileID: 1962906200149744, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}

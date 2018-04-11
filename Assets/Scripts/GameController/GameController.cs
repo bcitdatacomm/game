@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.24";
+    public const string SERVER_ADDRESS = "192.168.0.09";
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour
     private byte[] itemData;
 
     public GameObject PlayerCamera;
+    public GameObject MinimapCamera;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
     public GameObject DangerZonePrefab;
@@ -356,7 +357,9 @@ public class GameController : MonoBehaviour
             float x = newPlayer.Position.x;
             float z = newPlayer.Position.z;
             this.PlayerCamera.GetComponent<PlayerCamera>().Player = player;
+            this.MinimapCamera.GetComponent<PlayerCamera>().Player = player;
             Instantiate(this.PlayerCamera, new Vector3(x, 15, z), Quaternion.Euler(90, 0, 0));
+            Instantiate(this.MinimapCamera, new Vector3(x, 100, z), Quaternion.Euler(90, 0, 0));
             DZIndicator = player.transform.Find("DZ Indicator");
         }
         else
