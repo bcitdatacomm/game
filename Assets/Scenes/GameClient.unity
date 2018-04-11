@@ -38,8 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
-  m_UseRadianceAmbientProbe: 0
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -208,7 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 1340644898554646, guid: f44294f0343864beea647813f636497d,
     type: 2}
-  PlayerPrefab: {fileID: 1131176958648528, guid: 34ce6afd8b2f048dc8e01bf76aa4d3fe,
+  PlayerPrefab: {fileID: 1151352056399630, guid: bf23e673654c54b0b9c4c0b6d17cab67,
     type: 2}
   EnemyPrefab: {fileID: 1962906200149744, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}
