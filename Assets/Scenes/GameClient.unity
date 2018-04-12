@@ -209,7 +209,7 @@ MonoBehaviour:
     type: 2}
   MinimapCamera: {fileID: 1150903758253836, guid: 80509de38f0674fbcaf9acc05d153ea1,
     type: 2}
-  PlayerPrefab: {fileID: 1139677535039320, guid: bf23e673654c54b0b9c4c0b6d17cab67,
+  PlayerPrefab: {fileID: 1031322933083576, guid: bf23e673654c54b0b9c4c0b6d17cab67,
     type: 2}
   EnemyPrefab: {fileID: 1962906200149744, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}
@@ -341,6 +341,15 @@ Prefab:
     - target: {fileID: 1217568994245864, guid: 6e2f4f85d83d84b37bc72e4d7982186e, type: 2}
       propertyPath: m_Name
       value: MsgCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1121905966198232, guid: 6e2f4f85d83d84b37bc72e4d7982186e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224011545208221272, guid: 6e2f4f85d83d84b37bc72e4d7982186e,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2f4f85d83d84b37bc72e4d7982186e, type: 2}
