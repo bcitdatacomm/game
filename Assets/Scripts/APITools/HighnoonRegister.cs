@@ -31,10 +31,15 @@ namespace HighnoonTools
 
 		public Button registerButton;
 
+		public GameObject registerMenu;
+		public GameObject playMenu;
+
 		HighnoonManager api;
 
 		public InputField usernameText;
 		public InputField passwordText;
+
+		public AudioSource magnum;
 
 		string username = "";
 		string password = "";
@@ -142,6 +147,11 @@ namespace HighnoonTools
 			if(api.Register(name, pass))
 			{
 				print("Registration Successful");
+
+				magnum.Play();
+
+				registerMenu.SetActive (false);
+				playMenu.SetActive (true);
 			}
 			else
 			{
