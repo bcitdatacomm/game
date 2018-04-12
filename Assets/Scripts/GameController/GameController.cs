@@ -430,7 +430,7 @@ public class GameController : MonoBehaviour
     {
         // player is dead, do something here
         //Destroy(this.players[currentPlayerId]);
-        this.players[this.currentPlayerId].transform.position = new Vector3(1000 + 10 * currentPlayerId, 0 , 1000);
+        this.players[this.currentPlayerId].transform.position = new Vector3(1000 + currentPlayerId, 0 , 1000);
         currentPlayerDead = true;
     }
 
