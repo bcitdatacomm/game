@@ -43,6 +43,8 @@ public class GameController : MonoBehaviour
     public Text GameTimeText;
     public Text DisplayText;
 
+    public int NumberOfPlayers { get; set; }
+
     public Bullet PistolBullet;
     public Bullet ShotGunBullet;
     public Bullet RifleBullet;
@@ -70,6 +72,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         api = GameObject.Find("WebAPI").GetComponent<Api>().API;
+        this.NumberOfPlayers = 30;
         string serverIp = api.GetIP();
         mapBuffer = new byte[MAX_INIT_BUFFER_SIZE];
         itemBuffer = new byte[MAX_INIT_BUFFER_SIZE];
@@ -377,13 +380,13 @@ public class GameController : MonoBehaviour
 
     void movePlayers()
     {
-        int numberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[0]);
-        List<PlayerData> playerDatas = this.getPlayerData(numberOfPlayers);
+        this.NumberOfPlayers = HeaderDecoder.GetPlayerCount(this.buffer[0]);
+        List<PlayerData> playerDatas = this.getPlayerData(this.NumberOfPlayers);
 
         // Add any new players
-        if (numberOfPlayers > this.players.Count)
+        if (this.NumberOfPlayers > this.players.Count)
         {
-            for (int i = 0; i < numberOfPlayers; i++)
+            for (int i = 0; i < this.NumberOfPlayers; i++)
             {
                 if (this.players.ContainsKey(playerDatas[i].Id))
                 {
@@ -397,25 +400,12 @@ public class GameController : MonoBehaviour
         {
             if (this.currentPlayerId == playerDatas[i].Id)
             {
-                //checkPlayerHealth(playerDatas[i]);
                 continue;
             }
             this.players[playerDatas[i].Id].transform.position = playerDatas[i].Position;
             this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
         }
     }
-
-    //void checkPlayerHealth(PlayerData pData)
-    //{
-    //    Player playerRef = this.players[pData.Id].GetComponent<Player>();
-    //    playerRef.Health = pData.Health;
-    //    Debug.Log("Player health: " + playerRef.Health);
-    //    if (playerRef.Health == 0)
-    //    {
-    //        // player dead
-    //        //removePlayer(pData);
-    //    }
-    //}
 
     void setHealth()
     {

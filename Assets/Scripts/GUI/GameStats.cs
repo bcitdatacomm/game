@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameStats : MonoBehaviour
 {
 	public Text timerLabel;
+	public Text playersLeft;
 
 	private float time;
 
@@ -23,5 +24,7 @@ public class GameStats : MonoBehaviour
 
 		//update the label value
 		timerLabel.text = string.Format ("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+
+		playersLeft.text = string.Format ("Players Left: {0}", GameObject.Find("GameController").GetComponent<GameController>().NumberOfPlayers);
 	}
 }
