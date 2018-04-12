@@ -6,10 +6,11 @@ using UnityEngine;
 using Networking;
 using InitGuns;
 using UnityEngine.UI;
+using HighnoonTools;
 
 public class GameController : MonoBehaviour
 {
-    public const string SERVER_ADDRESS = "192.168.0.09";
+    HighnoonManager api;
     public const int MAX_INIT_BUFFER_SIZE = 8192;
 
     //private const float TOTAL_GAME_TIME = 900000f;
@@ -68,10 +69,12 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        api = GameObject.Find("WebAPI").GetComponent<Api>().API;
+        string serverIp = api.GetIP();
         mapBuffer = new byte[MAX_INIT_BUFFER_SIZE];
         itemBuffer = new byte[MAX_INIT_BUFFER_SIZE];
         // Adding TCP receive code here, move as needed
-        epServer = new EndPoint(SERVER_ADDRESS, R.Net.PORT);
+        epServer = new EndPoint(serverIp, R.Net.PORT);
         tcpClient = new TCPClient();
         Int32 result = tcpClient.Init(epServer);
         dangerZoneInit = false;
@@ -116,7 +119,7 @@ public class GameController : MonoBehaviour
         }
 
         this.client = new Client();
-        this.client.Init(SERVER_ADDRESS, R.Net.PORT);
+        this.client.Init(serverIp, R.Net.PORT);
 
         this.currentPlayerId = 0;
         this.players = new Dictionary<byte, GameObject>();

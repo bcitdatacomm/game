@@ -72,7 +72,8 @@ namespace HighnoonTools
 		----------------------------------------------------------------------*/
 		void Start ()
 		{
-			api = new HighnoonManager("http://159.65.109.194/");
+			api = GameObject.Find("WebAPI").GetComponent<Api>().API;
+			// api = new HighnoonManager("http://159.65.109.194/");
 
 			if(api.Connect())
 			{

@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 
 namespace HighnoonTools
 {
-    class HighnoonManager
+    public class HighnoonManager
     {
 
         [System.Serializable]
@@ -35,6 +35,12 @@ namespace HighnoonTools
         {
             public string Success { get; set; }
             public string Token { get; set; }
+        }
+
+        [System.Serializable]
+        public class IPResponse
+        {
+            public string ip { get; set; }
         }
 
 		public class UserResponse
@@ -398,6 +404,36 @@ namespace HighnoonTools
                 Console.Write(e);
                 return false;
             }
+        }
+
+        public string GetIP()
+        {
+            WebRequest request = WebRequest.Create(_url + "/api/gameserver");
+            request.Credentials = CredentialCache.DefaultCredentials;
+
+            ((HttpWebRequest)request).UserAgent = UserAgent;
+            request.Method = "GET";
+            request.ContentType = "application/x-www-form-urlencoded";
+
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+
+            string responseFromServer = reader.ReadToEnd();
+
+            IPResponse res = JsonConvert.DeserializeObject<IPResponse>(responseFromServer);
+
+            Console.Write(responseFromServer);
+
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+
+            if (res != null)
+            {
+                return res.ip;
+            }
+            return "err";
         }
     }
 }
