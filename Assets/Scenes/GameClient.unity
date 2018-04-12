@@ -209,7 +209,7 @@ MonoBehaviour:
     type: 2}
   MinimapCamera: {fileID: 1150903758253836, guid: 80509de38f0674fbcaf9acc05d153ea1,
     type: 2}
-  PlayerPrefab: {fileID: 1475381336555838, guid: bf23e673654c54b0b9c4c0b6d17cab67,
+  PlayerPrefab: {fileID: 1334860334457768, guid: bf23e673654c54b0b9c4c0b6d17cab67,
     type: 2}
   EnemyPrefab: {fileID: 1962906200149744, guid: a1ab163727f2d4f5eade2456957c7af4,
     type: 2}
