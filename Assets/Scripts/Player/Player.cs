@@ -78,15 +78,15 @@ public class Player : MonoBehaviour
         inventory = inventGameObj.transform.GetComponent<Inventory>();
 
         // Init spell list
-        spells = new Spell[3];
+        // spells = new Spell[3];
 
-        for (int i = 0; i < 3; i++)
-        {
-            // spells[i] = this.transform.GetChild(IDX_PREFAB_PLYR + 1 + i).GetComponent<Spell>();
-            //            spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
-            spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
-            spells[i].enabled = false; // initially disable spell use
-        }
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     // spells[i] = this.transform.GetChild(IDX_PREFAB_PLYR + 1 + i).GetComponent<Spell>();
+        //     //            spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
+        //     spells[i] = inventGameObj.transform.GetChild(1 + i).GetComponent<Spell>();
+        //     spells[i].enabled = false; // initially disable spell use
+        // }
         // Init spell list
 
         lastPickUp = DateTime.Now;
