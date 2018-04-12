@@ -136,6 +136,7 @@ public class GameController : MonoBehaviour
         {
             this.syncWithServer();
         }
+
     }
 
     // This method will get the terrain and weapons and put them on the map
@@ -428,7 +429,8 @@ public class GameController : MonoBehaviour
     void removePlayer()
     {
         // player is dead, do something here
-        Destroy(this.players[currentPlayerId]);
+        //Destroy(this.players[currentPlayerId]);
+        this.players[this.currentPlayerId].transform.position = new Vector3(1000 + 10 * currentPlayerId, 0 , 1000);
         currentPlayerDead = true;
     }
 
