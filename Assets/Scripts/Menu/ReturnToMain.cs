@@ -15,10 +15,10 @@ public class ReturnToMain : MonoBehaviour {
 
 		returnButton.onClick.AddListener( () => {returnFunction();} );
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
 	void returnFunction()
