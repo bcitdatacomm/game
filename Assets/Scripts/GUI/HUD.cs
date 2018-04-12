@@ -2,6 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	HUD.cs
+--
+--	PROGRAM:		GUI
+--
+--	FUNCTIONS:
+--				void Start()
+--				public void InventoryScript_ItemAdded()
+--				void Update()
+--				void updateLife()
+--				void updateAmmoHud()
+--
+--	DATE:			Mar 20, 2018
+--
+--	REVISIONS:		Mar 21, 2018
+--
+--	DESIGNERS:		John Tee
+--
+--	PROGRAMMER:	John Tee
+--
+--	NOTES:
+--    Defines behaviour for the heads up display in game.
+---------------------------------------------------------------------------------------*/
 
 public class HUD : MonoBehaviour {
 
@@ -9,12 +32,50 @@ public class HUD : MonoBehaviour {
 
 
 
-	// Use this for initialization
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		Start()
+        --
+        -- DATE: 			Mar 20, 2018
+        --
+        -- REVISIONS:		Mar 21, 2018 - start method now emptied
+        --
+        -- DESIGNER: 		John Tee
+        --
+        -- PROGRAMMER: 	John Tee
+        --
+        -- INTERFACE: 		Start()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Initializes HUD.
+        -------------------------------------------------------------------------------------------------*/
+
 	void Start ()
     {
         // Inventory.ItemAdded += InventoryScript_ItemAdded;
 
 	}
+  /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION: 		InventoryScript_ItemAdded()
+     --
+     -- DATE: 			Mar 20, 2018
+     --
+     -- REVISIONS:
+     --
+     -- DESIGNER: 		John Tee
+     --
+     -- PROGRAMMER: 	John Tee
+     --
+     -- INTERFACE: 		InventoryScript_ItemAdded(object sender, InventoryEventArgs e)
+     --				sender : the object that sent the event
+     --				e : the sent event
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Stores a new inventory item as an image in the HUD inventory panel.
+     -------------------------------------------------------------------------------------------------*/
 
     private void InventoryScript_ItemAdded(object sender, InventoryEventArgs e)
     {
@@ -35,12 +96,48 @@ public class HUD : MonoBehaviour {
         }
     }
 
-	// Update is called once per frame
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		Update()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:		Mar 21, 2018
+       --
+       -- DESIGNER: 		John Tee
+       --
+       -- PROGRAMMER: 	John Tee
+       --
+       -- INTERFACE: 		Update()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Main method that updates player health and ammo.
+       -------------------------------------------------------------------------------------------------*/
+
 	void Update ()
     {
 		updateLife();
         updateAmmoHud();
 	}
+  /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION: 		updateLife()
+     --
+     -- DATE: 			Mar 21, 2018
+     --
+     -- REVISIONS:
+     --
+     -- DESIGNER: 		John Tee
+     --
+     -- PROGRAMMER: 	John Tee
+     --
+     -- INTERFACE: 		updateLife()
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Updates the current player health and armor.
+     -------------------------------------------------------------------------------------------------*/
 
 	void updateLife()
 	{
@@ -49,6 +146,25 @@ public class HUD : MonoBehaviour {
 		this.transform.Find("Vitals").Find("VerticalLayout").Find("Life").Find("Health").Find("CurrentHealth").GetComponent<SimpleHealthBar>().UpdateBar(hudHp, 100);
 		this.transform.Find("Vitals").Find("VerticalLayout").Find("Life").Find("Armor").Find("CurrentArmor").GetComponent<SimpleHealthBar>().UpdateBar(hudArmor, 100);
 	}
+  /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION: 		updateAmmoHud()
+     --
+     -- DATE: 			Mar 21, 2018
+     --
+     -- REVISIONS:
+     --
+     -- DESIGNER: 		John Tee
+     --
+     -- PROGRAMMER: 	John Tee
+     --
+     -- INTERFACE: 		updateAmmoHud()
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Updates whether the player is able to reload, checks the clip size, and
+     -- updates the current ammo available to the player.
+     -------------------------------------------------------------------------------------------------*/
 
     void updateAmmoHud()
     {

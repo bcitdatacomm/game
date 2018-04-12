@@ -2,7 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// All item subclasses should call super.Update & super.OnTriggerEnter
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	Gun.cs
+--
+--	PROGRAM:		Weapon
+--
+--	FUNCTIONS:
+--
+--	DATE:			Mar 20, 2018
+--
+--	REVISIONS:
+--
+--	DESIGNERS:		Benny Wang, Jeremy Lee, Li-Yan Tong
+--
+--	PROGRAMMER:	Jeremy Lee, Li-Yan Tong
+--
+--	NOTES:
+--    Defines an item’s member variables.
+---------------------------------------------------------------------------------------*/
+
 public class Item : MonoBehaviour
 {
     public int ID { get; set; }

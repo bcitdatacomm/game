@@ -8,6 +8,39 @@ using InitGuns;
 using UnityEngine.UI;
 using HighnoonTools;
 
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	GameController.cs
+--
+--	PROGRAM:		GameController
+--
+--	FUNCTIONS:
+--				            void Start()
+--                     			void FixedUpdate()
+--                  			void initializeGame()
+-- 				void syncWithServer()
+--                  			void updateGameState()
+--                  			List<PlayerData> getPlayerData(int n)
+--                  			void addPlayer(PlayerData newPlayer)
+--				void setHealth()
+-- 				void movePlayers()
+-- 				void handleBullets()
+--				void addBullet(int offset)
+--				void removeBullet(int offset)
+--				void moveWeapons()
+--				void sendPlayerDataToServer()
+--
+--	DATE:			Feb 18, 2018
+--
+--	REVISIONS:		LOTS, 2018
+--
+--	DESIGNERS:		Benny Wang, Tim Bruecker, Haley Booker
+--
+--	PROGRAMMER:	Benny Wang, Tim Bruecker
+--
+--	NOTES:
+--     This is the csharp class attached to the GameController. The GameController is the only object that exists at start time on client side. On receiving the necessary data via packets, it spawns in terrain, player, weapons, and bullets. Then it keeps player, weapon, and bullets updated throughout a game.
+---------------------------------------------------------------------------------------*/
+
 public class GameController : MonoBehaviour
 {
     HighnoonManager api;
@@ -72,6 +105,27 @@ public class GameController : MonoBehaviour
     private byte[] itemBuffer;
     private EndPoint epServer;
 
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		Start()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE:	 	Start()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Start a new TCP connection to the server to receive item and map data.
+       -- Closes the TCP connection and creates a new client with player
+       -- and bullet information. Then calls initializeGame().
+       -------------------------------------------------------------------------------------------------*/
+
     void Start()
     {
         api = GameObject.Find("WebAPI").GetComponent<Api>().API;
@@ -134,6 +188,26 @@ public class GameController : MonoBehaviour
 
         initializeGame();
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		FixedUpdate()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		FixedUpdate()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Checks instance variable if the current player is rendered; if so, updates
+       -- the game state. If the currently player isn’t rendered, syncs with server
+       -- information.
+       -------------------------------------------------------------------------------------------------*/
 
     void FixedUpdate()
     {
@@ -153,8 +227,27 @@ public class GameController : MonoBehaviour
 
     }
 
-    // This method will get the terrain and weapons and put them on the map
-    // It is necessary to have tcp fill terrainData and itemData byte arrays before calling this
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		initializeGame()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker, Delan Elliot
+       --
+       -- INTERFACE: 		initializeGame()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Gets the terrain and weapons data and places those on the map.
+       -- A TCP connection  needs to fill terrain and itemData arrays before
+       -- this function gets called.
+       -------------------------------------------------------------------------------------------------*/
+
     void initializeGame()
     {
         // Get the data for terrain
@@ -167,6 +260,25 @@ public class GameController : MonoBehaviour
 
         client.Send(ackPack, R.Net.Size.CLIENT_TICK);
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		syncWithServer
+        --
+        -- DATE: 			Mar 20, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang, Tim Bruecker
+        --
+        -- PROGRAMMER:		Benny Wang, Tim Bruecker
+        --
+        -- INTERFACE: 		syncWithServer()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Finds the playerID and updates the player in the game from server
+        -- information.
+      -------------------------------------------------------------------------------------------------*/
 
     void syncWithServer()
     {
@@ -193,6 +305,24 @@ public class GameController : MonoBehaviour
         Debug.Log("Spawn location at " + x + ", " + z);
         this.addPlayer(new PlayerData(this.currentPlayerId, x, z, 0, 0));
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		updateGameState()
+       --
+       -- DATE:			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Tim Bruecker, Benny Wang
+       --
+       -- PROGRAMMER:		Tim Bruecker, Benny Wang
+       --
+       -- INTERFACE: 		updateGameState()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Increments through a packet, starting at a preset offset. Adds every non-zero value a list as a player id. On finding an value of 0 (invalid player id or end of valid data in packet), returns the current list.
+   -------------------------------------------------------------------------------------------------*/
 
     void updateGameState()
     {
@@ -220,6 +350,28 @@ public class GameController : MonoBehaviour
         this.movePlayers();
     }
 
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		getPlayerData()
+       --
+       -- DATE:			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		getPlayerData(int n)
+       --				n : the number of players
+       --
+       -- RETURNS: 		List<PlayerData> : a list of players’ data
+       --				(coordinates, weapon)
+       --
+       -- NOTES:
+       -- Increments through a packet and extracts important player
+       -- information into a list.
+   -------------------------------------------------------------------------------------------------*/
+
     List<PlayerData> getPlayerData(int n)
     {
         List<PlayerData> data = new List<PlayerData>();
@@ -239,6 +391,24 @@ public class GameController : MonoBehaviour
 
         return data;
     }
+    /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION:		updateDangerZone
+     --
+     -- DATE: 			Apr 10, 2018
+     --
+     -- REVISIONS: 		N/A
+     --
+     -- DESIGNER: 		Jeremy Lee, Luke Lee
+     --
+     -- PROGRAMMER: 		Jeremy Lee, Luke Lee
+     --
+     -- INTERFACE: 		void updateDangerZone()
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Grabs danger zone data from the received buffer and instantiates a danger zone object if it has not been initialized yet. Otherwise, update the position and radius of the danger zone.
+     -------------------------------------------------------------------------------------------------*/
 
     void updateDangerZone()
     {
@@ -297,6 +467,24 @@ public class GameController : MonoBehaviour
             angle += (360f / dzLineSeg);
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION:		updateDZIndicator
+     --
+     -- DATE: 			Apr 10, 2018
+     --
+     -- REVISIONS: 		N/A
+     --
+     -- DESIGNER: 		Jeremy Lee, Luke Lee
+     --
+     -- PROGRAMMER: 		Jeremy Lee, Luke Lee
+     --
+     -- INTERFACE: 		void updateDZIndicator()
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Calculates the differences in x- and z-coordinates between current player and center of the danger zone, and obtains a vector originated from the player pointing towards the center of the danger zone.
+     -------------------------------------------------------------------------------------------------*/
 
     void updateDZIndicator()
     {
@@ -314,6 +502,24 @@ public class GameController : MonoBehaviour
         }
         DZIndicator.rotation = Quaternion.Euler(0, theta, 0);
     }
+    /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION:		getGameTime
+     --
+     -- DATE: 			Apr 10, 2018
+     --
+     -- REVISIONS:		N/A
+     --
+     -- DESIGNER: 		Jeremy Lee, Luke Lee
+     --
+     -- PROGRAMMER: 		Jeremy Lee, Luke Lee
+     --
+     -- INTERFACE: 		float getGameTime()
+     --
+     -- RETURNS: 		float: current game timer in milliseconds as a float
+     --
+     -- NOTES:
+     -- Grabs the game time from received buffer and returns it as a float.
+     -------------------------------------------------------------------------------------------------*/
 
     float getGameTime()
     {
@@ -321,6 +527,24 @@ public class GameController : MonoBehaviour
         float time = BitConverter.ToSingle(this.buffer, offset);
         return time;
     }
+    /*-------------------------------------------------------------------------------------------------
+     -- FUNCTION: 		displayGameTime
+     --
+     -- DATE: 			Apr 10, 2018
+     --
+     -- REVISIONS: 		N/A
+     --
+     -- DESIGNER: 		Jeremy Lee, Luke Lee
+     --
+     -- PROGRAMMER: 		Jeremy Lee, Luke Lee
+     --
+     -- INTERFACE: 		void displayGameTime()
+     --
+     -- RETURNS: 		void
+     --
+     -- NOTES:
+     -- Takes the current game time in milliseconds and converts it to min:sec and set it to the GameTimeText display.
+     -------------------------------------------------------------------------------------------------*/
 
     void displayGameTime()
     {
@@ -328,6 +552,24 @@ public class GameController : MonoBehaviour
         int secs = Mathf.FloorToInt(GameTime % 60000 / 1000);
         GameTimeText.text = "Time: " + mins.ToString() + ":" + secs.ToString();
     }
+    /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION:		dangerZoneMessage
+    --
+    -- DATE: 			Apr 10, 2018
+    --
+    -- REVISIONS: 		N/A
+    --
+    -- DESIGNER: 		Jeremy Lee, Luke Lee
+    --
+    -- PROGRAMMER: 		Jeremy Lee, Luke Lee
+    --
+    -- INTERFACE: 		void dangerZoneMessage()
+    --
+    -- RETURNS: 		void
+    --
+    -- NOTES:
+    -- Takes the current game time and check which shrinking phase the game is currently in and displays corresponding message to notify user. (ie. phase 1: 2~5mins; phase 2: 7~10mins; phase 3: 12~15mins).
+    -------------------------------------------------------------------------------------------------*/
 
     void dangerZoneMessage()
     {
@@ -360,6 +602,27 @@ public class GameController : MonoBehaviour
             DisplayText.text = "";
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		addPlayer()
+        --
+        -- DATE: 			Mar 20, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang, Tim Bruecker
+        --
+        -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+        --
+        -- INTERFACE: 		addPlayer(PlayerData newPlayer)
+        --				newPlayer : the player to add
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- If a new player matches the current player ID, instantiate that
+        -- player as the user’s identity in game. Otherwise, treat as an
+        -- enemy player. Add it to the players dictionary.
+    -------------------------------------------------------------------------------------------------*/
 
     void addPlayer(PlayerData newPlayer)
     {
@@ -385,6 +648,25 @@ public class GameController : MonoBehaviour
 
         this.players.Add(newPlayer.Id, player);
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		movePlayers()
+       --
+       -- DATE: 			Feb 18, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER:		Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		movePlayers()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Checks the number of players and updates that from server data
+       -- if needed; moves enemy players from server data.
+   -------------------------------------------------------------------------------------------------*/
 
     void movePlayers()
     {
@@ -414,6 +696,24 @@ public class GameController : MonoBehaviour
             this.players[playerDatas[i].Id].transform.rotation = playerDatas[i].Rotation;
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		setHealth()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		setHealth()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Sets the health of the current player from the packet information.
+   -------------------------------------------------------------------------------------------------*/
 
     void setHealth()
     {
@@ -436,6 +736,25 @@ public class GameController : MonoBehaviour
 
         loseView.SetActive(true);
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		handleBullets()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		handleBullets()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- If there are bullets in the buffer, iterate through them and add or
+       -- remove them based off of their offset values.
+   -------------------------------------------------------------------------------------------------*/
 
     void handleBullets()
     {
@@ -463,7 +782,25 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		addBullet()
+        --
+        -- DATE: 			Mar 20, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang, Tim Bruecker
+        --
+        -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+        --
+        -- INTERFACE: 		addBullet()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Adds a bullet from the buffer to the bullet dictionary based on
+        -- weapon type.
+    -------------------------------------------------------------------------------------------------*/
     void addBullet(int offset)
     {
         byte ownerId = this.buffer[offset];
@@ -494,7 +831,26 @@ public class GameController : MonoBehaviour
         bullets[newBullet.ID] = newBullet;
         newBullet.direction = this.players[ownerId].transform.rotation * Vector3.forward;
     }
-
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		removeBullet()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		removeBullet(int offset)
+       --				offset : the offset in the buffer to where
+       --				the bullet info is kept
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Destroys a bullet in the dictionary if it’s found.
+   -------------------------------------------------------------------------------------------------*/
     void removeBullet(int offset)
     {
         int id = BitConverter.ToInt32(this.buffer, offset + R.Net.Offset.Bullet.ID);
@@ -505,6 +861,26 @@ public class GameController : MonoBehaviour
             this.bullets.Remove(id);
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		moveWeapons()
+        --
+        -- DATE: 			Mar 20, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang, Tim Bruecker
+        --
+        -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+        --
+        -- INTERFACE: 		moveWeapons()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Keeps track of which player picked up what weapon. Updates
+        -- the inventory accordingly to drop the old weapon (if they have one)
+        -- and adds the new weapon.
+    -------------------------------------------------------------------------------------------------*/
 
     void moveWeapons()
     {
@@ -542,6 +918,24 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		sendPlayerDataToServer()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Benny Wang, Tim Bruecker
+       --
+       -- PROGRAMMER: 	Benny Wang, Tim Bruecker
+       --
+       -- INTERFACE: 		sendPlayerDataToServer()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Extracts and sends the current player data to the server.
+   -------------------------------------------------------------------------------------------------*/
 
     void sendPlayerDataToServer()
     {
