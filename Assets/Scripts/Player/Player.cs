@@ -3,7 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: IMPLEMENT Weapon drop as delete.  Do a check for pick up.
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	Player.cs
+--
+--	PROGRAM:		Player
+--
+--	FUNCTIONS:
+--	         			public byte[] Weapon()
+--	         			void Start()
+--                  			void Awake()
+--                  			void FixedUpdate()
+--                  			void move()
+--	         			void checkGun()
+--                  			void turn()
+--                  			void SwitchSpell()
+--                  			void OnTriggerStay(Collider other)
+--	        			byte[] getInventory()
+--
+--	DATE:		Mar 17, 2018
+--
+--	REVISIONS:	Mar 20, 2018 - added more fullsome
+--			definitions of player behaviour.
+--			Apr 10, 2018 - took out invinciblity
+--
+--	DESIGNERS:		Benny Wang, Li-Yan Tong, John Tee
+--
+--	PROGRAMMER:	Benny Wang, Li-Yan Tong, John Tee
+--
+--	NOTES:
+--     This initializes a player with full health,  inventory for weapons
+--     and spells, and the ability to move  around the game world.
+---------------------------------------------------------------------------------------*/
 
 public class Player : MonoBehaviour
 {
@@ -37,6 +67,24 @@ public class Player : MonoBehaviour
     public Dictionary<int, Bullet> TrackedShots;
 
     public bool triggerStay = false;
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		Weapon()
+        --
+        -- DATE: 			Apr 2, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang
+        --
+        -- PROGRAMMER: 	Benny Wang
+        --
+        -- INTERFACE: 		Weapon()
+        --
+        -- RETURNS: 		byte array for the player’s gun
+        --
+        -- NOTES:
+        -- Returns a player’s weapon (if it exists or not).
+        -------------------------------------------------------------------------------------------------*/
 
     public byte[] Weapon
     {
@@ -57,6 +105,26 @@ public class Player : MonoBehaviour
             return tmp;
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		Start()
+       --
+       -- DATE: 			Mar 17, 2018
+       --
+       -- REVISIONS:		Mar 20, 2018 - changed default movement speed,
+       -- 				added empty inventory, audio
+       --
+       -- DESIGNER: 		Benny Wang, Li-Yan Tong, John Tee, Anthony Vu
+       --
+       -- PROGRAMMER: 	Benny Wang, Li-Yan Tong, John Tee, Anthony Vu
+       --
+       -- INTERFACE: 		Start()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Initializes a player with full health and an empty inventory. Enables
+       -- bullet and inventory pickup tracking.
+       -------------------------------------------------------------------------------------------------*/
 
     void Start()
     {
@@ -91,6 +159,24 @@ public class Player : MonoBehaviour
 
         lastPickUp = DateTime.Now;
     }
+    /*-------------------------------------------------------------------------------------------------
+      -- FUNCTION: 		Awake()
+      --
+      -- DATE: 			Mar 20, 2018
+      --
+      -- REVISIONS:
+      --
+      -- DESIGNER: 		Anthony Vu
+      --
+      -- PROGRAMMER: 	Anthony Vu
+      --
+      -- INTERFACE: 		Awake()
+      --
+      -- RETURNS: 		void
+      --
+      -- NOTES:
+      -- Animates the player.
+      -------------------------------------------------------------------------------------------------*/
 
     void Awake()
     {
@@ -101,6 +187,27 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         playerRigidbody = GetComponent<Rigidbody>();
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		FixedUpdate()
+       --
+       -- DATE: 			Mar 17, 2018
+       --
+       -- REVISIONS:		Mar 20, 2018 - added reload, spell methods to
+       --				include in tick update.
+       --				Apr 1, 2018 - added animation checks
+       --				Apr 10, 2018 - added death
+       --
+       -- DESIGNER: 		Benny Wang, Li-Yan Tong, Anthony Vu
+       --
+       -- PROGRAMMER: 	Li-Yan Tong, Anthony Vu
+       --
+       -- INTERFACE: 		FixedUpdate()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Main method which updates player behaviour each tick.
+       -------------------------------------------------------------------------------------------------*/
 
     void FixedUpdate()
     {
@@ -116,6 +223,26 @@ public class Player : MonoBehaviour
         SwitchSpell();
         DebugLogger(); // Testing purposes.
     }
+    /*-------------------------------------------------------------------------------------------------
+      -- FUNCTION: 		move()
+      --
+      -- DATE: 			Mar 17, 2018
+      --
+      -- REVISIONS:		Mar 20, 2018 - changed method of grabbing
+      --				movement directions, reloading from the user.
+      --				Mar 30, 2018 - added y position update
+      --
+      -- DESIGNER: 		Benny Wang, John Tee
+      --
+      -- PROGRAMMER: 	Benny Wang, John Tee
+      --
+      -- INTERFACE: 		move()
+      --
+      -- RETURNS: 		void
+      --
+      -- NOTES:
+      -- Moves the player in specific direction based on keyboard input.
+      -------------------------------------------------------------------------------------------------*/
 
     void move()
     {
@@ -158,6 +285,24 @@ public class Player : MonoBehaviour
     {
 
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		CheckGun()
+        --
+        -- DATE: 			Apr 3, 2018
+        --
+        -- REVISIONS:
+        --
+        -- DESIGNER: 		Benny Wang, John Tee
+        --
+        -- PROGRAMMER: 	John Tee
+        --
+        -- INTERFACE: 		CheckGun()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Checks if the player has a gun and allows player to shoot or reload.
+        -------------------------------------------------------------------------------------------------*/
 
     void checkGun()
     {
@@ -181,6 +326,24 @@ public class Player : MonoBehaviour
             gun.CheckReload();
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		turn()
+       --
+       -- DATE: 			Mar 17, 2018 - created
+       --
+       -- REVISIONS:		Mar 20, 2018 - added logic to turn with mouse
+       --
+       -- DESIGNER: 		Jeffrey Chou, John Tee
+       --
+       -- PROGRAMMER: 	John Tee
+       --
+       -- INTERFACE: 		turn()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Turns the player in the direction of the mouse movement.
+       -------------------------------------------------------------------------------------------------*/
 
     void turn()
     {
@@ -196,6 +359,25 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, rotation, 0);
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		SwitchSpell()
+       --
+       -- DATE: 			Mar 20, 2018
+       --
+       -- REVISIONS:
+       --
+       -- DESIGNER: 		Jeremy Lee, Li-Yan Tong
+       --
+       -- PROGRAMMER: 	Jeremy Lee
+       --
+       -- INTERFACE: 		SwitchSpell()
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Changes the current spell if they are in the player’s inventory, based
+       -- on keyboard input.
+       -------------------------------------------------------------------------------------------------*/
 
     void SwitchSpell()
     {
@@ -227,6 +409,26 @@ public class Player : MonoBehaviour
         // Spell switching
     }
 
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		OnTriggerStay()
+       --
+       -- DATE: 			Mar 21, 2018
+       --
+       -- REVISIONS:		Mar 21, 2018 - Get Event to work.
+       --
+       -- DESIGNER: 		Jeremy Lee, Matthew Shew
+       --
+       -- PROGRAMMER: 	Jeremy Lee
+       --
+       -- INTERFACE: 		OnTriggerStay(Collider other)
+       --				other : the object the player collided with
+       --
+       -- RETURNS: 		void
+       --
+       -- NOTES:
+       -- Adds a weapon to the player’s inventory; “picks up” the item for the
+       -- player’s use based on keyboard input.
+       -------------------------------------------------------------------------------------------------*/
 
     void OnTriggerStay(Collider other)
     {
@@ -298,6 +500,25 @@ public class Player : MonoBehaviour
             //Debug.Log("Player: BULLET DICTIONARY: " + this.TrackedShots.ContainsKey(stackBullet.ID));
         }
     }
+    /*-------------------------------------------------------------------------------------------------
+      -- FUNCTION: 		getInventory()
+      --
+      -- DATE: 			Mar 20, 2018
+      --
+      -- REVISIONS:		Mar 21, 2018 - add current to end of array
+      --
+      -- DESIGNER: 		Li-Yan Tong
+      --
+      -- PROGRAMMER: 	Li-Yan Tong
+      --
+      -- INTERFACE: 		getInventory()
+      --
+      -- RETURNS: 		a byte array of the player’s inventory
+      --
+      -- NOTES:
+      -- Checks the inventory of the player, noting all weapon slots and the
+      -- current “active” weapon.
+      -------------------------------------------------------------------------------------------------*/
 
     public byte[] getInventory()
     {

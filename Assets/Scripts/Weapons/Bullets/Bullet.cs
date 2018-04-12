@@ -2,6 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	Bullet.cs
+--
+--	PROGRAM:		Weapon
+--
+--	FUNCTIONS:
+--				void Start()
+--				void FixedUpdate()
+--				public byte[] ToBytes()
+--
+--	DATE:			Mar 21, 2018
+--
+--	REVISIONS:		Mar 31, 2018 - added ToBytes function
+--				Apr 10, 2018 - Bullet no longer destroyed
+--
+--	DESIGNERS:		Benny Wang, Li-Yan Tong
+--
+--	PROGRAMMER:	Li-Yan Tong, Benny Wang
+--
+--	NOTES:
+--
+---------------------------------------------------------------------------------------*/
 
 public class Bullet : MonoBehaviour
 {
@@ -21,6 +43,24 @@ public class Bullet : MonoBehaviour
     // Bullet Direction
     public Vector3 initPos;
     public Vector3 direction;
+    /*-------------------------------------------------------------------------------------------------
+      -- FUNCTION: 		Start()
+      --
+      -- DATE: 			Mar 21, 2018
+      --
+      -- REVISIONS:		Apr 10, 2018 - bullet no longer destroyed here
+      --
+      -- DESIGNER: 		Li-Yan Tong
+      --
+      -- PROGRAMMER: 	Li-Yan Tong, Benny Wang
+      --
+      -- INTERFACE: 		Start()
+      --
+      -- RETURNS: 		void
+      --
+      -- NOTES:
+      -- Generates bullet ID, direction and a timer to destroy the bullet.
+      -------------------------------------------------------------------------------------------------*/
 
     void Start()
     {
@@ -32,6 +72,24 @@ public class Bullet : MonoBehaviour
         // Destroy(this.gameObject, LifeTime);
         Debug.Log("Bullet spawned with id: " + this.ID);
     }
+    /*-------------------------------------------------------------------------------------------------
+      -- FUNCTION: 		FixedUpdate()
+      --
+      -- DATE: 			Mar 21, 2018
+      --
+      -- REVISIONS:		March 21, 2018
+      --
+      -- DESIGNER: 		Benny Wang, Li-Yan Tong
+      --
+      -- PROGRAMMER: 	Li-Yan Tong
+      --
+      -- INTERFACE: 		FixedUpdate()
+      --
+      -- RETURNS: 		void
+      --
+      -- NOTES:
+      -- Moves the position of the bullet each tick update.
+      -------------------------------------------------------------------------------------------------*/
 
     void FixedUpdate()
     {
@@ -41,8 +99,26 @@ public class Bullet : MonoBehaviour
         Vector3 p = this.transform.position;
         this.transform.position = new Vector3(p.x, 1, p.z);
     }
+    /*-------------------------------------------------------------------------------------------------
+       -- FUNCTION: 		ToBytes()
+       --
+       -- DATE: 			Mar 31, 2018
+       --
+       -- REVISIONS:		March 13, 2018
+       --
+       -- DESIGNER: 		Li-Yan Tong
+       --
+       -- PROGRAMMER: 	Li-Yan Tong
+       --
+       -- INTERFACE: 		ToBytes()
+       --
+       -- RETURNS: 		byte array of the bulletID
+       --
+       -- NOTES:
+       -- Returns the bulletID byte array.
+       -------------------------------------------------------------------------------------------------*/
 
-    public byte[] ToBytes() 
+    public byte[] ToBytes()
     {
         byte[] temp = new byte[5];
         Buffer.BlockCopy(BitConverter.GetBytes(this.ID), 0, temp, 0, 4);

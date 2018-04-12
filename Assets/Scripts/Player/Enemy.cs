@@ -3,7 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: IMPLEMENT Weapon drop as delete.  Do a check for pick up.
+/*---------------------------------------------------------------------------------------
+--	SOURCE FILE:	Enemy.cs
+--
+--	PROGRAM:		Player
+--
+--	FUNCTIONS:		void Start()
+--				void Awake()
+--				void FixedUpdate()
+--
+--
+--	DATE:			Apr 2, 2018
+--
+--	REVISIONS:		Mar 21, 2018 refactored; consolidated spell functions
+--
+--	DESIGNERS:		Benny Wang & Anthony Vu
+--
+--	PROGRAMMER:	Benny Wang & Anthony Vu
+--
+--	NOTES:
+--   	The Enemy class holds data required to move a “puppet” in the
+--	game client representing other players.
+---------------------------------------------------------------------------------------*/
 
 public class Enemy : MonoBehaviour
 {
@@ -25,6 +46,27 @@ public class Enemy : MonoBehaviour
     DateTime lastPickUp;
 	Vector3 lastPos;
 	Vector3 curPos;
+
+  /*-------------------------------------------------------------------------------------------------
+    -- FUNCTION: 		Start()
+    --
+    -- DATE: 			Apr 2, 2018
+    --
+    -- REVISIONS:		Apr 2, 2018 - Initialize function
+    --
+    -- DESIGNER: 		Anthony Vu
+    --
+    -- PROGRAMMER: 	Anthony Vu
+    --
+    -- INTERFACE: 		Start()
+    --
+    -- RETURNS: 		void
+    --
+    -- NOTES:
+    -- Initializes and updates the enemy players position and logs the timing
+    -- of an enemy’s pickup.
+    -------------------------------------------------------------------------------------------------*/
+
     void Start()
     {
         net = Vector3.zero;
@@ -36,6 +78,24 @@ public class Enemy : MonoBehaviour
 		curPos = transform.position;
 		lastPos = curPos;
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		Awake()
+        --
+        -- DATE: 			Apr 2, 2018
+        --
+        -- REVISIONS:		Apr 2, 2018 - Initialize function
+        --
+        -- DESIGNER: 		Anthony Vu
+        --
+        -- PROGRAMMER: 	Anthony Vu
+        --
+        -- INTERFACE: 		Awake()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Animates the enemy player.
+        -------------------------------------------------------------------------------------------------*/
 
     void Awake()
     {
@@ -46,6 +106,25 @@ public class Enemy : MonoBehaviour
         anim = GetComponent<Animator>();
         playerRigidbody = GetComponent<Rigidbody>();
     }
+    /*-------------------------------------------------------------------------------------------------
+        -- FUNCTION: 		FixedUpdate()
+        --
+        -- DATE: 			Apr 2, 2018
+        --
+        -- REVISIONS:		Apr 2, 2018 - Initialize function
+        --
+        -- DESIGNER: 		Anthony Vu
+        --
+        -- PROGRAMMER: 	Anthony Vu
+        --
+        -- INTERFACE: 		FixedUpdate()
+        --
+        -- RETURNS: 		void
+        --
+        -- NOTES:
+        -- Moves the enemy if there is a difference between the last logged
+        -- position and the current position.
+        -------------------------------------------------------------------------------------------------*/
 
     void FixedUpdate()
     {
