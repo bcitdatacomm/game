@@ -137,7 +137,7 @@ public class GameController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(this.NumberOfPlayers == 1 && !currentPlayerDead && Time.timeSinceLevelLoad > 2000)
+        if(this.NumberOfPlayers == 1 && !currentPlayerDead && Time.timeSinceLevelLoad > 10)
         {
             winView.SetActive(true);
         }
