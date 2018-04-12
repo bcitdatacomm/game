@@ -58,6 +58,7 @@ public class HUD : MonoBehaviour {
 				int hudCurrAmmo = this.transform.parent.Find ("Inventory").Find ("Weapon").GetChild (0).GetComponent<Gun> ().currAmmo;
 				int hudClipSize = this.transform.parent.Find ("Inventory").Find ("Weapon").GetChild (0).GetComponent<Gun> ().ClipSize;
 				this.transform.Find("Vitals").Find("VerticalLayout").Find ("Weapons").Find ("AmmoBar").Find ("CurrentAmmo").GetComponent<SimpleHealthBar> ().UpdateBar (hudCurrAmmo, hudClipSize);
+                this.transform.Find("Vitals").Find("VerticalLayout").Find ("Weapons").Find ("AmmoBar").Find ("AmmoText").GetComponent<Text> ().text = "" + hudCurrAmmo + "/" + hudClipSize;
 			}
 			else
 			{

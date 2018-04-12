@@ -1,6 +1,8 @@
 # Ignore .DS_Store macOS system files
 .DS_Store
 
+Build_Data/
+
 # Unity files
 [Ll]ibrary/
 [Tt]emp/
