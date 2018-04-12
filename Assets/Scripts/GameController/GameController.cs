@@ -43,6 +43,9 @@ public class GameController : MonoBehaviour
     public Text GameTimeText;
     public Text DisplayText;
 
+    public GameObject winView;
+    public GameObject loseView;
+
     public int NumberOfPlayers { get; set; }
 
     public Bullet PistolBullet;
@@ -134,6 +137,11 @@ public class GameController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(this.NumberOfPlayers == 1 && !currentPlayerDead)
+        {
+            winView.SetActive(true);
+        }
+
         if (this.currentPlayerId != 0)
         {
             this.updateGameState();
@@ -425,6 +433,8 @@ public class GameController : MonoBehaviour
         //Destroy(this.players[currentPlayerId]);
         this.players[this.currentPlayerId].transform.position = new Vector3(1000 + currentPlayerId, 0 , 1000);
         currentPlayerDead = true;
+
+        loseView.SetActive(true);
     }
 
     void handleBullets()
