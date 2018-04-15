@@ -15,4 +15,5 @@ If you have found an issue, please report it! Issues are documented within GitHu
 ## Building the game
 1. Download Unity
 2. Run the command `sudo ./make-library.sh` to compile the networking library
-3. Open the project in Unity and run Unity's build process
+3. Change the constant API_ADDRESS located at Assets/Scripts/R.cs:8 to the address of your instance of the web server.
+4. Open the project in Unity and run Unity's build process
