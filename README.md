@@ -1,4 +1,4 @@
-# ame (name tbd)
+# Tumbleweed Tusslers
 This repository contains the source code for the Winter 2018 COMP498X Data Comm term project.
 
 [![Build Status](https://travis-ci.org/bcitdatacomm/game.svg?branch=master)](https://travis-ci.org/bcitdatacomm/game)
@@ -11,3 +11,8 @@ For full information on contributing, see [CONTRIBUTING.md](https://github.com/b
 
 ## Bugs and Issues
 If you have found an issue, please report it! Issues are documented within GitHub [here](https://github.com/bcitdatacomm/game/issues). When reporting an issue, make sure to include fill out all the pre made headings in the default issue template.
+
+## Building the game
+1. Download Unity
+2. Run the command `sudo ./make-library.sh` to compile the networking library
+3. Open the project in Unity and run Unity's build process
