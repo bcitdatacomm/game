@@ -5,6 +5,7 @@ namespace R
     // Contains all the constants associated with networking and the packet
     public static class Net
     {
+        public const String API_ADDRESS = "http://159.65.109.194";
         public const ushort PORT = 42069;
         public const Int32 TCP_BUFFER_SIZE = 8192;
         public const ushort MAX_PLAYERS = 30;

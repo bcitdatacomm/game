@@ -9,7 +9,7 @@ public class Api : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		API = new HighnoonManager("http://159.65.109.194");
+		API = new HighnoonManager(R.Net.API_ADDRESS);
 		DontDestroyOnLoad(this.gameObject);
 	}
 }
