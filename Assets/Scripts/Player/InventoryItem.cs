@@ -9,13 +9,3 @@ public interface IInventoryItem
     Sprite Image { get; }
     void OnPickup();
 }
-
-// public class InventoryEventArgs : EventArgs
-// {
-//     public InventoryEventArgs(IInventoryItem item)
-//     {
-//         Item = item;
-//     }
-//
-//     public IInventoryItem Item;
-// }

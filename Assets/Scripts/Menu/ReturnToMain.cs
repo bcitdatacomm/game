@@ -10,20 +10,13 @@ public class ReturnToMain : MonoBehaviour {
 	public int sceneIndex;
 
 	// Use this for initialization
-	void Start () {
-
-
+	void Start () 
+	{
 		returnButton.onClick.AddListener( () => {returnFunction();} );
-	}
-
-	// Update is called once per frame
-	void Update () {
-
 	}
 
 	void returnFunction()
 	{
 		SceneManager.LoadScene (sceneIndex);
 	}
-
 }

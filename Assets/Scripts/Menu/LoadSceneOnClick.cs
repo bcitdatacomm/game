@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------------------
 -- Simple code used to load a scene from the build.
 ------------------------------------------------------------------------------*/
-
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 

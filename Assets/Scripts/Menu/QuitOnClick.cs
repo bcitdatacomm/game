@@ -2,7 +2,7 @@
 --	Simple code used to quit the application when a button is selected.
 ------------------------------------------------------------------------------*/
 
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class QuitOnClick : MonoBehaviour {

@@ -19,7 +19,6 @@
 -		camera is not abel to see the side of the background.
 --
 ------------------------------------------------------------------------------*/
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

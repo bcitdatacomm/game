@@ -30,32 +30,6 @@ public class HUD : MonoBehaviour {
 
     public Inventory Inventory;
 
-
-
-    /*-------------------------------------------------------------------------------------------------
-        -- FUNCTION: 		Start()
-        --
-        -- DATE: 			Mar 20, 2018
-        --
-        -- REVISIONS:		Mar 21, 2018 - start method now emptied
-        --
-        -- DESIGNER: 		John Tee
-        --
-        -- PROGRAMMER: 	John Tee
-        --
-        -- INTERFACE: 		Start()
-        --
-        -- RETURNS: 		void
-        --
-        -- NOTES:
-        -- Initializes HUD.
-        -------------------------------------------------------------------------------------------------*/
-
-	void Start ()
-    {
-        // Inventory.ItemAdded += InventoryScript_ItemAdded;
-
-	}
   /*-------------------------------------------------------------------------------------------------
      -- FUNCTION: 		InventoryScript_ItemAdded()
      --
@@ -87,9 +61,6 @@ public class HUD : MonoBehaviour {
             if(!image.enabled)
             {
                 image.enabled = true;
-                //image.sprite = e.Item.Image;
-
-                //TODO: Store reference to an item
 
                 break;
             }

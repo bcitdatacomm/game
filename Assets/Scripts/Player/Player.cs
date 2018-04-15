@@ -138,10 +138,6 @@ public class Player : MonoBehaviour
         sound = GetComponent<AudioSource>();
         sound.Play();
 
-        // TEST CODE
-        // GameObject Pistol = Instantiate(Resources.Load("Pistol", typeof(GameObject))) as GameObject;
-        // currentGun = Pistol.GetComponent("Gun") as Gun;
-
         GameObject inventGameObj = GameObject.Find("Inventory"); // Inventory game object
         inventory = inventGameObj.transform.GetComponent<Inventory>();
 
@@ -221,7 +217,6 @@ public class Player : MonoBehaviour
         turn();
         checkGun();
         SwitchSpell();
-        DebugLogger(); // Testing purposes.
     }
     /*-------------------------------------------------------------------------------------------------
       -- FUNCTION: 		move()
@@ -276,15 +271,6 @@ public class Player : MonoBehaviour
 
     }
 
-    void FootR()
-    {
-
-    }
-
-    void FootL()
-    {
-
-    }
     /*-------------------------------------------------------------------------------------------------
         -- FUNCTION: 		CheckGun()
         --
@@ -481,25 +467,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    void DebugLogger()
-    {
-        if (Input.GetKey("t")) // Log Print tester
-        {
-            // For Testing Inventory byte array.
-            // byte[] invent;
-            // invent = getInventory();
-
-            // Debug.Log(invent[0]);
-            // Debug.Log(invent[1]);
-            // Debug.Log(invent[2]);
-            // Debug.Log(invent[3]);
-
-            // For Testing Bullets
-            //Bullet stackBullet = this.FiredShots.Peek();
-            //Debug.Log("Player: Bullet Stack Stored: " + stackBullet.ID);
-            //Debug.Log("Player: BULLET DICTIONARY: " + this.TrackedShots.ContainsKey(stackBullet.ID));
-        }
-    }
     /*-------------------------------------------------------------------------------------------------
       -- FUNCTION: 		getInventory()
       --

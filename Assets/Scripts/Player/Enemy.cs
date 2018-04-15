@@ -25,7 +25,6 @@ using UnityEngine;
 --   	The Enemy class holds data required to move a “puppet” in the
 --	game client representing other players.
 ---------------------------------------------------------------------------------------*/
-
 public class Enemy : MonoBehaviour
 {
 

@@ -21,25 +21,12 @@ using UnityEngine;
 --
 --	NOTES:
 --     	Includes getters and setters for danger zone information.
---	Start & Update have no body to them.
 ---------------------------------------------------------------------------------------*/
 
-public class DangerZoneData : MonoBehaviour
+public class DangerZoneData
 {
 
 	public float X { get; set; }
 	public float Z { get; set; }
 	public float Radius { get; set; }
-
-	// Use this for initialization
-	void Start ()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update ()
-	{
-
-	}
 }
